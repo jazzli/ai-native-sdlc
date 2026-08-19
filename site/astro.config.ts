@@ -7,6 +7,9 @@ import { rehypeFalsifier } from './src/lib/rehype-falsifier';
 export default defineConfig({
   site: SITE_ORIGIN,
   base: SITE_BASE,
+  // Self-contained pages: inline all CSS regardless of size, so a page is
+  // one request and the zero-external-resource posture holds.
+  build: { inlineStylesheets: 'always' },
   markdown: {
     remarkPlugins: [remarkRewriteLinks({ base: SITE_BASE, ...CONTENT })],
     // Astro injects heading ids AFTER user rehype plugins; rehypeFalsifier
