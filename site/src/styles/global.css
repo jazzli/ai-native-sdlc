@@ -1,0 +1,59 @@
+:root {
+  --bg: #ffffff;
+  --fg: #1a1a1a;
+  --muted: #6b6b6b;
+  --accent: #0b5fff;
+  --falsifier-bg: #fff8e6;
+  --falsifier-border: #e0a800;
+  --badge-working: #0a7a3d;
+  --badge-open: #b45309;
+  --badge-parked: #6b6b6b;
+  --rule: #e5e5e5;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121212;
+    --fg: #e6e6e6;
+    --muted: #9a9a9a;
+    --accent: #7aa2ff;
+    --falsifier-bg: #2a2410;
+    --falsifier-border: #c9a227;
+    --badge-working: #4cc38a;
+    --badge-open: #f0a35e;
+    --badge-parked: #9a9a9a;
+    --rule: #2e2e2e;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0 auto;
+  padding: 1.5rem 1rem 4rem;
+  max-width: 44rem;
+  background: var(--bg);
+  color: var(--fg);
+  font: 400 1.0625rem/1.65 ui-serif, Georgia, serif;
+}
+nav { display: flex; gap: 1.25rem; margin-bottom: 2.5rem;
+      font-family: ui-sans-serif, system-ui, sans-serif; font-size: .9rem; }
+nav a, footer a { color: var(--muted); text-decoration: none; }
+nav a:hover, footer a:hover { color: var(--accent); }
+main a { color: var(--accent); }
+h1 { font-size: 1.7rem; line-height: 1.25; margin: 0 0 .5rem; }
+h2 { font-size: 1.25rem; margin-top: 2.2rem; }
+.meta { font-family: ui-sans-serif, system-ui, sans-serif;
+        font-size: .8rem; color: var(--muted); margin: 0 0 .25rem; }
+.badge { padding: .1rem .5rem; border-radius: 999px; border: 1px solid currentColor;
+         text-transform: uppercase; letter-spacing: .04em; font-weight: 600; }
+.badge.working-answer { color: var(--badge-working); }
+.badge.open { color: var(--badge-open); }
+.badge.parked { color: var(--badge-parked); }
+aside.falsifier { background: var(--falsifier-bg);
+  border-left: 4px solid var(--falsifier-border);
+  padding: .25rem 1.25rem .75rem; margin: 2.2rem 0; border-radius: 0 6px 6px 0; }
+aside.falsifier h2 { margin-top: 1rem; }
+footer { margin-top: 3.5rem; padding-top: 1rem; border-top: 1px solid var(--rule);
+         font-family: ui-sans-serif, system-ui, sans-serif; font-size: .85rem; }
+table { border-collapse: collapse; font-size: .9rem; display: block; overflow-x: auto; }
+th, td { border: 1px solid var(--rule); padding: .4rem .6rem; text-align: left;
+         vertical-align: top; }
+code { font-size: .85em; }
