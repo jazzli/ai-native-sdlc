@@ -1,9 +1,15 @@
 ---
 import '../styles/global.css';
+import { SITE_ORIGIN } from '../lib/site-config';
 interface Props { title: string; description?: string; mdHref?: string; variant?: string }
 const { title, description, mdHref, variant } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const path = Astro.url.pathname;
+// Astro.url.pathname is already base-prefixed (e.g. "/ai-native-sdlc/sources/"),
+// so the canonical URL is just the origin plus that — prepending SITE_BASE
+// again would double it up.
+const canonicalURL = `${SITE_ORIGIN}${path}`;
+const pageTitle = `${title} · AI-Native SDLC`;
 // Inline SVG favicon — the falsifier's ink ground with the status marker at
 // its centre. A data URI, so the page still makes no external request and the
 // browser never falls back to /favicon.ico.
@@ -19,8 +25,12 @@ const isPositions = path === `${base}/` || path === base || on('positions') || o
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light dark" />
     <link rel="icon" href={favicon} />
-    <title>{title} · AI-Native SDLC</title>
+    <link rel="canonical" href={canonicalURL} />
+    <title>{pageTitle}</title>
     {description && <meta name="description" content={description} />}
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content={pageTitle} />
+    {description && <meta property="og:description" content={description} />}
   </head>
   <body>
     <header class="masthead">
