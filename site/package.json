@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "astro": "^5.13.0",
+    "github-slugger": "^2.0.0",
     "remark": "^15.0.1",
     "remark-frontmatter": "^5.0.0",
     "unist-util-visit": "^5.0.0"
