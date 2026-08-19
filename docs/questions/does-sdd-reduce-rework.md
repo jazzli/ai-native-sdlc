@@ -14,14 +14,20 @@ rework, or is it ceremony?
 
 Directionally yes, for agent-executed feature work — adopt it as the default
 there. The mechanism is credible: agents lose intent across context windows,
-and an executable spec re-anchors them. GitHub reports roughly an
-order-of-magnitude fewer regenerate-from-scratch cycles with Spec Kit on
-internal projects.
+and an executable spec re-anchors them.
 
-But hold the claim loosely: that figure is vendor-reported and observational.
-No controlled comparison of SDD vs. disciplined ad-hoc prompting exists as of
-2026-08. And for small tasks, spec overhead plausibly exceeds rework savings —
-the position covers feature-sized work, not one-line fixes.
+The most-repeated evidence for SDD's payoff doesn't survive checking. The
+number — roughly an order-of-magnitude fewer regenerate-from-scratch cycles
+with Spec Kit, attributed to GitHub's internal projects — appears only in
+secondary blogs. Spec-kit's own repo publishes no quantitative claims of any
+kind: no percentages, no iteration counts, no comparative data.
+
+SDD's efficacy is mechanistically plausible but empirically unestablished: no
+controlled comparison of SDD vs. disciplined ad-hoc prompting exists as of
+2026-08. Adopt it for agent-executed feature work on the strength of the
+mechanism, not the numbers — and for small tasks, spec overhead plausibly
+exceeds rework savings, so the position covers feature-sized work, not
+one-line fixes.
 
 ## Evidence
 
