@@ -28,7 +28,12 @@ Sources are tiered by how far they clear that bar, not by how well known they ar
 
 ## Tier 1 — Empirical research
 
-The only sources here with defensible numbers.
+The first place to look, and the closest this field gets to evidence — but the
+tier is not uniform and the heading is not a warranty on any number in it.
+Entries range from a published survey design and a downloadable report to
+analyst framing with no disclosed methodology at all. Every Notes cell states
+where that entry actually stands against the [signal filter](#signal-filter);
+read it before citing a figure.
 
 | Source | What it gives you | Notes |
 | --- | --- | --- |
@@ -38,7 +43,7 @@ The only sources here with defensible numbers.
 | <a id="dora-roi-2026"></a>[The ROI of AI-assisted Software Development](https://services.google.com/fh/files/misc/dora-roi-of-ai-assisted-software-development-2026.pdf) (v. 2026.1) | J-curve model for value realization; ROI runs through code review and process redesign, not generation speed | **Primary:** the report PDF, linked from the title. Its [landing page](https://cloud.google.com/resources/content/dora-roi-of-ai-assisted-software-development) is lead-capture-gated; the PDF is not. [InfoQ](https://www.infoq.com/news/2026/05/dora-roi-ai-assisted-dev-report/) is a **secondary summary** — do not cite it for numbers |
 | <a id="anthropic-trends-2026"></a>[Anthropic 2026 Agentic Coding Trends Report](https://resources.anthropic.com/2026-agentic-coding-trends-report) | Eight trends on the shift from writing code to orchestrating agents; case studies (Rakuten, CRED, TELUS, Zapier) | ⚠️ Landing page does not disclose survey methodology — treat figures as directional |
 | <a id="bhati-2026-asdlc"></a>[Agentic AI in the SDLC](https://arxiv.org/abs/2604.26275) (Bhati) | Six-layer reference architecture; traditional SDLC vs. "A-SDLC"; reframes the shift as "delegated execution under human supervision"; SWE-bench Verified 1.96% → 78.4% (Oct 2023–Apr 2026); 13.6–55.8% time savings across controlled studies | Best single academic synthesis. Names five open problems: evaluation, governance, technical debt, skill redistribution, economics of attention |
-| <a id="forrester-2026"></a>[Forrester: State of Agentic Software Development, 2026](https://www.forrester.com/blogs/agentic-software-development-takes-the-lead-from-code-assistants-to-orchestrated-sdlc-agents/) | Analyst framing | Useful for executive conversations; paywalled full report |
+| <a id="forrester-2026"></a>[Forrester: State of Agentic Software Development, 2026](https://www.forrester.com/blogs/agentic-software-development-takes-the-lead-from-code-assistants-to-orchestrated-sdlc-agents/) | Analyst framing | ⚠️ **Passes none of the three filter questions** — a blog *about* a paywalled report: no methodology, no sample size, not primary. Retained for the framing and the executive vocabulary, not as evidence; do not cite it for a number |
 
 ---
 
