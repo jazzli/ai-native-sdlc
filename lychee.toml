@@ -1,0 +1,9 @@
+# Link-integrity config. CI: .github/workflows/links.yml
+# Fragment checking verifies the citekey anchors (<a id=...>) that the
+# traceability chain depends on.
+include_fragments = "anchor-only"
+max_retries = 2
+# Bot-hostile hosts return 403/429 to CI runners; a rot check should not
+# fail on anti-bot responses.
+accept = ["200..=299", "403", "429"]
+exclude_path = ["docs/superpowers"]
