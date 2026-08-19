@@ -14,32 +14,37 @@ an executable spec re-anchors them. The headline case for SDD's payoff
 doesn't hold up, though: the number usually cited — roughly an
 order-of-magnitude fewer regenerate-from-scratch cycles, attributed to
 GitHub's internal use of Spec Kit — appears only in secondary blogs, and
-Spec Kit's own repo publishes no quantitative claims at all. No controlled
-comparison of SDD against disciplined ad-hoc prompting exists yet, so
-adopt it on the strength of the mechanism, not the numbers. Below feature
-size, skip the ceremony — spec overhead plausibly exceeds rework savings
-on small tasks.
+Spec Kit's own repo publishes no quantitative claims at all. No
+controlled comparison of SDD against disciplined ad-hoc prompting exists
+as of 2026-08, so adopt it on the strength of the mechanism, not the
+numbers. Below feature size, skip the ceremony — spec overhead plausibly
+exceeds rework savings on small tasks.
 → [why, and what would change this](questions/does-sdd-reduce-rework.md)
 
 ## Put human attention at the gates, not in the loop
 
 Two human checkpoints: spec approval before agent execution, and review
 at merge. Between them, verification belongs to tests, CI, and agent
-cross-checks. Inline supervision does not scale — watching an agent type
-is the most expensive possible use of the attention that becomes the
-binding constraint. DORA's ROI analysis locates realized returns at code
+cross-checks. DORA's ROI analysis locates realized returns at code
 review, not generation speed: shipping code faster without review
-capacity just moves the queue. Whether review capacity itself becomes the
+capacity just moves the queue. That inline supervision therefore does not
+scale — that watching an agent type is the most expensive possible use of
+human attention — is this position's own reasoning, not a sourced
+finding; Bhati names the economics of attention as one of five open
+problems, which makes it a live question, not a result. Whether review
+capacity itself becomes the
 new bottleneck is open — and so is whether the answer would be tiered or
 sampled review rather than more gates.
 → [why, and what would change this](questions/where-must-human-review-sit.md)
 
 ## Don't pick tools by leaderboard
 
-Public benchmarks screen the frontier set; they don't rank within it.
-Saturation and test-insufficiency inflation dominate the last few points
-of SWE-bench Verified — UTBoost's re-scoring alone moved 11 Verified
-leaderboard positions. What to run instead is judgment, not a sourced
+Public benchmarks don't rank within the frontier set. Saturation and
+test-insufficiency inflation dominate the last few points of SWE-bench
+Verified — UTBoost's re-scoring alone moved 11 Verified leaderboard
+positions. That they still screen it — that a leaderboard at least
+separates frontier from non-frontier — is judgment; no cited entry
+establishes it. What to run instead is judgment too, not a sourced
 recommendation: no cited source endorses a specific benchmark.
 Terminal-Bench and SWE-bench Pro for breadth, domain-matched suites —
 SetupBench, SEC-bench — where relevant, and, above all, a small eval

@@ -15,10 +15,13 @@ execution, and review at merge. Between them, verification is delegated to
 tests, CI, and agent cross-checks.
 
 DORA's ROI analysis locates realized returns at code review — generation
-speed without review capacity just moves the queue. Inline supervision does
-not scale: watching an agent type is the most expensive possible use of the
-attention that becomes the binding constraint (Bhati's "economics of
-attention"). Practitioner patterns converge the same way: TDD and
+speed without review capacity just moves the queue. From there, that inline
+supervision does not scale — that watching an agent type is the most
+expensive possible use of human attention — is this note's inference, not a
+sourced finding. Bhati names the economics of attention as one of five open
+problems, so it supplies the frame for the question rather than an answer to
+it: that attention is the binding constraint is precisely what he leaves
+open. Practitioner patterns converge the same way: TDD and
 verification harnesses exist precisely to move human judgment to
 checkpoints.
 

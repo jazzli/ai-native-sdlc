@@ -11,10 +11,13 @@ What role, if any, should public benchmarks play in choosing agentic tools?
 
 ## Current position
 
-Benchmarks screen the frontier set; they do not rank within it. Headline
-SWE-bench Verified deltas between frontier tools no longer predict anything
-useful — saturation plus test-insufficiency inflation dominate the last few
-points; UTBoost's re-scoring alone moved 11 Verified leaderboard positions.
+Benchmarks do not rank within the frontier set. Headline SWE-bench Verified
+deltas between frontier tools no longer predict anything useful — saturation
+plus test-insufficiency inflation dominate the last few points; UTBoost's
+re-scoring alone moved 11 Verified leaderboard positions. That benchmarks
+still screen the frontier set — that they separate frontier from
+non-frontier at all — is this note's judgment; no cited entry establishes
+it.
 
 What to weight instead is this note's judgment, not a sourced finding — no
 cited entry recommends any benchmark. Terminal-Bench and SWE-bench Pro for
