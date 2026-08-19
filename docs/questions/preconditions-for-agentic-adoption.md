@@ -44,10 +44,13 @@ inference; no cited source makes the claim.
   seven capabilities as DORA names them.
 - [dora-roi-2026](../../sources.md#dora-roi-2026) — J-curve of value
   realization; process redesign as the gating factor.
-- [atlassian-2026](../../sources.md#atlassian-2026) — 19% more PRs, 2–3
-  hrs/dev/week. Weak support: the post reports outcomes without
-  characterising the org's prior engineering maturity, so it cannot
-  establish that foundations caused the gains.
+- [atlassian-2026](../../sources.md#atlassian-2026) — 19% more merged PRs
+  per repo, propensity-matched across 3,400 repos at 2,500 customers; 2–3
+  hrs/dev/week extrapolated from a survey of Atlassian's own developers. The
+  matched design is real evidence that adoption moves throughput. It is
+  still weak support *for this question*: nothing in it characterises the
+  adopting repos' prior engineering maturity, so it cannot establish that
+  foundations are what made adoption pay.
 - [forrester-2026](../../sources.md#forrester-2026) — orchestrated-SDLC
   framing; adoption staging toward end-to-end automation.
 

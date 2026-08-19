@@ -33,9 +33,9 @@ The only sources here with defensible numbers.
 | Source | What it gives you | Notes |
 | --- | --- | --- |
 | <a id="dora-publications"></a>[DORA Publications](https://dora.dev/research/publications/) | The index; start here | Highest-signal source in the field |
-| <a id="dora-2025"></a>[State of AI-assisted Software Development 2025](https://dora.dev/dora-report-2025/) | ~5,000 respondents + 100+ hrs interviews; introduces the DORA AI Capabilities Model | Core thesis: AI is an **amplifier** — magnifies strong engineering systems *and* dysfunction |
+| <a id="dora-2025"></a>[State of AI-assisted Software Development 2025](https://dora.dev/research/2025/dora-report/) | ~5,000 respondents + 100+ hrs interviews; introduces the DORA AI Capabilities Model | Core thesis: AI is an **amplifier** — magnifies strong engineering systems *and* dysfunction |
 | <a id="dora-capabilities-2025"></a>[DORA AI Capabilities Model](https://services.google.com/fh/files/misc/2025_dora_ai_capabilities_model.pdf) | The seven capabilities, named: clear and communicated AI stance; healthy data ecosystems; AI-accessible internal data; strong version control practices; working in small batches; user-centric focus; quality internal platforms | DORA calls the model "complementary to the DORA Core Model" and says "It does not replace it"; "many of these are the same core capabilities that have long been proven to enable high-performing, technology-driven teams" — strong version control and small batches are DORA Core items. What it adds on top is data-ecosystem and platform readiness plus an explicit AI stance. **Filter:** primary (the model itself, not a summary); reports adverse effects (AI raising delivery instability; weak user-focus teams losing performance). Methodology is not in this PDF — it directs readers to [dora-2025](#dora-2025) as its companion |
-| <a id="dora-roi-2026"></a>ROI of AI-Assisted Software Development (2026.01) | J-curve model for value realization; ROI runs through code review and process redesign, not generation speed | Linked from the publications index; [InfoQ summary](https://www.infoq.com/news/2026/05/dora-roi-ai-assisted-dev-report/) |
+| <a id="dora-roi-2026"></a>[The ROI of AI-assisted Software Development](https://services.google.com/fh/files/misc/dora-roi-of-ai-assisted-software-development-2026.pdf) (v. 2026.1) | J-curve model for value realization; ROI runs through code review and process redesign, not generation speed | **Primary:** the report PDF, linked from the title. Its [landing page](https://cloud.google.com/resources/content/dora-roi-of-ai-assisted-software-development) is lead-capture-gated; the PDF is not. [InfoQ](https://www.infoq.com/news/2026/05/dora-roi-ai-assisted-dev-report/) is a **secondary summary** — do not cite it for numbers |
 | <a id="anthropic-trends-2026"></a>[Anthropic 2026 Agentic Coding Trends Report](https://resources.anthropic.com/2026-agentic-coding-trends-report) | Eight trends on the shift from writing code to orchestrating agents; case studies (Rakuten, CRED, TELUS, Zapier) | ⚠️ Landing page does not disclose survey methodology — treat figures as directional |
 | <a id="bhati-2026-asdlc"></a>[Agentic AI in the SDLC](https://arxiv.org/abs/2604.26275) (Bhati) | Six-layer reference architecture; traditional SDLC vs. "A-SDLC"; reframes the shift as "delegated execution under human supervision"; SWE-bench Verified 1.96% → 78.4% (Oct 2023–Apr 2026); 13.6–55.8% time savings across controlled studies | Best single academic synthesis. Names five open problems: evaluation, governance, technical debt, skill redistribution, economics of attention |
 | <a id="forrester-2026"></a>[Forrester: State of Agentic Software Development, 2026](https://www.forrester.com/blogs/agentic-software-development-takes-the-lead-from-code-assistants-to-orchestrated-sdlc-agents/) | Analyst framing | Useful for executive conversations; paywalled full report |
@@ -55,13 +55,24 @@ How people actually work, from people who actually ship.
 - <a id="sdd-2026"></a>**Spec-driven development (SDD)**
   The methodology that consolidated in 2025–26 as the answer to vibe-coding drift:
   an executable, version-controlled spec is the source of truth, not the code.
-  Read the primary repos, not the roundup blogs — GitHub Spec Kit, AWS Kiro, OpenSpec,
-  BMAD, Tessl.
+  Read the primary repos, not the roundup blogs — [GitHub Spec Kit](https://github.com/github/spec-kit),
+  AWS Kiro, OpenSpec, BMAD, Tessl.
+  **Negative finding (checked 2026-08-19):** Spec Kit's repo publishes no efficacy
+  data of any kind — no percentages, no iteration counts, no comparison against
+  ad-hoc prompting. The order-of-magnitude rework reduction widely attributed to
+  GitHub's internal use of it appears only in secondary blogs, never in the repo.
   Academic taxonomy: [From Prompt to Process](https://arxiv.org/pdf/2606.04967)
 
 - <a id="atlassian-2026"></a>**[Atlassian engineering blog](https://www.atlassian.com/blog/ai-at-work/ai-native-sdlc-paying-off-per-developer-per-week)**
-  Unusually specific internal data (19% more PRs, 2–3 hrs/dev/week). Vendor, but
-  publishes real numbers from its own org — clears the bar on that basis.
+  Two headline figures, two different methods — and neither is plain internal
+  telemetry. The **19% more merged PRs/month is customer data**: 3,400 repos
+  sampled from 2,500 customers, adopting repos matched to comparable
+  non-adopters by propensity score. The **2–3 hrs/dev/week is an
+  extrapolation**: a self-report survey of Atlassian's own developers (2–4 hrs
+  claimed; the 20th percentile taken instead of the mean as a conservative
+  floor), then standardised to customers by usage intensity. Vendor-published
+  and single-product, but it states design, sample, and comparison group —
+  admitted on **published methodology**, not on being internal data.
 
 ---
 
