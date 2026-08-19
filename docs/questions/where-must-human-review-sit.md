@@ -39,7 +39,8 @@ tiered/sampled review rather than more gates.
   "verification tax" and its compensations (non-optional checkpoints,
   automated testing, AI-assisted review). Its ROI arithmetic is
   self-described as a high-uncertainty estimate — cite the mechanism, not
-  the numbers.
+  the numbers. In the J-curve figure the dip's three named components are
+  the learning curve, the verification tax, and pipeline adaptation.
 - [bhati-2026-asdlc](../../sources.md#bhati-2026-asdlc) — "delegated
   execution under human supervision" framing; economics of attention named
   as an open problem.
