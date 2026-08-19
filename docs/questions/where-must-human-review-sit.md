@@ -1,7 +1,7 @@
 ---
 title: Where must human review sit in an agentic SDLC for the ROI to materialize?
 status: working-answer
-updated: 2026-08-19
+updated: 2026-08-20
 ---
 ## Question
 
@@ -14,8 +14,12 @@ At the gates, not in the loop. Two checkpoints: spec approval before agent
 execution, and review at merge. Between them, verification is delegated to
 tests, CI, and agent cross-checks.
 
-DORA's ROI analysis locates realized returns at code review — generation
-speed without review capacity just moves the queue. From there, that inline
+DORA's ROI report names the mechanism a "verification tax": AI raises
+velocity and code volume, the pressure lands on review, and unmanaged it
+shows up as fewer deployments and longer lead times — generation speed
+without review capacity just moves the queue. Its named compensations are
+gate-shaped: non-optional checkpoints, automated testing, AI-assisted
+review. From there, that inline
 supervision does not scale — that watching an agent type is the most
 expensive possible use of human attention — is this note's inference, not a
 sourced finding. Bhati names the economics of attention as one of five open
@@ -31,15 +35,19 @@ tiered/sampled review rather than more gates.
 
 ## Evidence
 
-- [dora-roi-2026](../../sources.md#dora-roi-2026) — J-curve; ROI runs
-  through code review and process redesign, not generation speed.
+- [dora-roi-2026](../../sources.md#dora-roi-2026) — J-curve; the
+  "verification tax" and its compensations (non-optional checkpoints,
+  automated testing, AI-assisted review). Its ROI arithmetic is
+  self-described as a high-uncertainty estimate — cite the mechanism, not
+  the numbers.
 - [bhati-2026-asdlc](../../sources.md#bhati-2026-asdlc) — "delegated
   execution under human supervision" framing; economics of attention named
   as an open problem.
 - [willison-patterns](../../sources.md#willison-patterns) — red/green TDD as
-  the agent-control mechanism. That attention sits at test boundaries rather
-  than in the generation loop is this note's inference, not the source's
-  claim.
+  the agent-control mechanism, and "inflicting unreviewed code on
+  collaborators" as a named anti-pattern — direct practitioner support for a
+  review gate before sharing. That attention sits at test boundaries rather
+  than in the generation loop remains this note's inference.
 - [anthropic-trends-2026](../../sources.md#anthropic-trends-2026) —
   role shift from writing code to orchestrating agents (directional; survey
   methodology undisclosed).
