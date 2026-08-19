@@ -30,8 +30,8 @@ is the most expensive possible use of the attention that becomes the
 binding constraint. DORA's ROI analysis locates realized returns at code
 review, not generation speed: shipping code faster without review
 capacity just moves the queue. Whether review capacity itself becomes the
-new bottleneck is open — and if it does, the fix is likely tiered or
-sampled review, not more gates.
+new bottleneck is open — and so is whether the answer would be tiered or
+sampled review rather than more gates.
 → [why, and what would change this](questions/where-must-human-review-sit.md)
 
 ## Don't pick tools by leaderboard
