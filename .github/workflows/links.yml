@@ -24,10 +24,22 @@ jobs:
         with:
           args: --config lychee.toml --no-progress .
           output: lychee/out.md
-      - name: Open issue on scheduled failure
+      # Without this, every failing weekly cron would file a brand-new issue.
+      # Reuse the open one if there is one; issue-number empty means "create".
+      - name: Find the open link-rot issue
+        id: existing
+        if: failure() && github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          number=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open \
+            --label link-rot --limit 1 --json number --jq '.[0].number // empty')
+          echo "number=$number" >> "$GITHUB_OUTPUT"
+      - name: Open or update issue on scheduled failure
         if: failure() && github.event_name == 'schedule'
         uses: peter-evans/create-issue-from-file@v5
         with:
+          issue-number: ${{ steps.existing.outputs.number }}
           title: "Link rot detected"
           content-filepath: lychee/out.md
           labels: link-rot
