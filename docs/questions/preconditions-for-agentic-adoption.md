@@ -17,13 +17,19 @@ clear and communicated AI stance, healthy data ecosystems, AI-accessible
 internal data, strong version control practices, working in small batches,
 user-centric focus, and quality internal platforms.
 
-That list is more AI-specific than the generic delivery hygiene one expects
-— three of the seven are about data and platform readiness rather than CI
-or review discipline. Worth noticing, because the instinct to substitute
-familiar DevOps foundations here is strong and wrong. A team without these
-that scales agent usage gets more code through broken gates, faster:
-amplified dysfunction, and the deep end of the ROI J-curve with no climb
-out.
+The list is mostly continuity, not novelty, and DORA says so directly: the
+AI Capabilities Model is presented as complementary to the DORA Core Model,
+explicitly not a replacement, and DORA notes that many of these are the same
+core capabilities long proven to enable high-performing teams. Two of the
+seven — strong version control practices, working in small batches — are
+Core capabilities verbatim. What the model adds on top is data-ecosystem and
+platform readiness (healthy data ecosystems, AI-accessible internal data,
+quality internal platforms) and an explicit, communicated AI stance. So the
+familiar DevOps foundations are the substrate here, not a substitute for
+something else: the data and platform items sit on top of them and do not
+displace them. A team without these that scales agent usage gets more code
+through broken gates, faster: amplified dysfunction, and the deep end of the
+ROI J-curve with no climb out.
 
 Teams below the bar should cap agents at individual-assist level while
 fixing foundations. That agents themselves are the highest-leverage tool

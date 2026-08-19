@@ -55,15 +55,18 @@ finding. The checklist is DORA's AI Capabilities Model, and its seven
 capabilities are worth reading directly rather than assumed: a clear and
 communicated AI stance, healthy data ecosystems, AI-accessible internal
 data, strong version control practices, working in small batches,
-user-centric focus, and quality internal platforms. Three of the seven
-are about data and platform readiness, not the CI-and-review hygiene a
-team might expect — the instinct to substitute familiar DevOps
-foundations here is strong, and wrong. A team without these that scales
-agent usage gets more code through broken gates, faster: amplified
-dysfunction, and the deep end of the ROI J-curve with no climb out. Cap
-agents at individual-assist until the foundations hold. That agents
-themselves are the highest-leverage tool for fixing those foundations —
-test debt, CI speed — is this note's inference; no cited source makes
+user-centric focus, and quality internal platforms. DORA presents this
+as complementary to its Core Model rather than a replacement, and says
+many of the seven are the same capabilities long proven to enable
+high-performing teams — version control and small batches are Core items
+verbatim. The familiar foundations still carry the weight; what the
+model adds on top is data-ecosystem and platform readiness and an
+explicit AI stance. A team without these that scales agent usage gets
+more code through broken gates, faster: amplified dysfunction, and the
+deep end of the ROI J-curve with no climb out. Cap agents at
+individual-assist until the foundations hold. That agents themselves are
+the highest-leverage tool for fixing those foundations — test debt, CI
+speed — is inference here, not a cited finding; no cited source makes
 that claim directly.
 → [why, and what would change this](questions/preconditions-for-agentic-adoption.md)
 
