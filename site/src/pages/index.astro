@@ -1,12 +1,17 @@
 ---
-import { getCollection } from 'astro:content';
-const notes = await getCollection('notes');
-const singles = await getCollection('singles');
+import { getEntry, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+const playbook = await getEntry('singles', 'docs/playbook');
+if (!playbook) throw new Error('playbook singleton missing');
+const { Content } = await render(playbook);
+const base = import.meta.env.BASE_URL;
 ---
-<h1>debug: collections</h1>
-<ul id="notes">
-  {notes.map((n) => <li>{n.id} · {n.data.status} · {n.data.updated.toISOString().slice(0, 10)}</li>)}
-</ul>
-<ul id="singles">
-  {singles.map((s) => <li>{s.id}</li>)}
-</ul>
+<Base title="Playbook" description="Evidence-tiered positions on AI-native software development, each stating what would change it." mdHref={`${base}/index.md`}>
+  <Content />
+  <hr />
+  <p class="meta">
+    Every position above traces to a question note, a
+    <a href={`${base}/sources/`}>primary-verified source registry</a>, and a
+    stated falsifier. How that works: <a href={`${base}/protocol/`}>the protocol</a>.
+  </p>
+</Base>
