@@ -2,6 +2,9 @@ name: Links
 on:
   push:
     branches: [main]
+  # Check the chain before merge, not only after. Also the only trigger
+  # reachable from a branch: workflow_dispatch needs the file on main first.
+  pull_request:
   schedule:
     - cron: "0 9 * * 1"   # weekly, Monday 09:00 UTC — link rot happens between commits
   workflow_dispatch:
