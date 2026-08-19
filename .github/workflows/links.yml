@@ -1,0 +1,45 @@
+name: Links
+on:
+  push:
+    branches: [main]
+  # Check the chain before merge, not only after. Also the only trigger
+  # reachable from a branch: workflow_dispatch needs the file on main first.
+  pull_request:
+  schedule:
+    - cron: "0 9 * * 1"   # weekly, Monday 09:00 UTC — link rot happens between commits
+  workflow_dispatch:
+jobs:
+  linkChecker:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run lychee
+        id: lychee
+        uses: lycheeverse/lychee-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # avoids rate-limiting on github.com links
+        with:
+          args: --config lychee.toml --no-progress .
+          output: lychee/out.md
+      # Without this, every failing weekly cron would file a brand-new issue.
+      # Reuse the open one if there is one; issue-number empty means "create".
+      - name: Find the open link-rot issue
+        id: existing
+        if: failure() && github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          number=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open \
+            --label link-rot --limit 1 --json number --jq '.[0].number // empty')
+          echo "number=$number" >> "$GITHUB_OUTPUT"
+      - name: Open or update issue on scheduled failure
+        if: failure() && github.event_name == 'schedule'
+        uses: peter-evans/create-issue-from-file@v5
+        with:
+          issue-number: ${{ steps.existing.outputs.number }}
+          title: "Link rot detected"
+          content-filepath: lychee/out.md
+          labels: link-rot

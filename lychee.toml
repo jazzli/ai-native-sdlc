@@ -1,0 +1,11 @@
+# Link-integrity config. CI: .github/workflows/links.yml
+# Fragment checking verifies the citekey anchors (<a id=...>) that the
+# traceability chain depends on.
+include_fragments = "anchor-only"
+max_retries = 2
+# Bot-hostile hosts return 403/429 to CI runners; a rot check should not
+# fail on anti-bot responses. 405 (Method Not Allowed) is the same class of
+# answer: infoq.com returns it to both HEAD and GET, and services.google.com
+# returns it to HEAD for PDFs that serve fine over GET. Neither is link rot.
+accept = ["200..=299", "403", "405", "429"]
+exclude_path = ["docs/superpowers"]
