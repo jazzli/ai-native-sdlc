@@ -34,7 +34,9 @@ tiered/sampled review rather than more gates.
   execution under human supervision" framing; economics of attention named
   as an open problem.
 - [willison-patterns](../../sources.md#willison-patterns) — red/green TDD as
-  the agent-control mechanism; human attention at test boundaries.
+  the agent-control mechanism. That attention sits at test boundaries rather
+  than in the generation loop is this note's inference, not the source's
+  claim.
 - [anthropic-trends-2026](../../sources.md#anthropic-trends-2026) —
   role shift from writing code to orchestrating agents (directional; survey
   methodology undisclosed).
