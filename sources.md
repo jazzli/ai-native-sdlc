@@ -44,6 +44,9 @@ read it before citing a figure.
 | <a id="anthropic-trends-2026"></a>[Anthropic 2026 Agentic Coding Trends Report](https://resources.anthropic.com/2026-agentic-coding-trends-report) | Eight trends on the shift from writing code to orchestrating agents; case studies (Rakuten, CRED, TELUS, Zapier) | ⚠️ **Filter:** primary for what Anthropic itself claims, but no methodology published and no negative results reported — fails Q1 and Q2. Treat figures as directional; retained as the vendor's own articulation of the orchestration shift |
 | <a id="bhati-2026-asdlc"></a>[Agentic AI in the SDLC](https://arxiv.org/abs/2604.26275) (Bhati) | Six-layer reference architecture; traditional SDLC vs. "A-SDLC"; reframes the shift as "delegated execution under human supervision"; SWE-bench Verified 1.96% → 78.4% (Oct 2023–Apr 2026); 13.6–55.8% time savings across controlled studies | Best single academic synthesis. Names five open problems: evaluation, governance, technical debt, skill redistribution, economics of attention. **Filter:** primary; methodology is literature synthesis over cited controlled studies; naming open problems is the adverse-results discipline the filter wants. Figures verified at abstract 2026-08-19 |
 | <a id="forrester-2026"></a>[Forrester: State of Agentic Software Development, 2026](https://www.forrester.com/blogs/agentic-software-development-takes-the-lead-from-code-assistants-to-orchestrated-sdlc-agents/) | Analyst framing | ⚠️ **Passes none of the three filter questions** — a blog *about* a paywalled report: no methodology, no sample size, not primary. Retained for the framing and the executive vocabulary, not as evidence; do not cite it for a number |
+| <a id="gloaguen-2026"></a>[Evaluating AGENTS.md: Are Repository-Level Context Files Helpful for Coding Agents?](https://www.sri.inf.ethz.ch/publications/gloaguen2026agentsmd) (ETH SRI; MemAgents @ ICLR 2026 — oral, runner-up best paper) | Across multiple agents and LLMs: context files give **no task-success improvement** and **+20% inference cost**; LLM-generated files mildly reduce success; agents do respect the file's instructions; both file types push broader exploration | Recommendation from the authors: minimal, requirement-focused, human-written files. **Filter:** passes all three — methodology published (two settings: SWE-bench with LLM-generated files; novel issues with developer-provided files), null result is the headline, primary. Verified at publication page 2026-08-20 |
+| <a id="lulla-2026"></a>[On the Impact of AGENTS.md Files on the Efficiency of AI Coding Agents](https://assets.empirical-software.engineering/pdf/jaws26-agents.md-efficiency.pdf) (Lulla, Zhang, Mohsenimofidi, Baltes) | Paired same-task runs, 10 repos / 124 PRs: with AGENTS.md, median runtime **−28.64%** and output tokens **−16.58%**, with "comparable task completion behavior" | **Filter:** methodology published (paired design, sample stated) ✓; honestly self-limited — states it is *not* a correctness evaluation ✓; primary ✓. Efficiency evidence only — never cite it for quality effects. Verified at PDF 2026-08-20 |
+| <a id="apostolou-2026"></a>[Agentic AI in Industry: Adoption Level and Deployment Barriers](https://arxiv.org/abs/2605.14675) (Apostolou, Bosch, Holmström Olsson) | 16 practitioners across 12 companies on a six-level maturity framework: 7 at L1 (AI assistants), 4 at L2, **1 at L3 (multi-agent orchestration)**. Names the capability–deployment **verification gap**: 4 companies hold higher-level experimental capabilities they cannot productionize because output verification mechanisms are absent | **Filter:** qualitative methodology stated (n=16/12) ✓; reports barriers, not wins ✓; primary ✓. Small n — treat as existence proof and direction, not as rates. Verified at abstract 2026-08-20 |
 
 ---
 
@@ -114,6 +117,14 @@ Track these directly; they move faster than commentary about them.
   five-category control framework (authn/authz, provenance, sandboxing, policy enforcement,
   centralized governance). Read if governance is in scope. **Filter:** primary; a
   controls *proposal*, not empirical measurement. Categories verified at abstract 2026-08-20
+- <a id="otel-genai"></a>**[OpenTelemetry GenAI semantic conventions](https://github.com/open-telemetry/semantic-conventions-genai)** —
+  CNCF-backed telemetry schema for agent systems: spans, metrics, and events
+  for GenAI clients, MCP, and provider-specific conventions (scope per the
+  repo README, verified 2026-08-20). Secondary reporting places most
+  conventions in experimental status as of early 2026 — check the status
+  markers in the repo before building on any one of them; that stability
+  claim is not yet verified here at primary. **Filter:** primary (the
+  conventions repo itself); a standard, not evidence.
 
 ---
 
@@ -176,5 +187,6 @@ If it passes none, it goes in Tier 5 or not at all.
 | Date | Action |
 | --- | --- |
 | 2026-08-19 | Initial compilation |
+| 2026-08-20 | Open-questions pass: gloaguen-2026, lulla-2026, apostolou-2026, otel-genai admitted (all filter-stated, all primary-verified); three question notes seeded for the former no-position areas |
 | 2026-08-20 | Deep read of both DORA PDFs end-to-end: archetype base rates, 2024→2025 sign flips, VSM/platform multipliers, J-curve decomposition recorded; new question note on delivery impact seeded |
 | 2026-08-20 | Rule 5 sweep: all 18 entries verified against primaries or marked unverifiable; filter standing recorded on every entry; willison-patterns corrected (wrong link, wrong chapter count, two absent topics); DORA figures confirmed at both report PDFs |
