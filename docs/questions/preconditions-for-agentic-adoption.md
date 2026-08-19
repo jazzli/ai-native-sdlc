@@ -11,23 +11,31 @@ preconditions, and what should a team below the bar do first?
 
 ## Current position
 
-The preconditions are unglamorous delivery foundations: fast reliable CI,
-small batches, a working review process, clear ownership, and observable
-systems. DORA's AI Capabilities Model (seven practices) is the best current
-checklist. A team without them that scales agent usage gets more code
-through broken gates, faster — amplified dysfunction, and the deep end of
-the ROI J-curve with no climb out.
+DORA's AI Capabilities Model is the best current checklist, and its seven
+capabilities are worth reading before assuming you know what they are: a
+clear and communicated AI stance, healthy data ecosystems, AI-accessible
+internal data, strong version control practices, working in small batches,
+user-centric focus, and quality internal platforms.
+
+That list is more AI-specific than the generic delivery hygiene one expects
+— three of the seven are about data and platform readiness rather than CI
+or review discipline. Worth noticing, because the instinct to substitute
+familiar DevOps foundations here is strong and wrong. A team without these
+that scales agent usage gets more code through broken gates, faster:
+amplified dysfunction, and the deep end of the ROI J-curve with no climb
+out.
 
 Teams below the bar should cap agents at individual-assist level while
-fixing foundations — with the interesting caveat that agents themselves can
-help fix them (test debt, CI speed), which is the highest-leverage early
-use of agents on a weak-foundation team.
+fixing foundations. That agents themselves are the highest-leverage tool
+for fixing those foundations — test debt, CI speed — is this note's
+inference; no cited source makes the claim.
 
 ## Evidence
 
 - [dora-2025](../../sources.md#dora-2025) — amplifier thesis; ~5,000
-  respondents, 100+ hours of interviews; the seven-practice capabilities
-  model.
+  respondents, 100+ hours of interviews.
+- [dora-capabilities-2025](../../sources.md#dora-capabilities-2025) — the
+  seven capabilities as DORA names them.
 - [dora-roi-2026](../../sources.md#dora-roi-2026) — J-curve of value
   realization; process redesign as the gating factor.
 - [atlassian-2026](../../sources.md#atlassian-2026) — gains reported by an
