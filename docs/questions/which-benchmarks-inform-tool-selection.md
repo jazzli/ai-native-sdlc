@@ -14,10 +14,14 @@ What role, if any, should public benchmarks play in choosing agentic tools?
 Benchmarks screen the frontier set; they do not rank within it. Headline
 SWE-bench Verified deltas between frontier tools no longer predict anything
 useful — saturation plus test-insufficiency inflation dominate the last few
-points; UTBoost's re-scoring alone moved 11 Verified leaderboard positions. Weight instead: Terminal-Bench and SWE-bench Pro for breadth,
-domain-matched suites (SetupBench, SEC-bench) where relevant, and above all
-a small self-built eval on your own repo's tasks — ten representative issues
-beat any leaderboard for a selection decision.
+points; UTBoost's re-scoring alone moved 11 Verified leaderboard positions.
+
+What to weight instead is this note's judgment, not a sourced finding — no
+cited entry recommends any benchmark. Terminal-Bench and SWE-bench Pro for
+breadth, domain-matched suites (SetupBench, SEC-bench) where relevant, and
+above all a small self-built eval on your own repo's tasks. Ten
+representative in-repo issues should beat any leaderboard for a selection
+decision, but that is an untested prior.
 
 ## Evidence
 
