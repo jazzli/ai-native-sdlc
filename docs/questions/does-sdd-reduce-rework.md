@@ -38,9 +38,9 @@ one-line fixes.
 - [bhati-2026-asdlc](../../sources.md#bhati-2026-asdlc) — 13.6–55.8% time
   savings across controlled studies of agentic coding generally (not SDD
   specifically; upper bound context only).
-- [willison-patterns](../../sources.md#willison-patterns) — converging
-  practitioner pattern: explicit artifacts (specs, tests) as agent control
-  surfaces.
+- [willison-patterns](../../sources.md#willison-patterns) — red/green TDD as
+  an agent-control mechanism. Adjacent, not direct support: it evidences
+  test artifacts steering agents, not specs.
 
 ## What would change my mind
 
