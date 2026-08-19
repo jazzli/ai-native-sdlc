@@ -29,7 +29,6 @@ html {
 /* --- Light ---------------------------------------------------------------- */
 :root {
   --paper: #f2f3f0;
-  --paper-raised: #fafbf8;
   --ink: #15201e;
   --ink-soft: #46524f;
   --ink-faint: #5d6a66;
@@ -43,6 +42,7 @@ html {
   --select-fg: #0b1a18;
   --target-bg: #e1efe9;
   --slab-bg: #15201e;
+  --slab-edge: #15201e;
   --slab-fg: #e9ede9;
   --slab-soft: #aebab6;
   --slab-accent: #74d6bf;
@@ -56,7 +56,6 @@ html {
 @media (prefers-color-scheme: dark) {
   :root {
     --paper: #101615;
-    --paper-raised: #171e1d;
     --ink: #e2e7e4;
     --ink-soft: #a6b1ad;
     --ink-faint: #85908d;
@@ -69,11 +68,12 @@ html {
     --select-bg: #2c5a51;
     --select-fg: #eaf3f0;
     --target-bg: #1b2e29;
-    --slab-bg: #1c2b28;
+    --slab-bg: #253833;
+    --slab-edge: #5e837a;
     --slab-fg: #e9ede9;
     --slab-soft: #a9b6b2;
     --slab-accent: #74d6bf;
-    --slab-rule: #35443f;
+    --slab-rule: #4a5d57;
     --badge-working: #62c9b1;
     --badge-open: #d79a4e;
     --badge-parked: #85908d;
@@ -163,7 +163,7 @@ main {
 
 main.wide { max-width: var(--measure-wide); }
 main.wide > * { max-width: var(--measure); margin-inline: auto; }
-main.wide > table { max-width: none; width: 100%; }
+main.wide > table:has(th:nth-child(3)) { max-width: none; width: 100%; }
 
 /* --- Prose ---------------------------------------------------------------- */
 p, li { text-wrap: pretty; overflow-wrap: break-word; }
@@ -287,9 +287,9 @@ main.playbook > h2 + ul > li {
 }
 
 .colophon {
+  margin-top: 2.75rem;
   font: 400 .875rem/1.6 var(--sans);
   color: var(--ink-faint);
-  margin: 0;
 }
 
 /* --- Note pages ----------------------------------------------------------- */
@@ -353,7 +353,7 @@ aside.falsifier {
   padding: 1.9rem var(--pad) 2rem;
   background: var(--slab-bg);
   color: var(--slab-fg);
-  border-block: 1px solid var(--slab-rule);
+  border: 1px solid var(--slab-edge);
 }
 
 aside.falsifier h2 {
@@ -418,9 +418,9 @@ td {
 }
 th:last-child, td:last-child { padding-right: 0; }
 
-td:nth-child(1) { min-width: 10rem; }
-td:nth-child(2) { min-width: 14rem; }
-td:nth-child(3) { min-width: 16rem; }
+table:has(th:nth-child(3)) td:nth-child(1) { min-width: 10rem; }
+table:has(th:nth-child(3)) td:nth-child(2) { min-width: 14rem; }
+table:has(th:nth-child(3)) td:nth-child(3) { min-width: 16rem; }
 
 /* Arriving from a citekey link highlights the entry it lands on. */
 tr:has(a[id]:target) { background: var(--target-bg); }

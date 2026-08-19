@@ -4,6 +4,11 @@ interface Props { title: string; description?: string; mdHref?: string; variant?
 const { title, description, mdHref, variant } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const path = Astro.url.pathname;
+// Inline SVG favicon — the falsifier's ink ground with the status marker at
+// its centre. A data URI, so the page still makes no external request and the
+// browser never falls back to /favicon.ico.
+const favicon =
+  "data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20fill='%2315201e'/%3E%3Crect%20x='10'%20y='10'%20width='12'%20height='12'%20fill='%2374d6bf'/%3E%3C/svg%3E";
 const on = (seg: string) => path === `${base}/${seg}/` || path.startsWith(`${base}/${seg}/`);
 const isPositions = path === `${base}/` || path === base || on('positions') || on('questions');
 ---
@@ -13,6 +18,7 @@ const isPositions = path === `${base}/` || path === base || on('positions') || o
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href={favicon} />
     <title>{title} · AI-Native SDLC</title>
     {description && <meta name="description" content={description} />}
   </head>
