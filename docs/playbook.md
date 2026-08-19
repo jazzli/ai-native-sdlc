@@ -25,9 +25,12 @@ exceeds rework savings on small tasks.
 
 Two human checkpoints: spec approval before agent execution, and review
 at merge. Between them, verification belongs to tests, CI, and agent
-cross-checks. DORA's ROI analysis locates realized returns at code
-review, not generation speed: shipping code faster without review
-capacity just moves the queue. That inline supervision therefore does not
+cross-checks. DORA's ROI report calls the mechanism a "verification
+tax": AI raises velocity and code volume, the pressure lands on review,
+and unmanaged it means fewer deployments and longer lead times — shipping
+code faster without review capacity just moves the queue. The
+compensations DORA names are gate-shaped: non-optional checkpoints,
+automated testing, AI-assisted review. That inline supervision therefore does not
 scale — that watching an agent type is the most expensive possible use of
 human attention — is this position's own reasoning, not a sourced
 finding; Bhati names the economics of attention as one of five open

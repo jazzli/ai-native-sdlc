@@ -1,7 +1,7 @@
 ---
 title: Does spec-driven development actually reduce rework and drift?
 status: working-answer
-updated: 2026-08-19
+updated: 2026-08-20
 ---
 ## Question
 
@@ -34,7 +34,11 @@ one-line fixes.
 - [sdd-2026](../../sources.md#sdd-2026) — consolidation across GitHub Spec
   Kit, AWS Kiro, OpenSpec, BMAD, Tessl; the From Prompt to Process taxonomy.
   Carries no efficacy statistics — its own guidance is to read the primary
-  repos, not the roundup blogs where the rework figure circulates.
+  repos, not the roundup blogs where the rework figure circulates. The
+  taxonomy paper (read 2026-08-20) supports the mechanism: frameworks
+  converge on persistent artifacts, traceability, and human review as
+  ambiguity-reducers — while naming spec–code drift and insufficient
+  benchmarks as open risks, consistent with "empirically unestablished".
 - [bhati-2026-asdlc](../../sources.md#bhati-2026-asdlc) — 13.6–55.8% time
   savings across controlled studies of agentic coding generally (not SDD
   specifically; upper bound context only).
