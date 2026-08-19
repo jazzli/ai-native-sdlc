@@ -1,1 +1,12 @@
-<h1>ai-native-sdlc site scaffold</h1>
+---
+import { getCollection } from 'astro:content';
+const notes = await getCollection('notes');
+const singles = await getCollection('singles');
+---
+<h1>debug: collections</h1>
+<ul id="notes">
+  {notes.map((n) => <li>{n.id} · {n.data.status} · {n.data.updated.toISOString().slice(0, 20)}</li>)}
+</ul>
+<ul id="singles">
+  {singles.map((s) => <li>{s.id}</li>)}
+</ul>
