@@ -70,12 +70,27 @@ verbatim. The familiar foundations still carry the weight; what the
 model adds on top is data-ecosystem and platform readiness and an
 explicit AI stance. A team without these that scales agent usage gets
 more code through broken gates, faster: amplified dysfunction, and the
-deep end of the ROI J-curve with no climb out. Cap agents at
+deep end of the ROI J-curve with no climb out. Adaptation is real — AI's
+throughput relationship flipped positive between DORA's 2024 and 2025 data
+— but instability stayed elevated, and only a fifth of surveyed teams sit
+in the top archetype. Cap agents at
 individual-assist until the foundations hold. That agents themselves are
 the highest-leverage tool for fixing those foundations — test debt, CI
 speed — is inference here, not a cited finding; no cited source makes
 that claim directly.
 → [why, and what would change this](questions/preconditions-for-agentic-adoption.md)
+
+## Expect throughput before stability
+
+AI adoption now improves delivery throughput — a 2024→2025 sign flip in
+DORA's data, independently corroborated by Atlassian's matched customer
+study — but it still raises delivery instability, and unmanaged instability
+can negate the throughput gains downstream. Treat that gap as the work:
+value stream management and platform quality are DORA's named multipliers
+for turning local speed into delivered value. And budget for the J-curve's
+dip as tuition, not failure — it decomposes into a learning curve, a
+verification tax, and pipeline adaptation.
+→ [why, and what would change this](questions/does-ai-adoption-improve-delivery.md)
 
 ## No position yet
 
