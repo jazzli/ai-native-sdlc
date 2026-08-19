@@ -5,7 +5,7 @@ const singles = await getCollection('singles');
 ---
 <h1>debug: collections</h1>
 <ul id="notes">
-  {notes.map((n) => <li>{n.id} · {n.data.status} · {n.data.updated.toISOString().slice(0, 20)}</li>)}
+  {notes.map((n) => <li>{n.id} · {n.data.status} · {n.data.updated.toISOString().slice(0, 10)}</li>)}
 </ul>
 <ul id="singles">
   {singles.map((s) => <li>{s.id}</li>)}
