@@ -32,9 +32,8 @@ scale — that watching an agent type is the most expensive possible use of
 human attention — is this position's own reasoning, not a sourced
 finding; Bhati names the economics of attention as one of five open
 problems, which makes it a live question, not a result. Whether review
-capacity itself becomes the
-new bottleneck is open — and so is whether the answer would be tiered or
-sampled review rather than more gates.
+capacity itself becomes the new bottleneck is open — and so is whether
+the answer would be tiered or sampled review rather than more gates.
 → [why, and what would change this](questions/where-must-human-review-sit.md)
 
 ## Don't pick tools by leaderboard
