@@ -163,7 +163,9 @@ main {
 
 main.wide { max-width: var(--measure-wide); }
 main.wide > * { max-width: var(--measure); margin-inline: auto; }
-main.wide > table:has(th:nth-child(3)) { max-width: none; width: 100%; }
+/* The registry table is wrapped in .table-scroll (rehypeTableScroll), so the
+   wide-table guard now targets the wrapper, not the table itself. */
+main.wide > .table-scroll:has(table:has(th:nth-child(3))) { max-width: none; width: 100%; }
 
 /* --- Prose ---------------------------------------------------------------- */
 p, li { text-wrap: pretty; overflow-wrap: break-word; }
@@ -389,14 +391,26 @@ aside.falsifier code { background: var(--slab-rule); color: var(--slab-fg); }
 aside.falsifier :focus-visible { outline-color: var(--slab-accent); }
 
 /* --- The registry table --------------------------------------------------- */
+/* display:block+overflow-x:auto used to live directly on `table`, but that
+   strips the table role from the accessibility tree and gives no keyboard
+   affordance for the horizontal scroll. rehypeTableScroll wraps every table
+   in .table-scroll (tabindex="0" role="region"); the scroll behaviour moves
+   here, onto the wrapper, so `table` keeps its native display and semantics. */
 table {
-  display: block;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
   border-collapse: collapse;
   margin: 1.5rem 0 2rem;
   font: 400 .875rem/1.55 var(--sans);
+}
+
+.table-scroll {
+  display: block;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
   scrollbar-color: var(--rule-strong) transparent;
+}
+.table-scroll:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
 }
 
 th {
