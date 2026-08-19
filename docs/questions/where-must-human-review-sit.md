@@ -52,6 +52,10 @@ tiered/sampled review rather than more gates.
 - [anthropic-trends-2026](../../sources.md#anthropic-trends-2026) —
   role shift from writing code to orchestrating agents (directional; survey
   methodology undisclosed).
+- [apostolou-2026](../../sources.md#apostolou-2026) — field corroboration
+  from the adoption side: across twelve companies, the named blocker to
+  production agent use is absent output verification (the
+  capability–deployment verification gap). The gate is the scarce resource.
 
 ## What would change my mind
 

@@ -92,9 +92,23 @@ dip as tuition, not failure — it decomposes into a learning curve, a
 verification tax, and pipeline adaptation.
 → [why, and what would change this](questions/does-ai-adoption-improve-delivery.md)
 
+## Hand-write context files; expect efficiency, not correctness
+
+The evidence on AGENTS.md-style files splits cleanly. For task success:
+the best study is a null — no improvement across agents and models, over
+20% added inference cost, and LLM-generated files mildly *hurt*. For
+efficiency: paired runs show real savings (−29% median runtime, −17%
+output tokens) with correctness explicitly unevaluated. Both studies point
+at the same practice: if you keep one, hand-write it, keep it minimal and
+requirement-focused, never auto-generate it — and buy cheaper runs, not
+better ones. The rot half of the question has no data at all yet.
+→ [why, and what would change this](questions/do-context-files-pay-off.md)
+
 ## No position yet
 
-- Multi-agent orchestration topologies — which coordination patterns
-  survive production.
-- Where AGENTS.md-style context files pay off vs. rot.
-- What agent-era observability and incident response look like.
+- Multi-agent orchestration topologies — production deployment looks far
+  thinner than the discourse, and verification-gated.
+  → [open note](questions/multi-agent-orchestration-in-production.md)
+- Agent-era observability — telemetry is standardizing, judgment is not;
+  incident practice is unstudied.
+  → [open note](questions/agent-era-observability.md)
