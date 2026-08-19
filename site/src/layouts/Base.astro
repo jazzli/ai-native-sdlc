@@ -1,7 +1,5 @@
 ---
-// Inlined verbatim: every page is a single request, no external resource of
-// any kind. (astro.config.ts owns build settings, so the inline happens here.)
-import css from '../styles/global.css?raw';
+import '../styles/global.css';
 interface Props { title: string; description?: string; mdHref?: string; variant?: string }
 const { title, description, mdHref, variant } = Astro.props;
 const base = import.meta.env.BASE_URL;
@@ -17,7 +15,6 @@ const isPositions = path === `${base}/` || path === base || on('positions') || o
     <meta name="color-scheme" content="light dark" />
     <title>{title} · AI-Native SDLC</title>
     {description && <meta name="description" content={description} />}
-    <style is:inline set:html={css}></style>
   </head>
   <body>
     <header class="masthead">
