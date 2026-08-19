@@ -90,6 +90,10 @@ Current honest set: Terminal-Bench, Aider Polyglot, SWE-bench Pro, SetupBench, S
 Two papers that explain why the headline numbers mislead:
 - <a id="benchmarks-position-2026"></a>[Position: Coding Benchmarks Are Misaligned with Agentic Software Engineering](https://arxiv.org/pdf/2606.17799)
 - <a id="utboost-2025"></a>[UTBoost: Rigorous Evaluation of Coding Agents on SWE-Bench](https://arxiv.org/pdf/2506.09289)
+  — Yu, Zhu, He, Kang. LLM-generated test augmentation (UTGenerator) exposes
+  345 erroneous patches scored as passing; **24.4% of SWE-bench Verified
+  leaderboard entries affected, 11 ranking changes** (40.9% of Lite, 18
+  ranking changes). The concrete evidence that leaderboard deltas are unsafe.
 
 ---
 
