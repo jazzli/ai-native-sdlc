@@ -1,24 +1,35 @@
 ---
-import '../styles/global.css';
-interface Props { title: string; description?: string; mdHref?: string }
-const { title, description, mdHref } = Astro.props;
+// Inlined verbatim: every page is a single request, no external resource of
+// any kind. (astro.config.ts owns build settings, so the inline happens here.)
+import css from '../styles/global.css?raw';
+interface Props { title: string; description?: string; mdHref?: string; variant?: string }
+const { title, description, mdHref, variant } = Astro.props;
 const base = import.meta.env.BASE_URL;
+const path = Astro.url.pathname;
+const on = (seg: string) => path === `${base}/${seg}/` || path.startsWith(`${base}/${seg}/`);
+const isPositions = path === `${base}/` || path === base || on('positions') || on('questions');
 ---
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
     <title>{title} · AI-Native SDLC</title>
     {description && <meta name="description" content={description} />}
+    <style is:inline set:html={css}></style>
   </head>
   <body>
-    <nav>
-      <a href={`${base}/`}>Positions</a>
-      <a href={`${base}/sources/`}>Sources</a>
-      <a href={`${base}/protocol/`}>Protocol</a>
-    </nav>
-    <main><slot /></main>
+    <header class="masthead">
+      <a class="wordmark" href={`${base}/`}>AI-Native SDLC</a>
+      <nav aria-label="Sections">
+        <a href={`${base}/`} aria-current={isPositions ? 'page' : undefined}>Positions</a>
+        <a href={`${base}/sources/`} aria-current={on('sources') ? 'page' : undefined}>Sources</a>
+        <a href={`${base}/protocol/`} aria-current={on('protocol') ? 'page' : undefined}>Protocol</a>
+      </nav>
+      <p class="strapline">Every position states what would overturn it.</p>
+    </header>
+    <main class={variant}><slot /></main>
     <footer>
       {mdHref && <a href={mdHref} class="md-link">View this page as markdown</a>}
     </footer>

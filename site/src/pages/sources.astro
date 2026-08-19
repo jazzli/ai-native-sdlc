@@ -6,6 +6,6 @@ if (!sources) throw new Error('sources singleton missing');
 const { Content } = await render(sources);
 const base = import.meta.env.BASE_URL;
 ---
-<Base title="Source Map" description="Tiered, filter-stated, primary-verified sources for AI-native software development." mdHref={`${base}/sources.md`}>
+<Base title="Source Map" description="Tiered, filter-stated, primary-verified sources for AI-native software development." mdHref={`${base}/sources.md`} variant="wide">
   <Content />
 </Base>
