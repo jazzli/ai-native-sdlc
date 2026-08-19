@@ -32,8 +32,9 @@ one-line fixes.
 ## Evidence
 
 - [sdd-2026](../../sources.md#sdd-2026) — consolidation across GitHub Spec
-  Kit, AWS Kiro, OpenSpec, BMAD, Tessl; the GitHub internal rework claim; the
-  From Prompt to Process taxonomy.
+  Kit, AWS Kiro, OpenSpec, BMAD, Tessl; the From Prompt to Process taxonomy.
+  Carries no efficacy statistics — its own guidance is to read the primary
+  repos, not the roundup blogs where the rework figure circulates.
 - [bhati-2026-asdlc](../../sources.md#bhati-2026-asdlc) — 13.6–55.8% time
   savings across controlled studies of agentic coding generally (not SDD
   specifically; upper bound context only).
