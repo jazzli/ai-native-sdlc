@@ -1,7 +1,7 @@
 ---
 title: What must be true of a team before agentic adoption amplifies rather than degrades?
 status: working-answer
-updated: 2026-08-19
+updated: 2026-08-20
 ---
 ## Question
 
@@ -31,6 +31,16 @@ displace them. A team without these that scales agent usage gets more code
 through broken gates, faster: amplified dysfunction, and the deep end of the
 ROI J-curve with no climb out.
 
+The 2025 report sharpens this two ways. Adaptation is visible in the data:
+between 2024 and 2025, AI's relationship with throughput and with valuable
+time flipped negative→positive — while delivery instability stayed elevated,
+and DORA warns its downstream effects "can ultimately negate any perceived
+gains in throughput." The residual constraint is exactly the systems half.
+And the base rates are sobering: cluster analysis puts 20% of teams in the
+harmonious high-achiever archetype against 38% across the three struggling
+ones (foundational challenges 10%, legacy bottleneck 11%, constrained by
+process 17%) — most teams are at or below the bar this note describes.
+
 Teams below the bar should cap agents at individual-assist level while
 fixing foundations. That agents themselves are the highest-leverage tool
 for fixing those foundations — test debt, CI speed — is this note's
@@ -38,12 +48,16 @@ inference; no cited source makes the claim.
 
 ## Evidence
 
-- [dora-2025](../../sources.md#dora-2025) — amplifier thesis; ~5,000
-  respondents, 100+ hours of interviews.
+- [dora-2025](../../sources.md#dora-2025) — amplifier thesis; nearly 5,000
+  respondents, 100+ hours of qualitative data. Deep-read 2026-08-20: the
+  2024→2025 sign flips with instability still elevated; the seven archetype
+  base rates; platform quality amplifying AI's effect (adoption 90%,
+  dedicated teams 76%); VSM named a force multiplier.
 - [dora-capabilities-2025](../../sources.md#dora-capabilities-2025) — the
   seven capabilities as DORA names them.
 - [dora-roi-2026](../../sources.md#dora-roi-2026) — J-curve of value
-  realization; process redesign as the gating factor.
+  realization; process redesign as the gating factor. The dip decomposes
+  into the learning curve, the verification tax, and pipeline adaptation.
 - [atlassian-2026](../../sources.md#atlassian-2026) — 19% more merged PRs
   per repo, propensity-matched across 3,400 repos at 2,500 customers; 2–3
   hrs/dev/week extrapolated from a survey of Atlassian's own developers. The
