@@ -134,6 +134,8 @@ Two papers that explain why the headline numbers mislead:
 
 **Quarterly (full re-rank)**
 - Re-verify every link resolves.
+- Re-read each entry's own gloss against its primary source — not against the
+  notes citing it ([protocol](docs/protocol.md) Rule 5).
 - Re-apply the [signal filter](#signal-filter) to every entry; drop what no longer clears it.
 - Update `Last full review` above.
 
