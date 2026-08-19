@@ -38,9 +38,10 @@ inference; no cited source makes the claim.
   seven capabilities as DORA names them.
 - [dora-roi-2026](../../sources.md#dora-roi-2026) — J-curve of value
   realization; process redesign as the gating factor.
-- [atlassian-2026](../../sources.md#atlassian-2026) — gains reported by an
-  org with strong existing foundations (19% more PRs, 2–3 hrs/dev/week);
-  consistent with, not proof of, the thesis.
+- [atlassian-2026](../../sources.md#atlassian-2026) — 19% more PRs, 2–3
+  hrs/dev/week. Weak support: the post reports outcomes without
+  characterising the org's prior engineering maturity, so it cannot
+  establish that foundations caused the gains.
 - [forrester-2026](../../sources.md#forrester-2026) — orchestrated-SDLC
   framing; adoption staging toward end-to-end automation.
 
