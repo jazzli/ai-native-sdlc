@@ -32,7 +32,7 @@ a scheduled falsifier watch.
 - **Fails closed**: throws if the heading is missing, the table is empty,
   or any row lacks a valid date — a malformed log must fail the build.
 - Tests (`site/tests/review-log.test.ts`): parses real `sources.md`
-  (≥ 8 entries today); synthetic cases for missing heading, empty table,
+  (≥ 7 entries today); synthetic cases for missing heading, empty table,
   bad date; order preservation.
 
 ### 2. `/changelog` page — `site/src/pages/changelog.astro`
@@ -76,7 +76,8 @@ a scheduled falsifier watch.
 - Parser failure fails the build (site-build gate).
 - `site/tests/` gains review-log tests; the llms.txt/nav changes are
   covered by build greps in the plan's verification steps.
-- lychee checks the new page's links; feed XML validity asserted by a test
+- the page's internal links are enforced at build time by the link-rewrite
+  transform (lychee does not scan .astro files); feed XML validity asserted by a test
   parsing the built output (well-formedness via a strict XML parse).
 
 ## Out of scope
