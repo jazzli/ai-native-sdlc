@@ -47,20 +47,67 @@ export function entryAnchor(e: LogEntry): string {
   return `e-${hash}`;
 }
 
-export function entryTitle(e: LogEntry): string {
-  // Strip markdown formatting: remove **, *, backticks, collapse [text](url) to text.
-  const text = e.markdown
-    .replace(/\*\*(.+?)\*\*/g, '$1') // bold
-    .replace(/\*(.+?)\*/g, '$1') // italic
-    .replace(/`(.+?)`/g, '$1') // code
-    .replace(/\[(.+?)\]\(.+?\)/g, '$1'); // links
+// Sentinel used to park code-span contents while other stripping passes
+// run, so a span like `arr[i](x)` survives with its brackets intact instead
+// of being reinterpreted as a link. Private-Use-Area code point: safe
+// against collision with real review-log prose.
+const SPAN_MARK = '';
 
-  // Truncate to 80 code points safely (no split surrogates).
+export function entryTitle(e: LogEntry): string {
+  let text = e.markdown;
+
+  // Code spans go first, and their contents are parked behind the sentinel
+  // above so nothing later (links, emphasis) can reinterpret punctuation
+  // inside them.
+  const codeSpans: string[] = [];
+  text = text.replace(/`([^`]+)`/g, (_, inner: string) => {
+    codeSpans.push(inner);
+    return `${SPAN_MARK}${codeSpans.length - 1}${SPAN_MARK}`;
+  });
+
+  // Images: ![alt](url) -> alt. Must run before link-stripping, since the
+  // link pattern would otherwise match the trailing [alt](url) and leave a
+  // stray "!" behind.
+  text = text.replace(/!\[(.*?)\]\(.*?\)/g, '$1');
+
+  // Links: [text](url) -> text.
+  text = text.replace(/\[(.+?)\]\(.+?\)/g, '$1');
+
+  // Emphasis: only strip a marker run when it is a genuine paired
+  // delimiter — hugging non-space text on both sides. A lone "*" between
+  // spaces (e.g. "a * b") never satisfies this, so it's left alone.
+  text = text.replace(/\*\*(\S(?:.*?\S)?)\*\*/g, '$1'); // bold
+  text = text.replace(/\*(\S(?:.*?\S)?)\*/g, '$1'); // italic
+
+  // Unescape a literal escaped asterisk.
+  text = text.replace(/\\\*/g, '*');
+
+  // Restore protected code span text, brackets and all.
+  text = text.replace(
+    new RegExp(`${SPAN_MARK}(\\d+)${SPAN_MARK}`, 'g'),
+    (_, i: string) => codeSpans[Number(i)],
+  );
+
+  text = text.trim();
+
+  // Truncate to 80 code points safely (no split surrogates), breaking at
+  // the last word boundary at-or-before the limit so titles never end
+  // mid-word.
   const codePoints = Array.from(text);
-  if (codePoints.length > 80) {
-    return codePoints.slice(0, 80).join('');
+  if (codePoints.length <= 80) return text;
+
+  let truncated = codePoints.slice(0, 80).join('');
+  // Only back up to the previous word boundary if the cut actually lands
+  // mid-word — i.e. the very next character continues the same word. If
+  // the 80th character is already a word's last, or is followed by
+  // whitespace, the slice is already clean and keeping it preserves the
+  // full final word instead of dropping it unnecessarily.
+  const nextChar = codePoints[80];
+  if (nextChar !== undefined && !/\s/.test(nextChar)) {
+    const lastSpace = truncated.lastIndexOf(' ');
+    if (lastSpace !== -1) truncated = truncated.slice(0, lastSpace);
   }
-  return text;
+  return truncated.trimEnd() + '…';
 }
 
 const escapeXml = (s: string) =>

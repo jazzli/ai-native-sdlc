@@ -20,7 +20,7 @@ const dates = [...new Set(entries.map((e) => e.date))];
   description="What changed, when — generated from the source registry's own review log."
 >
   <h1>Changelog</h1>
-  <p class="meta">
+  <p>
     Generated from the registry's
     <a href={`${base}/sources/#review-log`}>review log</a> — the same record the research
     protocol maintains. Subscribe:
@@ -28,7 +28,7 @@ const dates = [...new Set(entries.map((e) => e.date))];
   </p>
   {
     dates.map((date) => (
-      <section>
+      <>
         <h2>{date}</h2>
         <ul>
           {entries
@@ -37,7 +37,7 @@ const dates = [...new Set(entries.map((e) => e.date))];
               <li id={e.anchor} set:html={e.html} />
             ))}
         </ul>
-      </section>
+      </>
     ))
   }
 </Base>

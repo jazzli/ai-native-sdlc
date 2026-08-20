@@ -540,6 +540,11 @@ tr:has(a[id]:target) td {
   border-color: var(--rule-strong);
 }
 
+/* Changelog entries arriving via a feed permalink get the same highlight. */
+li[id]:target {
+  background: var(--target-bg);
+}
+
 /* --- Footer --------------------------------------------------------------- */
 footer {
   max-width: var(--measure);
@@ -556,6 +561,14 @@ footer a {
 }
 footer a:hover {
   color: var(--accent);
+}
+/* Pages with no markdown source (changelog, 404) render a footer with
+   nothing but whitespace in it — Astro's compiled output isn't truly empty,
+   so :empty won't match. Key off the one thing that would ever put content
+   there (the markdown-source link) instead. */
+footer:not(:has(a)) {
+  display: none;
+  border: 0;
 }
 
 /* --- Motion --------------------------------------------------------------- */

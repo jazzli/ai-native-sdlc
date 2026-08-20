@@ -42,8 +42,47 @@ describe('entryTitle', () => {
       date: '2026-08-20',
       markdown: emojiHeavy,
     });
-    expect(Array.from(title).length).toBeLessThanOrEqual(80);
+    expect(Array.from(title).length).toBeLessThanOrEqual(81); // 80 + the ellipsis
     expect(!/[\uD800-\uDBFF]$/.test(title)).toBe(true);
+  });
+
+  it('truncates over-length titles at the last word boundary with an ellipsis', () => {
+    // 75 'a's, a space, then 20 'b's: the 80-code-point cutoff lands inside
+    // the run of 'b's, so the result must back up to the space and drop
+    // the partial word rather than keep "...bbbb".
+    const markdown = 'a'.repeat(75) + ' ' + 'b'.repeat(20);
+    const title = entryTitle({ date: '2026-08-20', markdown });
+    expect(title).toBe('a'.repeat(75) + '…');
+  });
+
+  it('does not drop a final word that already ends exactly at the limit', () => {
+    const words = Array(9).fill('elephant').join(' '); // exactly 80 code points
+    const title = entryTitle({
+      date: '2026-08-20',
+      markdown: words + ' more text after the boundary',
+    });
+    expect(title).toBe(words + '…');
+  });
+
+  it('keeps code-span contents, brackets included, out of link-stripping', () => {
+    const title = entryTitle({
+      date: '2026-08-20',
+      markdown: 'See `arr[i](x)` for details',
+    });
+    expect(title).toBe('See arr[i](x) for details');
+  });
+
+  it('converts image syntax to its alt text', () => {
+    const title = entryTitle({
+      date: '2026-08-20',
+      markdown: '![chart](https://example.com/u.png)',
+    });
+    expect(title).toBe('chart');
+  });
+
+  it('leaves a lone asterisk between spaces untouched', () => {
+    const title = entryTitle({ date: '2026-08-20', markdown: 'a * b' });
+    expect(title).toBe('a * b');
   });
 });
 
