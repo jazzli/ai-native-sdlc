@@ -46,7 +46,10 @@ function run(tree: Root): void {
 
 describe('rehypeTableScroll', () => {
   it('wraps a table in a focusable, labelled region using the preceding heading', () => {
-    const tree: Root = { type: 'root', children: [h2('Source registry'), table(3)] };
+    const tree: Root = {
+      type: 'root',
+      children: [h2('Source registry'), table(3)],
+    };
     run(tree);
 
     expect(tree.children).toHaveLength(2);

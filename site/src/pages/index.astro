@@ -6,11 +6,19 @@ if (!playbook) throw new Error('playbook singleton missing');
 const { Content } = await render(playbook);
 const base = import.meta.env.BASE_URL;
 ---
-<Base title="Playbook" description="Evidence-tiered positions on AI-native software development, each stating what would change it." mdHref={`${base}/index.md`} variant="playbook">
+
+<Base
+  title="Playbook"
+  description="Evidence-tiered positions on AI-native software development, each stating what would change it."
+  mdHref={`${base}/index.md`}
+  variant="playbook"
+>
   <Content />
   <p class="colophon">
     Every position above traces to a question note, a
     <a href={`${base}/sources/`}>primary-verified source registry</a>, and a
-    stated falsifier. How that works: <a href={`${base}/protocol/`}>the protocol</a>.
+    stated falsifier. How that works: <a href={`${base}/protocol/`}
+      >the protocol</a
+    >.
   </p>
 </Base>

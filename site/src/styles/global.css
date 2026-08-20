@@ -12,18 +12,21 @@
 
 /* --- Faces, measure, rhythm (scheme-independent) ------------------------- */
 html {
-  --serif: Charter, "Bitstream Charter", "Iowan Old Style", "Source Serif 4",
-           ui-serif, Georgia, "Times New Roman", serif;
-  --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI Variable Display",
-          "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, "Cascadia Mono",
-          "Roboto Mono", Consolas, monospace;
+  --serif:
+    Charter, 'Bitstream Charter', 'Iowan Old Style', 'Source Serif 4', ui-serif,
+    Georgia, 'Times New Roman', serif;
+  --sans:
+    ui-sans-serif, system-ui, -apple-system, 'Segoe UI Variable Display',
+    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --mono:
+    ui-monospace, 'SF Mono', SFMono-Regular, Menlo, 'Cascadia Mono',
+    'Roboto Mono', Consolas, monospace;
 
   --pad: clamp(1.15rem, 5vw, 3rem);
   --measure: 34rem;
   --measure-wide: 68rem;
-  --label: .72rem;
-  --label-track: .11em;
+  --label: 0.72rem;
+  --label-track: 0.11em;
 }
 
 /* --- Light ---------------------------------------------------------------- */
@@ -81,7 +84,11 @@ html {
 }
 
 /* --- Ground --------------------------------------------------------------- */
-*, *::before, *::after { box-sizing: border-box; }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
@@ -94,7 +101,10 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-::selection { background: var(--select-bg); color: var(--select-fg); }
+::selection {
+  background: var(--select-bg);
+  color: var(--select-fg);
+}
 
 :focus-visible {
   outline: 2px solid var(--accent);
@@ -102,17 +112,19 @@ body {
   border-radius: 1px;
 }
 
-[id] { scroll-margin-top: 2.5rem; }
+[id] {
+  scroll-margin-top: 2.5rem;
+}
 
 /* --- Masthead ------------------------------------------------------------- */
 .masthead {
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: baseline;
-  gap: .35rem 1.75rem;
+  gap: 0.35rem 1.75rem;
   max-width: var(--measure);
   margin: 0 auto 3.5rem;
-  padding-bottom: .8rem;
+  padding-bottom: 0.8rem;
   border-bottom: 1px solid var(--rule-strong);
 }
 
@@ -124,21 +136,25 @@ body {
   text-decoration: none;
   white-space: nowrap;
 }
-.wordmark:hover { color: var(--accent); }
+.wordmark:hover {
+  color: var(--accent);
+}
 
 .masthead nav {
   display: flex;
   gap: 1.1rem;
-  font: 400 .875rem/1 var(--sans);
+  font: 400 0.875rem/1 var(--sans);
 }
 .masthead nav a {
   color: var(--ink-faint);
   text-decoration: none;
-  padding-bottom: .15rem;
+  padding-bottom: 0.15rem;
   border-bottom: 1px solid transparent;
 }
-.masthead nav a:hover { color: var(--accent); }
-.masthead nav a[aria-current="page"] {
+.masthead nav a:hover {
+  color: var(--accent);
+}
+.masthead nav a[aria-current='page'] {
   color: var(--ink);
   border-bottom-color: var(--accent);
 }
@@ -146,13 +162,19 @@ body {
 .strapline {
   grid-column: 1 / -1;
   margin: 0;
-  font: italic 400 .95rem/1.4 var(--serif);
+  font: italic 400 0.95rem/1.4 var(--serif);
   color: var(--ink-faint);
 }
 
 @media (max-width: 32rem) {
-  .masthead { grid-template-columns: 1fr; gap: .6rem; }
-  .masthead nav { flex-wrap: wrap; gap: .9rem; }
+  .masthead {
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+  }
+  .masthead nav {
+    flex-wrap: wrap;
+    gap: 0.9rem;
+  }
 }
 
 /* --- Column --------------------------------------------------------------- */
@@ -161,35 +183,53 @@ main {
   margin: 0 auto;
 }
 
-main.wide { max-width: var(--measure-wide); }
-main.wide > * { max-width: var(--measure); margin-inline: auto; }
+main.wide {
+  max-width: var(--measure-wide);
+}
+main.wide > * {
+  max-width: var(--measure);
+  margin-inline: auto;
+}
 /* The registry table is wrapped in .table-scroll (rehypeTableScroll), so the
    wide-table guard now targets the wrapper, not the table itself. */
-main.wide > .table-scroll:has(table:has(th:nth-child(3))) { max-width: none; width: 100%; }
+main.wide > .table-scroll:has(table:has(th:nth-child(3))) {
+  max-width: none;
+  width: 100%;
+}
 
 /* --- Prose ---------------------------------------------------------------- */
-p, li { text-wrap: pretty; overflow-wrap: break-word; }
-p { margin: 0 0 1.15em; }
+p,
+li {
+  text-wrap: pretty;
+  overflow-wrap: break-word;
+}
+p {
+  margin: 0 0 1.15em;
+}
 
-h1, h2, h3 { text-wrap: balance; }
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
 
 /* Page titles on document pages are labels; the sections are the content. */
 main > h1 {
   margin: 0 0 1rem;
   font: 600 1.3rem/1.25 var(--sans);
-  letter-spacing: -.01em;
+  letter-spacing: -0.01em;
   color: var(--ink);
 }
 
 main > h2 {
-  margin: 2.9rem 0 .85rem;
+  margin: 2.9rem 0 0.85rem;
   font: 600 1.15rem/1.3 var(--sans);
-  letter-spacing: -.008em;
+  letter-spacing: -0.008em;
   color: var(--ink);
 }
 
 main > h3 {
-  margin: 2rem 0 .6rem;
+  margin: 2rem 0 0.6rem;
   font: 600 1rem/1.35 var(--sans);
   color: var(--ink);
 }
@@ -199,23 +239,30 @@ a {
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-decoration-color: var(--link-underline);
-  text-underline-offset: .16em;
+  text-underline-offset: 0.16em;
 }
 a:hover {
   color: var(--accent-hover);
   text-decoration-color: currentColor;
 }
 
-strong { font-weight: 650; color: var(--ink); }
-em { font-style: italic; }
+strong {
+  font-weight: 650;
+  color: var(--ink);
+}
+em {
+  font-style: italic;
+}
 
 code {
-  font: 400 .84em/1.5 var(--mono);
+  font: 400 0.84em/1.5 var(--mono);
   background: var(--code-bg);
-  padding: .1em .32em;
+  padding: 0.1em 0.32em;
   border-radius: 2px;
 }
-a code { color: inherit; }
+a code {
+  color: inherit;
+}
 
 pre {
   background: var(--code-bg);
@@ -223,7 +270,10 @@ pre {
   overflow-x: auto;
   border-left: 2px solid var(--rule-strong);
 }
-pre code { background: none; padding: 0; }
+pre code {
+  background: none;
+  padding: 0;
+}
 
 blockquote {
   margin: 1.6rem 0;
@@ -238,10 +288,21 @@ hr {
   margin: 3.25rem 0 1.5rem;
 }
 
-ul, ol { padding-left: 1.35rem; margin: 0 0 1.15em; }
-li { margin-bottom: .5em; }
-li::marker { color: var(--ink-faint); }
-ol > li::marker { font-family: var(--mono); font-size: .85em; }
+ul,
+ol {
+  padding-left: 1.35rem;
+  margin: 0 0 1.15em;
+}
+li {
+  margin-bottom: 0.5em;
+}
+li::marker {
+  color: var(--ink-faint);
+}
+ol > li::marker {
+  font-family: var(--mono);
+  font-size: 0.85em;
+}
 
 /* --- The playbook: position statements are the spine --------------------- */
 main.playbook > h1 + p {
@@ -254,24 +315,26 @@ main.playbook > h2 {
   position: relative;
   margin: 4.25rem 0 1.05rem;
   font: 600 clamp(1.6rem, 1.1rem + 2.3vw, 2.1rem)/1.14 var(--sans);
-  letter-spacing: -.022em;
+  letter-spacing: -0.022em;
   color: var(--ink);
 }
 
 /* A held position carries a spine mark in the gutter; an open one does not. */
 @media (min-width: 46rem) {
   main.playbook > h2:has(+ p)::before {
-    content: "";
+    content: '';
     position: absolute;
     left: -1.5rem;
-    top: .3em;
-    bottom: .12em;
+    top: 0.3em;
+    bottom: 0.12em;
     width: 2px;
     background: var(--accent);
   }
 }
 
-main.playbook > h2:has(+ ul) { color: var(--ink-soft); }
+main.playbook > h2:has(+ ul) {
+  color: var(--ink-soft);
+}
 
 /* Open questions: a register, not a bullet list. */
 main.playbook > h2 + ul {
@@ -282,29 +345,31 @@ main.playbook > h2 + ul {
 }
 main.playbook > h2 + ul > li {
   margin: 0;
-  padding: .95rem .25rem;
+  padding: 0.95rem 0.25rem;
   border-bottom: 1px solid var(--rule);
-  font-size: .97rem;
+  font-size: 0.97rem;
   color: var(--ink-soft);
 }
 
 .colophon {
   margin-top: 2.75rem;
-  font: 400 .875rem/1.6 var(--sans);
+  font: 400 0.875rem/1.6 var(--sans);
   color: var(--ink-faint);
 }
 
 /* --- Note pages ----------------------------------------------------------- */
-.note { margin: 0; }
+.note {
+  margin: 0;
+}
 
 /* Status and date sit above the title block on every note. */
 .note .meta {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: .5rem .95rem;
+  gap: 0.5rem 0.95rem;
   margin: 0 0 1.15rem;
-  padding-bottom: .7rem;
+  padding-bottom: 0.7rem;
   border-bottom: 1px solid var(--rule);
   font: 500 var(--label)/1.4 var(--mono);
   letter-spacing: var(--label-track);
@@ -315,39 +380,49 @@ main.playbook > h2 + ul > li {
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: .48rem;
+  gap: 0.48rem;
   font-weight: 600;
   color: var(--badge-parked);
 }
 .badge::before {
-  content: "";
-  width: .5rem;
-  height: .5rem;
+  content: '';
+  width: 0.5rem;
+  height: 0.5rem;
   border: 1.5px solid currentColor;
   background: transparent;
 }
-.badge.working-answer { color: var(--badge-working); }
-.badge.working-answer::before { background: currentColor; }
-.badge.open { color: var(--badge-open); }
-.badge.parked { color: var(--badge-parked); }
+.badge.working-answer {
+  color: var(--badge-working);
+}
+.badge.working-answer::before {
+  background: currentColor;
+}
+.badge.open {
+  color: var(--badge-open);
+}
+.badge.parked {
+  color: var(--badge-parked);
+}
 
 .note h1 {
   margin: 0 0 2.4rem;
   font: 600 clamp(1.5rem, 1.15rem + 1.7vw, 1.95rem)/1.2 var(--sans);
-  letter-spacing: -.021em;
+  letter-spacing: -0.021em;
   color: var(--ink);
 }
 
 /* Notes follow a fixed schema; their headings are field labels, not titles. */
 .note h2 {
-  margin: 2.7rem 0 .85rem;
+  margin: 2.7rem 0 0.85rem;
   font: 600 var(--label)/1.4 var(--mono);
   letter-spacing: var(--label-track);
   text-transform: uppercase;
   color: var(--ink-faint);
 }
 
-.note ul { padding-left: 1.15rem; }
+.note ul {
+  padding-left: 1.15rem;
+}
 
 /* --- The falsifier: the one inverted object ------------------------------ */
 aside.falsifier {
@@ -360,10 +435,10 @@ aside.falsifier {
 
 aside.falsifier h2 {
   margin: 0 0 1.1rem;
-  padding-bottom: .8rem;
+  padding-bottom: 0.8rem;
   border-bottom: 1px solid var(--slab-rule);
-  font: 600 .8rem/1.4 var(--sans);
-  letter-spacing: .14em;
+  font: 600 0.8rem/1.4 var(--sans);
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--slab-accent);
 }
@@ -375,20 +450,32 @@ aside.falsifier ul {
 }
 aside.falsifier li {
   margin: 0;
-  padding: .95rem 0;
+  padding: 0.95rem 0;
   font-size: 1.02rem;
   line-height: 1.55;
   color: var(--slab-fg);
 }
-aside.falsifier li + li { border-top: 1px solid var(--slab-rule); }
-aside.falsifier p { color: var(--slab-soft); }
+aside.falsifier li + li {
+  border-top: 1px solid var(--slab-rule);
+}
+aside.falsifier p {
+  color: var(--slab-soft);
+}
 aside.falsifier a {
   color: var(--slab-accent);
   text-decoration-color: var(--slab-rule);
 }
-aside.falsifier a:hover { color: var(--slab-fg); text-decoration-color: currentColor; }
-aside.falsifier code { background: var(--slab-rule); color: var(--slab-fg); }
-aside.falsifier :focus-visible { outline-color: var(--slab-accent); }
+aside.falsifier a:hover {
+  color: var(--slab-fg);
+  text-decoration-color: currentColor;
+}
+aside.falsifier code {
+  background: var(--slab-rule);
+  color: var(--slab-fg);
+}
+aside.falsifier :focus-visible {
+  outline-color: var(--slab-accent);
+}
 
 /* --- The registry table --------------------------------------------------- */
 /* display:block+overflow-x:auto used to live directly on `table`, but that
@@ -399,7 +486,7 @@ aside.falsifier :focus-visible { outline-color: var(--slab-accent); }
 table {
   border-collapse: collapse;
   margin: 1.5rem 0 2rem;
-  font: 400 .875rem/1.55 var(--sans);
+  font: 400 0.875rem/1.55 var(--sans);
 }
 
 .table-scroll {
@@ -420,31 +507,44 @@ th {
   color: var(--ink-faint);
   text-align: left;
   vertical-align: bottom;
-  padding: 0 1rem .55rem 0;
+  padding: 0 1rem 0.55rem 0;
   border-bottom: 1px solid var(--rule-strong);
 }
 
 td {
   vertical-align: top;
-  padding: .85rem 1rem .85rem 0;
+  padding: 0.85rem 1rem 0.85rem 0;
   border-bottom: 1px solid var(--rule);
   overflow-wrap: anywhere;
 }
-th:last-child, td:last-child { padding-right: 0; }
+th:last-child,
+td:last-child {
+  padding-right: 0;
+}
 
-table:has(th:nth-child(3)) td:nth-child(1) { min-width: 10rem; }
-table:has(th:nth-child(3)) td:nth-child(2) { min-width: 14rem; }
-table:has(th:nth-child(3)) td:nth-child(3) { min-width: 16rem; }
+table:has(th:nth-child(3)) td:nth-child(1) {
+  min-width: 10rem;
+}
+table:has(th:nth-child(3)) td:nth-child(2) {
+  min-width: 14rem;
+}
+table:has(th:nth-child(3)) td:nth-child(3) {
+  min-width: 16rem;
+}
 
 /* Arriving from a citekey link highlights the entry it lands on. */
-tr:has(a[id]:target) { background: var(--target-bg); }
-tr:has(a[id]:target) td { border-color: var(--rule-strong); }
+tr:has(a[id]:target) {
+  background: var(--target-bg);
+}
+tr:has(a[id]:target) td {
+  border-color: var(--rule-strong);
+}
 
 /* --- Footer --------------------------------------------------------------- */
 footer {
   max-width: var(--measure);
   margin: 4.5rem auto 0;
-  padding-top: .8rem;
+  padding-top: 0.8rem;
   border-top: 1px solid var(--rule);
   font: 400 var(--label)/1.4 var(--mono);
   letter-spacing: var(--label-track);
@@ -454,9 +554,16 @@ footer a {
   color: var(--ink-faint);
   text-decoration: none;
 }
-footer a:hover { color: var(--accent); }
+footer a:hover {
+  color: var(--accent);
+}
 
 /* --- Motion --------------------------------------------------------------- */
 @media (prefers-reduced-motion: no-preference) {
-  a, .wordmark { transition: color 120ms ease, text-decoration-color 120ms ease; }
+  a,
+  .wordmark {
+    transition:
+      color 120ms ease,
+      text-decoration-color 120ms ease;
+  }
 }

@@ -32,7 +32,10 @@ export function rehypeFalsifier() {
     }
     let end = kids.length;
     for (let i = start + 1; i < kids.length; i++) {
-      if (isH2(kids[i])) { end = i; break; }
+      if (isH2(kids[i])) {
+        end = i;
+        break;
+      }
     }
     const aside: Element = {
       type: 'element',

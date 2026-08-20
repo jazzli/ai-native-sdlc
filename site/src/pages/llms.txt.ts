@@ -33,5 +33,7 @@ ${open.map(line).join('\n')}
 - [Source registry](${abs('/sources.md')}): tiered, filter-stated, primary-verified sources
 - [Research protocol](${abs('/protocol.md')}): the five rules governing this content
 `;
-  return new Response(body, { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+  return new Response(body, {
+    headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+  });
 };
