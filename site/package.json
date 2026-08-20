@@ -7,7 +7,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "astro sync && tsc --noEmit",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
