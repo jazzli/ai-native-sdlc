@@ -3,7 +3,11 @@ import { getCollection } from 'astro:content';
 import { SITE_ORIGIN, SITE_BASE } from '../lib/site-config';
 
 export const GET: APIRoute = async () => {
-  const notes = await getCollection('notes');
+  // Collection order is a loader implementation detail (it changed between
+  // Astro majors); sort by id so the listing is deterministic by construction.
+  const notes = (await getCollection('notes')).sort((a, b) =>
+    a.id < b.id ? -1 : a.id > b.id ? 1 : 0,
+  );
   const abs = (p: string) => `${SITE_ORIGIN}${SITE_BASE}${p}`;
   const line = (n: (typeof notes)[number]) => {
     const kind = n.data.status === 'working-answer' ? 'positions' : 'questions';
