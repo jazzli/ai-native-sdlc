@@ -8,6 +8,12 @@ updates:
     groups:
       all-npm:
         patterns: ["*"]
+    ignore:
+      # TypeScript 7 (the native-compiler major) is not yet accepted as a
+      # peer by typescript-eslint; the grouped bump produced an unresolvable
+      # tree. Revisit when typescript-eslint declares TS 7 support.
+      - dependency-name: typescript
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: github-actions
     directory: /
     schedule:
