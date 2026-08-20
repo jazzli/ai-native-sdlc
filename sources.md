@@ -47,6 +47,7 @@ read it before citing a figure.
 | <a id="gloaguen-2026"></a>[Evaluating AGENTS.md: Are Repository-Level Context Files Helpful for Coding Agents?](https://www.sri.inf.ethz.ch/publications/gloaguen2026agentsmd) (ETH SRI; MemAgents @ ICLR 2026 — oral, runner-up best paper) | Across multiple agents and LLMs: context files give **no task-success improvement** and **+20% inference cost**; LLM-generated files mildly reduce success; agents do respect the file's instructions; both file types push broader exploration | Recommendation from the authors: minimal, requirement-focused, human-written files. **Filter:** passes all three — methodology published (two settings: SWE-bench with LLM-generated files; novel issues with developer-provided files), null result is the headline, primary. Verified at publication page 2026-08-20 |
 | <a id="lulla-2026"></a>[On the Impact of AGENTS.md Files on the Efficiency of AI Coding Agents](https://assets.empirical-software.engineering/pdf/jaws26-agents.md-efficiency.pdf) (Lulla, Zhang, Mohsenimofidi, Baltes) | Paired same-task runs, 10 repos / 124 PRs: with AGENTS.md, median runtime **−28.64%** and output tokens **−16.58%**, with "comparable task completion behavior" | **Filter:** methodology published (paired design, sample stated) ✓; honestly self-limited — states it is *not* a correctness evaluation ✓; primary ✓. Efficiency evidence only — never cite it for quality effects. Verified at PDF 2026-08-20 |
 | <a id="apostolou-2026"></a>[Agentic AI in Industry: Adoption Level and Deployment Barriers](https://arxiv.org/abs/2605.14675) (Apostolou, Bosch, Holmström Olsson) | 16 practitioners across 12 companies on a six-level maturity framework: 7 at L1 (AI assistants), 4 at L2, **1 at L3 (multi-agent orchestration)**. Names the capability–deployment **verification gap**: 4 companies hold higher-level experimental capabilities they cannot productionize because output verification mechanisms are absent | **Filter:** qualitative methodology stated (n=16/12) ✓; reports barriers, not wins ✓; primary ✓. Small n — treat as existence proof and direction, not as rates. Verified at abstract 2026-08-20 |
+| <a id="spracklen-2025"></a>[We Have a Package for You! A Comprehensive Analysis of Package Hallucinations by Code Generating LLMs](https://arxiv.org/abs/2406.10279) (Spracklen et al., USENIX Security 2025) | 576,000 code samples across 16 LLMs in two languages: hallucinated-package rates of **at least 5.2% (commercial) and 21.7% (open-source)**; 205,474 unique hallucinated names — the substrate of slopsquatting supply-chain attacks | **Filter:** passes all three — methodology published, the adverse finding is the content, primary. Figures verified at abstract 2026-08-20. The repeatability claim (43% of names recur on every rerun) is in the paper body, relayed here via secondaries — verify before citing it |
 
 ---
 
@@ -66,6 +67,17 @@ How people actually work, from people who actually ship.
   instead of the guide. **Filter:** primary; practitioner experience with no
   quantitative claims to misuse.
   Entry point: [Pragmatic Summit talk (~45 min)](https://www.youtube.com/watch?v=owmJyKVu5f8)
+
+- <a id="willison-trifecta-2025"></a>**[The lethal trifecta for AI agents](https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/)**
+  The injection-risk frame: an agent combining (1) access to private data,
+  (2) exposure to untrusted content, and (3) the ability to communicate
+  externally can be trivially induced to exfiltrate — because "LLMs follow
+  instructions in content." Mitigation is structural: never assemble all
+  three legs; guardrail products claiming near-perfect detection are not to
+  be relied on. Distinct from [willison-patterns](#willison-patterns) — the
+  trifecta lives in this standalone post, not the guide. **Filter:**
+  primary; practitioner analysis with no quantitative claims. Verified at
+  the post 2026-08-20
 
 - <a id="sdd-2026"></a>**Spec-driven development (SDD)**
   The methodology that consolidated in 2025–26 as the answer to vibe-coding drift:
@@ -187,6 +199,7 @@ If it passes none, it goes in Tier 5 or not at all.
 | Date | Action |
 | --- | --- |
 | 2026-08-19 | Initial compilation |
+| 2026-08-20 | Course-guide gap analysis (external syllabus as map, not source): security-of-agentic-development and mechanical-enforcement identified as missing aspects; spracklen-2025 and willison-trifecta-2025 admitted, both primary-verified; context-lifecycle management named as a known thin spot, not yet actioned |
 | 2026-08-20 | Open-questions pass: gloaguen-2026, lulla-2026, apostolou-2026, otel-genai admitted (all filter-stated, all primary-verified); three question notes seeded for the former no-position areas |
 | 2026-08-20 | Deep read of both DORA PDFs end-to-end: archetype base rates, 2024→2025 sign flips, VSM/platform multipliers, J-curve decomposition recorded; new question note on delivery impact seeded |
 | 2026-08-20 | Rule 5 sweep: all 18 entries verified against primaries or marked unverifiable; filter standing recorded on every entry; willison-patterns corrected (wrong link, wrong chapter count, two absent topics); DORA figures confirmed at both report PDFs |
