@@ -17,8 +17,10 @@
     "@astrojs/markdown-remark": "^7.2.4",
     "astro": "^7.2.4",
     "github-slugger": "^2.0.0",
+    "rehype-stringify": "^10.0.1",
     "remark": "^15.0.1",
     "remark-frontmatter": "^5.0.0",
+    "remark-rehype": "^11.1.2",
     "unist-util-visit": "^5.0.0"
   },
   "devDependencies": {
