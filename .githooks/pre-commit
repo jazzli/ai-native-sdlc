@@ -1,0 +1,14 @@
+#!/bin/sh
+# Lean pre-commit per the mechanical-enforcement position: encode the rules
+# the protocol already states. Enable once: git config core.hooksPath .githooks
+fail=0
+for f in docs/questions/*.md; do
+  [ "$(grep -c '^title:\|^status:\|^updated:' "$f")" = 3 ] || { echo "pre-commit: bad frontmatter (need exactly title/status/updated): $f"; fail=1; }
+  grep -q '^## What would change my mind' "$f" || { echo "pre-commit: missing falsifier section: $f"; fail=1; }
+done
+if command -v lychee >/dev/null 2>&1; then
+  lychee --config lychee.toml --offline --no-progress . >/dev/null 2>&1 || { echo "pre-commit: lychee --offline failed (broken internal link or anchor)"; fail=1; }
+else
+  echo "pre-commit note: lychee not installed; internal-link check deferred to CI"
+fi
+exit $fail

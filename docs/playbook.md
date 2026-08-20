@@ -104,6 +104,30 @@ requirement-focused, never auto-generate it — and buy cheaper runs, not
 better ones. The rot half of the question has no data at all yet.
 → [why, and what would change this](questions/do-context-files-pay-off.md)
 
+## Never assemble the lethal trifecta
+
+An agent with private-data access, untrusted-content exposure, and the
+ability to communicate externally can be trivially induced to exfiltrate —
+LLMs follow instructions in content, and detection-based guardrails are
+not to be relied on. The mitigation is structural: strip one leg. Alongside
+it, two more evidenced failure classes: verify that any package an agent
+suggests actually exists before installing (package hallucination runs
+5–22% and attackers register the names), and scope the agent's authority so
+a confused deputy has little to spend. The review gate doubles as the
+security boundary — that pairing is our inference, argued in the note.
+→ [why, and what would change this](questions/securing-agentic-development.md)
+
+## Encode rules as checks, not prose
+
+Agents follow written instructions — and it doesn't improve their success
+rate. What pays is machine-executable enforcement: types, linters, tests,
+hooks, build failures. DORA's compensations for the verification tax are
+all mechanical; the thing blocking production agent adoption in the field
+is missing verification, not missing instruction. Two disciplines keep it
+honest: checks must fail closed, and since agents can game checks, humans
+review the checks themselves.
+→ [why, and what would change this](questions/does-mechanical-enforcement-beat-instructions.md)
+
 ## No position yet
 
 - Multi-agent orchestration topologies — production deployment looks far
