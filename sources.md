@@ -109,6 +109,45 @@ How people actually work, from people who actually ship.
   and single-product, but it states design, sample, and comparison group —
   admitted on **published methodology**, not on being internal data.
 
+- <a id="openai-harness-2026"></a>**[Harness engineering: leveraging Codex in an agent-first world](https://openai.com/index/harness-engineering/)**
+  (OpenAI, Feb 2026.) Five-month experiment: an internal beta product of ~1M
+  lines with **zero manually-written code** — ~1,500 PRs, three→seven
+  engineers, ~3.5 PRs/engineer/day, hundreds of internal users. "Humans
+  steer. Agents execute." Named mechanisms: per-worktree bootable app
+  instances with agent-legible logs/metrics (LogQL/PromQL, Chrome DevTools
+  Protocol); repository as the system of record; **"one big AGENTS.md"
+  failed in predictable ways** — replaced by a ~100-line map with
+  progressive disclosure, enforced by linters, CI, and a doc-gardening
+  agent; review pushed almost entirely agent-to-agent, humans optional.
+  **Filter:** primary for its own practice; self-reported, no methodology,
+  bottlenecks acknowledged (human QA capacity) but no failure rates.
+  Verified at the post 2026-08-20
+
+- <a id="stripe-minions-2026"></a>**[Minions: Stripe's one-shot, end-to-end coding agents](https://stripe.dev/blog/minions-stripes-one-shot-end-to-end-coding-agents)**
+  (Stripe, 2026; [part 2](https://stripe.dev/blog/minions-stripes-one-shot-end-to-end-coding-agents-part-2).)
+  1,000+ fully minion-produced PRs merged weekly — "human-reviewed, they
+  contain no human-written code." Architecture: pre-warmed **devboxes**
+  (10-second spin-up, code and services pre-loaded); **Toolshed**, a central
+  server of 400+ MCP tools; a fork of Block's goose; the same lint/test
+  pipelines as human engineers (sub-5s local lint, CI capped at two rounds);
+  **mandatory human review before merge**. Admits imperfect runs are common
+  and often serve as starting points. **Filter:** primary for its own
+  practice; self-reported, no methodology or failure rates. Verified at the
+  post 2026-08-20
+
+- <a id="ramp-inspect-2026"></a>**[Why we built our own background agent](https://engineering.ramp.com/post/why-we-built-our-background-agent)**
+  (Ramp, 2026.) Inspect writes ~30% of merged PRs across frontend and
+  backend a couple of months after launch (secondary reporting places it
+  ~50% by Feb 2026 — unverified at primary). Architecture: Modal sandboxes
+  rebuilt every 30 minutes with the full local-equivalent environment
+  (Postgres, Temporal, Vite "the works"), OpenCode as the agent, wired into
+  Sentry/Datadog/LaunchDarkly/GitHub/Slack/Buildkite; closes its own loop —
+  runs tests, reads telemetry, **visually verifies frontend work** with
+  screenshots. Build-over-buy rationale: "it only has to work on your
+  code." **Filter:** primary for its own practice; self-reported, and
+  reports no limits at all — fails the null-results question hardest of the
+  three. Verified at the post 2026-08-20
+
 ---
 
 ## Tier 3 — Standards & specs
@@ -199,6 +238,7 @@ If it passes none, it goes in Tier 5 or not at all.
 | Date | Action |
 | --- | --- |
 | 2026-08-19 | Initial compilation |
+| 2026-08-20 | Harness pass: openai-harness-2026, stripe-minions-2026, ramp-inspect-2026 admitted (all primary-verified first-party accounts); harness note seeded; OpenAI's big-AGENTS.md failure added to the context-files note as corroboration |
 | 2026-08-20 | Course-guide gap analysis (external syllabus as map, not source): security-of-agentic-development and mechanical-enforcement identified as missing aspects; spracklen-2025 and willison-trifecta-2025 admitted, both primary-verified; context-lifecycle management named as a known thin spot, not yet actioned |
 | 2026-08-20 | Open-questions pass: gloaguen-2026, lulla-2026, apostolou-2026, otel-genai admitted (all filter-stated, all primary-verified); three question notes seeded for the former no-position areas |
 | 2026-08-20 | Deep read of both DORA PDFs end-to-end: archetype base rates, 2024→2025 sign flips, VSM/platform multipliers, J-curve decomposition recorded; new question note on delivery impact seeded |

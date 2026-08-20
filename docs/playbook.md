@@ -128,6 +128,21 @@ honest: checks must fail closed, and since agents can game checks, humans
 review the checks themselves.
 → [why, and what would change this](questions/does-mechanical-enforcement-beat-instructions.md)
 
+## Invest in the harness, not the model choice
+
+Where agents genuinely ship production code — OpenAI's zero-manual-code
+product, Stripe's thousand-plus agent PRs a week, Ramp's third of all
+merges — three first-party accounts converge on the same surround:
+pre-warmed full-environment sandboxes, verification the agent runs itself,
+curated tools, the repository as system of record, and a review loop.
+Model choice appears in none of them as the differentiator. These are
+self-reports, not measurements — and they disagree on exactly one thing
+this playbook cares about: Stripe keeps mandatory human review at merge
+while OpenAI has gone almost fully agent-to-agent. Which survives contact
+with incidents is open, and it is the standing test of our own
+review-gates position.
+→ [why, and what would change this](questions/what-makes-a-production-agent-harness.md)
+
 ## No position yet
 
 - Multi-agent orchestration topologies — production deployment looks far
