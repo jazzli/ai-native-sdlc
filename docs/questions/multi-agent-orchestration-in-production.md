@@ -37,6 +37,11 @@ nothing about runtime topology in production.
 - [anthropic-trends-2026](../../sources.md#anthropic-trends-2026) —
   vendor-directional: orchestration as the claimed role shift; methodology
   undisclosed.
+- Three first-party production accounts now exist — see
+  [what surrounds agents in production](what-makes-a-production-agent-harness.md)
+  — existence proofs of harness patterns at OpenAI, Stripe, and Ramp. They
+  describe *harness* convergence, not topology outcomes; this note's open
+  status stands.
 
 ## What would change my mind
 

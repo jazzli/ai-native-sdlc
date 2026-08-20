@@ -85,8 +85,8 @@ describe('against the real repository content', () => {
     anchors: extractAnchors('../sources.md'),
   };
 
-  it('buildStatusMap finds all 10 notes with valid statuses', () => {
-    expect(Object.keys(real.statusMap)).toHaveLength(10);
+  it('buildStatusMap finds all 11 notes with valid statuses', () => {
+    expect(Object.keys(real.statusMap)).toHaveLength(11);
     expect(real.statusMap['does-sdd-reduce-rework']).toBe('working-answer');
     expect(real.statusMap['agent-era-observability']).toBe('open');
   });

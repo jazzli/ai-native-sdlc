@@ -38,6 +38,11 @@ Expect cheaper runs, not better ones.
   a paired design, with correctness explicitly unevaluated.
 - [agents-md](../../sources.md#agents-md) — adoption scale and format
   context (60k+ repos; the spec itself).
+- [openai-harness-2026](../../sources.md#openai-harness-2026) — first-party
+  corroboration at scale: "one big AGENTS.md" failed in predictable ways
+  (context crowding, guidance dilution, instant rot, unverifiability) and
+  was replaced by a ~100-line map with progressive disclosure, kept honest
+  by linters and a doc-gardening agent.
 
 ## What would change my mind
 
