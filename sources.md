@@ -238,6 +238,7 @@ If it passes none, it goes in Tier 5 or not at all.
 | Date | Action |
 | --- | --- |
 | 2026-08-19 | Initial compilation |
+| 2026-08-20 | **Site launched**: repo public, Pages live at jazzli.github.io/ai-native-sdlc, first deploy green, required checks (site-build, linkChecker) active on main |
 | 2026-08-20 | Harness pass: openai-harness-2026, stripe-minions-2026, ramp-inspect-2026 admitted (all primary-verified first-party accounts); harness note seeded; OpenAI's big-AGENTS.md failure added to the context-files note as corroboration |
 | 2026-08-20 | Course-guide gap analysis (external syllabus as map, not source): security-of-agentic-development and mechanical-enforcement identified as missing aspects; spracklen-2025 and willison-trifecta-2025 admitted, both primary-verified; context-lifecycle management named as a known thin spot, not yet actioned |
 | 2026-08-20 | Open-questions pass: gloaguen-2026, lulla-2026, apostolou-2026, otel-genai admitted (all filter-stated, all primary-verified); three question notes seeded for the former no-position areas |
