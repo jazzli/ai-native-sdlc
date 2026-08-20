@@ -14,8 +14,19 @@ export function parseReviewLog(sourcesFile: string): LogEntry[] {
     throw new Error(`Review log heading not found in ${sourcesFile}`);
 
   const entries: LogEntry[] = [];
-  for (const line of text.slice(idx).split('\n')) {
-    if (!line.startsWith('|')) continue;
+  let tableStarted = false;
+  for (const rawLine of text.slice(idx).split('\n')) {
+    const line = rawLine.trimEnd();
+    if (!line.startsWith('|')) {
+      // Once the table has started, a non-| line means the table has ended.
+      if (tableStarted) break;
+      // Before the table starts, skip non-| lines.
+      continue;
+    }
+
+    // Table has started; mark this before filtering headers.
+    tableStarted = true;
+
     if (/^\|\s*Date\s*\|/.test(line) || /^\|\s*-+\s*\|/.test(line)) continue;
     const m = line.match(/^\|\s*(\S+)\s*\|\s*(.+?)\s*\|$/);
     if (!m || !/^\d{4}-\d{2}-\d{2}$/.test(m[1])) {

@@ -53,4 +53,23 @@ describe('parseReviewLog failure modes', () => {
     );
     expect(() => parseReviewLog(p)).toThrow(/Malformed review-log row/);
   });
+
+  it('stops parsing at the table end (blank line)', () => {
+    const p = tmpFile(
+      '### Review log\n\n| Date | Action |\n| --- | --- |\n| 2026-01-01 | first entry |\n\n## Appendix\n\n| Date | Action |\n| --- | --- |\n| 2099-12-31 | Unrelated milestone |\n',
+    );
+    const entries = parseReviewLog(p);
+    expect(entries.length).toBe(1);
+    expect(entries[0].date).toBe('2026-01-01');
+    expect(entries[0].markdown).toBe('first entry');
+  });
+
+  it('tolerates trailing whitespace in rows', () => {
+    const p = tmpFile(
+      '### Review log\n\n| Date | Action |\n| --- | --- |\n| 2026-01-01 | trailing space row | \n',
+    );
+    const entries = parseReviewLog(p);
+    expect(entries.length).toBe(1);
+    expect(entries[0].markdown).toBe('trailing space row');
+  });
 });
