@@ -1,7 +1,9 @@
 ---
 import Base from './Base.astro';
 import type { CollectionEntry } from 'astro:content';
-interface Props { note: CollectionEntry<'notes'> }
+interface Props {
+  note: CollectionEntry<'notes'>;
+}
 const { note } = Astro.props;
 const { title, status, updated } = note.data;
 const base = import.meta.env.BASE_URL;
@@ -9,7 +11,12 @@ const kind = status === 'working-answer' ? 'positions' : 'questions';
 const date = updated.toISOString().slice(0, 10);
 const label = status.replace(/-/g, ' ');
 ---
-<Base title={title} description={title} mdHref={`${base}/${kind}/${note.id}.md`}>
+
+<Base
+  title={title}
+  description={title}
+  mdHref={`${base}/${kind}/${note.id}.md`}
+>
   <article class="note">
     <p class="meta">
       <span class={`badge ${status}`}>{label}</span>

@@ -5,7 +5,10 @@ import { rawRewritten } from '../../lib/raw';
 import { CONTENT } from '../../lib/site-config';
 
 export async function getStaticPaths() {
-  const notes = await getCollection('notes', (n) => n.data.status === 'working-answer');
+  const notes = await getCollection(
+    'notes',
+    (n) => n.data.status === 'working-answer',
+  );
   return notes.map((n) => ({ params: { slug: n.id } }));
 }
 

@@ -27,29 +27,33 @@ export function rehypeTableScroll() {
   return (tree: Root) => {
     // hast nodes are `type: 'element'` with a `tagName`; a string test only
     // matches `node.type`, so the tag itself must be checked in the visitor.
-    visit(tree, 'element', (node: Element, index, parent: Parent | undefined) => {
-      if (node.tagName !== 'table' || index == null || !parent) return;
-      let label = 'Table';
-      for (let i = index - 1; i >= 0; i--) {
-        const sibling = parent.children[i];
-        if (isHeading(sibling)) {
-          const text = textContent(sibling);
-          if (text) label = text;
-          break;
+    visit(
+      tree,
+      'element',
+      (node: Element, index, parent: Parent | undefined) => {
+        if (node.tagName !== 'table' || index == null || !parent) return;
+        let label = 'Table';
+        for (let i = index - 1; i >= 0; i--) {
+          const sibling = parent.children[i];
+          if (isHeading(sibling)) {
+            const text = textContent(sibling);
+            if (text) label = text;
+            break;
+          }
         }
-      }
-      const wrapper: Element = {
-        type: 'element',
-        tagName: 'div',
-        properties: {
-          className: ['table-scroll'],
-          tabIndex: 0,
-          role: 'region',
-          ariaLabel: label,
-        },
-        children: [node],
-      };
-      parent.children[index] = wrapper;
-    });
+        const wrapper: Element = {
+          type: 'element',
+          tagName: 'div',
+          properties: {
+            className: ['table-scroll'],
+            tabIndex: 0,
+            role: 'region',
+            ariaLabel: label,
+          },
+          children: [node],
+        };
+        parent.children[index] = wrapper;
+      },
+    );
   };
 }

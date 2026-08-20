@@ -3,7 +3,11 @@ import fs from 'node:fs';
 import { visit } from 'unist-util-visit';
 import type { Root, Definition, Image } from 'mdast';
 import {
-  buildStatusMap, extractAnchors, rewriteTarget, checkImageUrl, checkRawHtml,
+  buildStatusMap,
+  extractAnchors,
+  rewriteTarget,
+  checkImageUrl,
+  checkRawHtml,
   type Ctx,
 } from '../src/lib/rewrite-links';
 
@@ -24,35 +28,47 @@ describe('rewriteTarget', () => {
   });
 
   it('rewrites note-relative sources citations', () => {
-    expect(rewriteTarget('../../sources.md#dora-2025', ctx))
-      .toBe('/ai-native-sdlc/sources/#dora-2025');
-    expect(rewriteTarget('../sources.md#signal-filter', ctx))
-      .toBe('/ai-native-sdlc/sources/#signal-filter');
-    expect(rewriteTarget('../sources.md', ctx)).toBe('/ai-native-sdlc/sources/');
+    expect(rewriteTarget('../../sources.md#dora-2025', ctx)).toBe(
+      '/ai-native-sdlc/sources/#dora-2025',
+    );
+    expect(rewriteTarget('../sources.md#signal-filter', ctx)).toBe(
+      '/ai-native-sdlc/sources/#signal-filter',
+    );
+    expect(rewriteTarget('../sources.md', ctx)).toBe(
+      '/ai-native-sdlc/sources/',
+    );
   });
 
   it('throws on an unknown sources anchor', () => {
-    expect(() => rewriteTarget('../../sources.md#not-a-citekey', ctx))
-      .toThrow(/Unknown anchor/);
+    expect(() => rewriteTarget('../../sources.md#not-a-citekey', ctx)).toThrow(
+      /Unknown anchor/,
+    );
   });
 
   it('routes note links by status', () => {
-    expect(rewriteTarget('questions/does-sdd-reduce-rework.md', ctx))
-      .toBe('/ai-native-sdlc/positions/does-sdd-reduce-rework/');
-    expect(rewriteTarget('questions/agent-era-observability.md', ctx))
-      .toBe('/ai-native-sdlc/questions/agent-era-observability/');
+    expect(rewriteTarget('questions/does-sdd-reduce-rework.md', ctx)).toBe(
+      '/ai-native-sdlc/positions/does-sdd-reduce-rework/',
+    );
+    expect(rewriteTarget('questions/agent-era-observability.md', ctx)).toBe(
+      '/ai-native-sdlc/questions/agent-era-observability/',
+    );
     // sibling link from one note to another (no questions/ prefix)
-    expect(rewriteTarget('agent-era-observability.md', ctx))
-      .toBe('/ai-native-sdlc/questions/agent-era-observability/');
+    expect(rewriteTarget('agent-era-observability.md', ctx)).toBe(
+      '/ai-native-sdlc/questions/agent-era-observability/',
+    );
   });
 
   it('throws on a link to a nonexistent note', () => {
-    expect(() => rewriteTarget('questions/nope.md', ctx)).toThrow(/unknown note/i);
+    expect(() => rewriteTarget('questions/nope.md', ctx)).toThrow(
+      /unknown note/i,
+    );
   });
 
   it('rewrites protocol, playbook, and bare directory links', () => {
     expect(rewriteTarget('protocol.md', ctx)).toBe('/ai-native-sdlc/protocol/');
-    expect(rewriteTarget('docs/protocol.md', ctx)).toBe('/ai-native-sdlc/protocol/');
+    expect(rewriteTarget('docs/protocol.md', ctx)).toBe(
+      '/ai-native-sdlc/protocol/',
+    );
     expect(rewriteTarget('playbook.md', ctx)).toBe('/ai-native-sdlc/');
     expect(rewriteTarget('questions/', ctx)).toBe('/ai-native-sdlc/');
   });
@@ -109,7 +125,8 @@ describe('against the real repository content', () => {
       '../docs/playbook.md',
       '../docs/protocol.md',
       '../sources.md',
-      ...fs.readdirSync('../docs/questions')
+      ...fs
+        .readdirSync('../docs/questions')
         .filter((f) => f.endsWith('.md'))
         .map((f) => `../docs/questions/${f}`),
     ];
@@ -137,12 +154,15 @@ describe('checkImageUrl', () => {
 
 describe('checkRawHtml', () => {
   it('throws on a raw <a href> with an internal-looking target', () => {
-    expect(() => checkRawHtml('<a href="../../sources.md#dora-2025">'))
-      .toThrow(/markdown syntax/i);
+    expect(() => checkRawHtml('<a href="../../sources.md#dora-2025">')).toThrow(
+      /markdown syntax/i,
+    );
   });
 
   it('throws on a raw <img src> with an internal-looking target', () => {
-    expect(() => checkRawHtml('<img src="./diagram.png">')).toThrow(/markdown syntax/i);
+    expect(() => checkRawHtml('<img src="./diagram.png">')).toThrow(
+      /markdown syntax/i,
+    );
   });
 
   it('passes raw HTML whose target is external, mailto, or a fragment', () => {
@@ -179,29 +199,36 @@ describe('remarkRewriteLinks visits definition, image, and html nodes', () => {
   it('rewrites a reference-style definition the same as a link', async () => {
     const tree = await transform('[ref]: ../../sources.md#dora-2025\n');
     let def: Definition | undefined;
-    visit(tree, 'definition', (node: Definition) => { def = node; });
+    visit(tree, 'definition', (node: Definition) => {
+      def = node;
+    });
     expect(def?.url).toBe('/ai-native-sdlc/sources/#dora-2025');
   });
 
   it('throws when a definition cites an unknown citekey', async () => {
-    await expect(transform('[ref]: ../../sources.md#not-a-real-citekey\n'))
-      .rejects.toThrow(/Unknown anchor/);
+    await expect(
+      transform('[ref]: ../../sources.md#not-a-real-citekey\n'),
+    ).rejects.toThrow(/Unknown anchor/);
   });
 
   it('throws on an internal/relative image — no asset policy exists yet', async () => {
-    await expect(transform('![alt](../../sources.md)\n'))
-      .rejects.toThrow(/no defined home/i);
+    await expect(transform('![alt](../../sources.md)\n')).rejects.toThrow(
+      /no defined home/i,
+    );
   });
 
   it('passes an external image through unchanged', async () => {
     const tree = await transform('![alt](https://example.com/x.png)\n');
     let img: Image | undefined;
-    visit(tree, 'image', (node: Image) => { img = node; });
+    visit(tree, 'image', (node: Image) => {
+      img = node;
+    });
     expect(img?.url).toBe('https://example.com/x.png');
   });
 
   it('throws on a raw-HTML anchor with an internal-looking href', async () => {
-    await expect(transform('<a href="../../sources.md#dora-2025">text</a>\n'))
-      .rejects.toThrow(/markdown syntax/i);
+    await expect(
+      transform('<a href="../../sources.md#dora-2025">text</a>\n'),
+    ).rejects.toThrow(/markdown syntax/i);
   });
 });

@@ -14,7 +14,9 @@ export interface Ctx {
 
 export function buildStatusMap(questionsDir: string): StatusMap {
   const map: StatusMap = {};
-  for (const f of fs.readdirSync(questionsDir).filter((f) => f.endsWith('.md'))) {
+  for (const f of fs
+    .readdirSync(questionsDir)
+    .filter((f) => f.endsWith('.md'))) {
     const text = fs.readFileSync(path.join(questionsDir, f), 'utf8');
     const m = text.match(/^status:\s*(open|working-answer|parked)\s*$/m);
     if (!m) throw new Error(`No valid status frontmatter in ${f}`);
@@ -26,7 +28,8 @@ export function buildStatusMap(questionsDir: string): StatusMap {
 export function extractAnchors(sourcesFile: string): Set<string> {
   const text = fs.readFileSync(sourcesFile, 'utf8');
   const anchors = new Set<string>();
-  for (const m of text.matchAll(/<a id="([a-z0-9-]+)"><\/a>/g)) anchors.add(m[1]);
+  for (const m of text.matchAll(/<a id="([a-z0-9-]+)"><\/a>/g))
+    anchors.add(m[1]);
   // Rendered heading ids come from rehypeHeadingIds, which slugs with
   // github-slugger (one Slugger instance per document, walked in heading
   // order). A hand-rolled regex disagrees with it on anything github-slugger

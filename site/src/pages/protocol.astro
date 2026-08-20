@@ -6,6 +6,11 @@ if (!protocol) throw new Error('protocol singleton missing');
 const { Content } = await render(protocol);
 const base = import.meta.env.BASE_URL;
 ---
-<Base title="Research Protocol" description="The five rules governing how this content is researched and maintained." mdHref={`${base}/protocol.md`}>
+
+<Base
+  title="Research Protocol"
+  description="The five rules governing how this content is researched and maintained."
+  mdHref={`${base}/protocol.md`}
+>
   <Content />
 </Base>
