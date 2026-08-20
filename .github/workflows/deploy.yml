@@ -36,11 +36,6 @@ jobs:
   deploy:
     if: github.event_name == 'push'
     needs: site-build
-    # GitHub Pages cannot be enabled while this repo is private on the free
-    # plan, so this job is EXPECTED to fail until launch. continue-on-error
-    # keeps the workflow green so the build check stays meaningful.
-    # At launch: enable Pages (source: GitHub Actions) and delete this flag.
-    continue-on-error: true
     runs-on: ubuntu-latest
     permissions:
       pages: write
