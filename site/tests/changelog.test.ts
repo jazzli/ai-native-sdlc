@@ -1,6 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import { XMLParser, XMLValidator } from 'fast-xml-parser';
-import { entryHtml, entryId, buildFeed } from '../src/lib/changelog';
+import {
+  entryHtml,
+  entryId,
+  entryTitle,
+  entryAnchor,
+  buildFeed,
+} from '../src/lib/changelog';
 import { parseReviewLog } from '../src/lib/review-log';
 
 describe('entryHtml', () => {
@@ -14,9 +20,30 @@ describe('entryHtml', () => {
     );
   });
 
-  it('escapes raw angle brackets rather than passing script through', async () => {
-    const html = await entryHtml('entry with <script>alert(1)</script>');
-    expect(html).not.toContain('<script>');
+  it('rejects raw HTML in entries', async () => {
+    await expect(entryHtml('entry with <a id="x"></a>')).rejects.toThrow(
+      /Raw HTML is not allowed/,
+    );
+  });
+});
+
+describe('entryTitle', () => {
+  it('strips markdown formatting from title', () => {
+    const title = entryTitle({
+      date: '2026-08-20',
+      markdown: '**Bold** and [link text](url)',
+    });
+    expect(title).toBe('Bold and link text');
+  });
+
+  it('truncates emoji-heavy strings without splitting surrogates', () => {
+    const emojiHeavy = Array(100).fill('😀').join('');
+    const title = entryTitle({
+      date: '2026-08-20',
+      markdown: emojiHeavy,
+    });
+    expect(Array.from(title).length).toBeLessThanOrEqual(80);
+    expect(!/[\uD800-\uDBFF]$/.test(title)).toBe(true);
   });
 });
 
@@ -32,6 +59,16 @@ describe('entryId', () => {
   });
 });
 
+describe('entryAnchor', () => {
+  it('returns anchor with entry hash', () => {
+    const anchor = entryAnchor({
+      date: '2026-08-20',
+      markdown: 'test entry',
+    });
+    expect(anchor).toMatch(/^e-[0-9a-f]{12}$/);
+  });
+});
+
 describe('buildFeed on the real log', () => {
   it('produces well-formed Atom with one entry per log row', async () => {
     const entries = parseReviewLog('../sources.md');
@@ -43,5 +80,16 @@ describe('buildFeed on the real log', () => {
       : [doc.feed.entry];
     expect(feedEntries.length).toBe(entries.length);
     expect(doc.feed.updated).toBe(`${entries[0].date}T00:00:00Z`);
+  });
+
+  it('includes entry anchors in link hrefs', async () => {
+    const entry = { date: '2026-08-20', markdown: 'test' };
+    const xml = await buildFeed([entry]);
+    expect(xml).toContain(`#${entryAnchor(entry)}`);
+  });
+
+  it('rejects duplicate entries with same id', async () => {
+    const entry = { date: '2026-08-20', markdown: 'duplicate' };
+    await expect(buildFeed([entry, entry])).rejects.toThrow(/duplicate/i);
   });
 });
