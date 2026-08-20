@@ -14,6 +14,11 @@ updates:
       # tree. Revisit when typescript-eslint declares TS 7 support.
       - dependency-name: typescript
         update-types: ["version-update:semver-major"]
+      # Astro 7 moved/changed @astrojs/markdown-remark resolution, breaking
+      # config load (rehypeHeadingIds import). Framework majors get a
+      # deliberate migration, not a drive-by bump. Revisit intentionally.
+      - dependency-name: astro
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: github-actions
     directory: /
     schedule:
