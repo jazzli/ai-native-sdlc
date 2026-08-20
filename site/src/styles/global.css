@@ -1,0 +1,462 @@
+/* ============================================================================
+   AI-Native SDLC — a record of positions and their defeat conditions.
+
+   Direction: ink on cool paper. Three faces, three jobs — declarations in
+   sans (positions assert), argument in serif (prose reasons), apparatus in
+   mono (status, dates, the registry: the machine-readable layer surfacing).
+   One visual event per page: the falsifier, set as an inverted slab that
+   breaks the measure. Everything else stays quiet.
+
+   No JavaScript, no webfonts, no images, no external requests of any kind.
+   ========================================================================== */
+
+/* --- Faces, measure, rhythm (scheme-independent) ------------------------- */
+html {
+  --serif: Charter, "Bitstream Charter", "Iowan Old Style", "Source Serif 4",
+           ui-serif, Georgia, "Times New Roman", serif;
+  --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI Variable Display",
+          "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, "Cascadia Mono",
+          "Roboto Mono", Consolas, monospace;
+
+  --pad: clamp(1.15rem, 5vw, 3rem);
+  --measure: 34rem;
+  --measure-wide: 68rem;
+  --label: .72rem;
+  --label-track: .11em;
+}
+
+/* --- Light ---------------------------------------------------------------- */
+:root {
+  --paper: #f2f3f0;
+  --ink: #15201e;
+  --ink-soft: #46524f;
+  --ink-faint: #5d6a66;
+  --rule: #d6dad5;
+  --rule-strong: #b3bab4;
+  --accent: #0a6357;
+  --accent-hover: #073f37;
+  --link-underline: #9fc6be;
+  --code-bg: #e4e8e3;
+  --select-bg: #c9e7df;
+  --select-fg: #0b1a18;
+  --target-bg: #e1efe9;
+  --slab-bg: #15201e;
+  --slab-edge: #15201e;
+  --slab-fg: #e9ede9;
+  --slab-soft: #aebab6;
+  --slab-accent: #74d6bf;
+  --slab-rule: #34423f;
+  --badge-working: #0a6357;
+  --badge-open: #8a5312;
+  --badge-parked: #5d6a66;
+}
+
+/* --- Dark ----------------------------------------------------------------- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #101615;
+    --ink: #e2e7e4;
+    --ink-soft: #a6b1ad;
+    --ink-faint: #85908d;
+    --rule: #28312f;
+    --rule-strong: #3b4643;
+    --accent: #62c9b1;
+    --accent-hover: #8fdcc8;
+    --link-underline: #2f6157;
+    --code-bg: #1b2322;
+    --select-bg: #2c5a51;
+    --select-fg: #eaf3f0;
+    --target-bg: #1b2e29;
+    --slab-bg: #253833;
+    --slab-edge: #5e837a;
+    --slab-fg: #e9ede9;
+    --slab-soft: #a9b6b2;
+    --slab-accent: #74d6bf;
+    --slab-rule: #4a5d57;
+    --badge-working: #62c9b1;
+    --badge-open: #d79a4e;
+    --badge-parked: #85908d;
+  }
+}
+
+/* --- Ground --------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 2.25rem var(--pad) 4.5rem;
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 1.0625rem/1.66 var(--serif);
+  font-synthesis-weight: none;
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+}
+
+::selection { background: var(--select-bg); color: var(--select-fg); }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+
+[id] { scroll-margin-top: 2.5rem; }
+
+/* --- Masthead ------------------------------------------------------------- */
+.masthead {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: .35rem 1.75rem;
+  max-width: var(--measure);
+  margin: 0 auto 3.5rem;
+  padding-bottom: .8rem;
+  border-bottom: 1px solid var(--rule-strong);
+}
+
+.wordmark {
+  font: 600 var(--label)/1 var(--mono);
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.wordmark:hover { color: var(--accent); }
+
+.masthead nav {
+  display: flex;
+  gap: 1.1rem;
+  font: 400 .875rem/1 var(--sans);
+}
+.masthead nav a {
+  color: var(--ink-faint);
+  text-decoration: none;
+  padding-bottom: .15rem;
+  border-bottom: 1px solid transparent;
+}
+.masthead nav a:hover { color: var(--accent); }
+.masthead nav a[aria-current="page"] {
+  color: var(--ink);
+  border-bottom-color: var(--accent);
+}
+
+.strapline {
+  grid-column: 1 / -1;
+  margin: 0;
+  font: italic 400 .95rem/1.4 var(--serif);
+  color: var(--ink-faint);
+}
+
+@media (max-width: 32rem) {
+  .masthead { grid-template-columns: 1fr; gap: .6rem; }
+  .masthead nav { flex-wrap: wrap; gap: .9rem; }
+}
+
+/* --- Column --------------------------------------------------------------- */
+main {
+  max-width: var(--measure);
+  margin: 0 auto;
+}
+
+main.wide { max-width: var(--measure-wide); }
+main.wide > * { max-width: var(--measure); margin-inline: auto; }
+/* The registry table is wrapped in .table-scroll (rehypeTableScroll), so the
+   wide-table guard now targets the wrapper, not the table itself. */
+main.wide > .table-scroll:has(table:has(th:nth-child(3))) { max-width: none; width: 100%; }
+
+/* --- Prose ---------------------------------------------------------------- */
+p, li { text-wrap: pretty; overflow-wrap: break-word; }
+p { margin: 0 0 1.15em; }
+
+h1, h2, h3 { text-wrap: balance; }
+
+/* Page titles on document pages are labels; the sections are the content. */
+main > h1 {
+  margin: 0 0 1rem;
+  font: 600 1.3rem/1.25 var(--sans);
+  letter-spacing: -.01em;
+  color: var(--ink);
+}
+
+main > h2 {
+  margin: 2.9rem 0 .85rem;
+  font: 600 1.15rem/1.3 var(--sans);
+  letter-spacing: -.008em;
+  color: var(--ink);
+}
+
+main > h3 {
+  margin: 2rem 0 .6rem;
+  font: 600 1rem/1.35 var(--sans);
+  color: var(--ink);
+}
+
+a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--link-underline);
+  text-underline-offset: .16em;
+}
+a:hover {
+  color: var(--accent-hover);
+  text-decoration-color: currentColor;
+}
+
+strong { font-weight: 650; color: var(--ink); }
+em { font-style: italic; }
+
+code {
+  font: 400 .84em/1.5 var(--mono);
+  background: var(--code-bg);
+  padding: .1em .32em;
+  border-radius: 2px;
+}
+a code { color: inherit; }
+
+pre {
+  background: var(--code-bg);
+  padding: 1rem;
+  overflow-x: auto;
+  border-left: 2px solid var(--rule-strong);
+}
+pre code { background: none; padding: 0; }
+
+blockquote {
+  margin: 1.6rem 0;
+  padding-left: 1.1rem;
+  border-left: 2px solid var(--rule-strong);
+  color: var(--ink-soft);
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: 3.25rem 0 1.5rem;
+}
+
+ul, ol { padding-left: 1.35rem; margin: 0 0 1.15em; }
+li { margin-bottom: .5em; }
+li::marker { color: var(--ink-faint); }
+ol > li::marker { font-family: var(--mono); font-size: .85em; }
+
+/* --- The playbook: position statements are the spine --------------------- */
+main.playbook > h1 + p {
+  font-size: 1.1rem;
+  color: var(--ink-soft);
+  margin-bottom: 1.5rem;
+}
+
+main.playbook > h2 {
+  position: relative;
+  margin: 4.25rem 0 1.05rem;
+  font: 600 clamp(1.6rem, 1.1rem + 2.3vw, 2.1rem)/1.14 var(--sans);
+  letter-spacing: -.022em;
+  color: var(--ink);
+}
+
+/* A held position carries a spine mark in the gutter; an open one does not. */
+@media (min-width: 46rem) {
+  main.playbook > h2:has(+ p)::before {
+    content: "";
+    position: absolute;
+    left: -1.5rem;
+    top: .3em;
+    bottom: .12em;
+    width: 2px;
+    background: var(--accent);
+  }
+}
+
+main.playbook > h2:has(+ ul) { color: var(--ink-soft); }
+
+/* Open questions: a register, not a bullet list. */
+main.playbook > h2 + ul {
+  list-style: none;
+  padding: 0;
+  margin: 1.2rem 0 0;
+  border-top: 1px solid var(--rule);
+}
+main.playbook > h2 + ul > li {
+  margin: 0;
+  padding: .95rem .25rem;
+  border-bottom: 1px solid var(--rule);
+  font-size: .97rem;
+  color: var(--ink-soft);
+}
+
+.colophon {
+  margin-top: 2.75rem;
+  font: 400 .875rem/1.6 var(--sans);
+  color: var(--ink-faint);
+}
+
+/* --- Note pages ----------------------------------------------------------- */
+.note { margin: 0; }
+
+/* Status and date sit above the title block on every note. */
+.note .meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: .5rem .95rem;
+  margin: 0 0 1.15rem;
+  padding-bottom: .7rem;
+  border-bottom: 1px solid var(--rule);
+  font: 500 var(--label)/1.4 var(--mono);
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .48rem;
+  font-weight: 600;
+  color: var(--badge-parked);
+}
+.badge::before {
+  content: "";
+  width: .5rem;
+  height: .5rem;
+  border: 1.5px solid currentColor;
+  background: transparent;
+}
+.badge.working-answer { color: var(--badge-working); }
+.badge.working-answer::before { background: currentColor; }
+.badge.open { color: var(--badge-open); }
+.badge.parked { color: var(--badge-parked); }
+
+.note h1 {
+  margin: 0 0 2.4rem;
+  font: 600 clamp(1.5rem, 1.15rem + 1.7vw, 1.95rem)/1.2 var(--sans);
+  letter-spacing: -.021em;
+  color: var(--ink);
+}
+
+/* Notes follow a fixed schema; their headings are field labels, not titles. */
+.note h2 {
+  margin: 2.7rem 0 .85rem;
+  font: 600 var(--label)/1.4 var(--mono);
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.note ul { padding-left: 1.15rem; }
+
+/* --- The falsifier: the one inverted object ------------------------------ */
+aside.falsifier {
+  margin: 3.25rem calc(-1 * var(--pad)) 1rem;
+  padding: 1.9rem var(--pad) 2rem;
+  background: var(--slab-bg);
+  color: var(--slab-fg);
+  border: 1px solid var(--slab-edge);
+}
+
+aside.falsifier h2 {
+  margin: 0 0 1.1rem;
+  padding-bottom: .8rem;
+  border-bottom: 1px solid var(--slab-rule);
+  font: 600 .8rem/1.4 var(--sans);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--slab-accent);
+}
+
+aside.falsifier ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+aside.falsifier li {
+  margin: 0;
+  padding: .95rem 0;
+  font-size: 1.02rem;
+  line-height: 1.55;
+  color: var(--slab-fg);
+}
+aside.falsifier li + li { border-top: 1px solid var(--slab-rule); }
+aside.falsifier p { color: var(--slab-soft); }
+aside.falsifier a {
+  color: var(--slab-accent);
+  text-decoration-color: var(--slab-rule);
+}
+aside.falsifier a:hover { color: var(--slab-fg); text-decoration-color: currentColor; }
+aside.falsifier code { background: var(--slab-rule); color: var(--slab-fg); }
+aside.falsifier :focus-visible { outline-color: var(--slab-accent); }
+
+/* --- The registry table --------------------------------------------------- */
+/* display:block+overflow-x:auto used to live directly on `table`, but that
+   strips the table role from the accessibility tree and gives no keyboard
+   affordance for the horizontal scroll. rehypeTableScroll wraps every table
+   in .table-scroll (tabindex="0" role="region"); the scroll behaviour moves
+   here, onto the wrapper, so `table` keeps its native display and semantics. */
+table {
+  border-collapse: collapse;
+  margin: 1.5rem 0 2rem;
+  font: 400 .875rem/1.55 var(--sans);
+}
+
+.table-scroll {
+  display: block;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-color: var(--rule-strong) transparent;
+}
+.table-scroll:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+th {
+  font: 600 var(--label)/1.4 var(--mono);
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  text-align: left;
+  vertical-align: bottom;
+  padding: 0 1rem .55rem 0;
+  border-bottom: 1px solid var(--rule-strong);
+}
+
+td {
+  vertical-align: top;
+  padding: .85rem 1rem .85rem 0;
+  border-bottom: 1px solid var(--rule);
+  overflow-wrap: anywhere;
+}
+th:last-child, td:last-child { padding-right: 0; }
+
+table:has(th:nth-child(3)) td:nth-child(1) { min-width: 10rem; }
+table:has(th:nth-child(3)) td:nth-child(2) { min-width: 14rem; }
+table:has(th:nth-child(3)) td:nth-child(3) { min-width: 16rem; }
+
+/* Arriving from a citekey link highlights the entry it lands on. */
+tr:has(a[id]:target) { background: var(--target-bg); }
+tr:has(a[id]:target) td { border-color: var(--rule-strong); }
+
+/* --- Footer --------------------------------------------------------------- */
+footer {
+  max-width: var(--measure);
+  margin: 4.5rem auto 0;
+  padding-top: .8rem;
+  border-top: 1px solid var(--rule);
+  font: 400 var(--label)/1.4 var(--mono);
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+}
+footer a {
+  color: var(--ink-faint);
+  text-decoration: none;
+}
+footer a:hover { color: var(--accent); }
+
+/* --- Motion --------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  a, .wordmark { transition: color 120ms ease, text-decoration-color 120ms ease; }
+}
