@@ -1,7 +1,7 @@
 # How This Site Is Built
 
 This site recommends practices for AI-native software development. It was
-also built by them: one human directing agents, over three days, across
+also built by them: one human directing agents, in under three days, across
 [125+ commits](https://github.com/jazzli/ai-native-sdlc/commits/main) and two dozen pull requests — every line of
 code, content, and infrastructure agent-written under human review gates.
 
@@ -21,16 +21,18 @@ began as a committed spec and plan before any implementation:
 [the currency layer](https://github.com/jazzli/ai-native-sdlc/pull/23), the OG cards. The specs and plans are in
 the open repo, including their mid-execution amendments.
 
-**Human attention at the gates** — every task was implemented by a fresh
-agent, then reviewed by a different agent instructed to be adversarial,
-with a whole-branch review before each merge. The gates caught real
+**Human attention at the gates** — every feature-plan task was implemented
+by a fresh agent, then reviewed by a different agent instructed to be
+adversarial, with a whole-branch review before each feature merge; routine
+dependency and config PRs rode the mechanical gates alone. The gates caught real
 defects, not style nits. Three worth reading:
 
 - A registry entry asserting the **opposite** of its primary source — the
   gloss propagated into two content layers before the final review caught
-  it by re-reading the source PDF ([fixed in #2](https://github.com/jazzli/ai-native-sdlc/pull/2)). The protocol
-  gained a rule (entries are verified against primaries) because the
-  review method itself had a blind spot.
+  it by re-reading the source PDF ([fixed inside #1](https://github.com/jazzli/ai-native-sdlc/pull/1) before it
+  ever merged). The protocol gained a rule — entries are verified against
+  primaries — because the review method itself had a blind spot, and
+  [#2](https://github.com/jazzli/ai-native-sdlc/pull/2) then applied that rule to every existing entry.
 - The site's falsifier-section enforcement **failing open** — the one
   element whose absence should fail the build, silently not doing so
   ([caught in the #6 final review](https://github.com/jazzli/ai-native-sdlc/pull/6)).
@@ -39,12 +41,17 @@ defects, not style nits. Three worth reading:
   only because the reviewer **rendered the images and looked at them**
   ([#25](https://github.com/jazzli/ai-native-sdlc/pull/25)).
 
-**Foundations before scale** — link and fragment integrity, note-shape
-checks, format/lint/typecheck/test gates, and required status checks all
-predate every content expansion. The gates have rejected work: two
-dependency-major upgrades arrived broken and
-[were held](https://github.com/jazzli/ai-native-sdlc/pull/16) [by policy](https://github.com/jazzli/ai-native-sdlc/pull/18) rather than merged, then
-the frameworks [migrated deliberately](https://github.com/jazzli/ai-native-sdlc/pull/20).
+**Foundations before scale** — imperfectly practiced, honestly reported:
+link integrity gated the repo [from the first PR](https://github.com/jazzli/ai-native-sdlc/pull/1), but the
+other gates arrived in waves, each after a lesson — the pre-commit hook
+[with the security positions](https://github.com/jazzli/ai-native-sdlc/pull/7), format/lint/typecheck CI in a
+[hardening audit](https://github.com/jazzli/ai-native-sdlc/pull/8), and required status checks only
+[at launch](https://github.com/jazzli/ai-native-sdlc/pull/22), whose recording PR was the first merge they
+gated. Once in place, the gates rejected real work: two dependency-major
+upgrades arrived broken ([TypeScript](https://github.com/jazzli/ai-native-sdlc/pull/14),
+[Astro](https://github.com/jazzli/ai-native-sdlc/pull/17)) and [were](https://github.com/jazzli/ai-native-sdlc/pull/16) [held](https://github.com/jazzli/ai-native-sdlc/pull/18) rather
+than merged; Astro then [migrated deliberately](https://github.com/jazzli/ai-native-sdlc/pull/20), and the
+TypeScript hold remains until its ecosystem catches up.
 
 **Hand-written, minimal context files** — this repo's
 [AGENTS.md](https://github.com/jazzli/ai-native-sdlc/blob/main/AGENTS.md) is short, requirement-focused, and
