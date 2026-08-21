@@ -1,0 +1,16 @@
+---
+import { getEntry, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+const colophon = await getEntry('singles', 'docs/colophon');
+if (!colophon) throw new Error('colophon singleton missing');
+const { Content } = await render(colophon);
+const base = import.meta.env.BASE_URL;
+---
+
+<Base
+  title="Colophon"
+  description="How this site is built — the practices it recommends, applied to itself."
+  mdHref={`${base}/colophon.md`}
+>
+  <Content />
+</Base>

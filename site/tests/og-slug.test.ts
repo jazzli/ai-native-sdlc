@@ -15,6 +15,7 @@ describe('ogSlug', () => {
     ).toBe('questions/agent-era-observability');
     expect(ogSlug('/ai-native-sdlc/sources/', BASE)).toBe('sources');
     expect(ogSlug('/ai-native-sdlc/protocol/', BASE)).toBe('protocol');
+    expect(ogSlug('/ai-native-sdlc/colophon/', BASE)).toBe('colophon');
     expect(ogSlug('/ai-native-sdlc/changelog/', BASE)).toBe('changelog');
   });
 
@@ -28,8 +29,8 @@ describe('ogSlug', () => {
 describe('allCardTargets against real content', () => {
   const targets = allCardTargets();
 
-  it('yields exactly 15 targets', () => {
-    expect(targets).toHaveLength(15);
+  it('yields exactly 16 targets', () => {
+    expect(targets).toHaveLength(16);
   });
 
   it('covers every note with its real status routing', () => {

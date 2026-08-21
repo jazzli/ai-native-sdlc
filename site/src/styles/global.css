@@ -547,6 +547,8 @@ li[id]:target {
 
 /* --- Footer --------------------------------------------------------------- */
 footer {
+  display: flex;
+  gap: 1.5rem;
   max-width: var(--measure);
   margin: 4.5rem auto 0;
   padding-top: 0.8rem;
