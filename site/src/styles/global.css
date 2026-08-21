@@ -425,6 +425,18 @@ main.playbook > h2 + ul > li {
 }
 
 /* --- The falsifier: the one inverted object ------------------------------ */
+/* Reader intake. Deliberately quiet and placed after the falsifier slab:
+   the moment a reader knows what would overturn a position is the moment to
+   offer them the door. */
+p.challenge {
+  margin-top: 2rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--rule);
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  color: var(--ink-faint);
+}
+
 aside.falsifier {
   margin: 3.25rem calc(-1 * var(--pad)) 1rem;
   padding: 1.9rem var(--pad) 2rem;
