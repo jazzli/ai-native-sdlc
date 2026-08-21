@@ -85,7 +85,12 @@ const isPositions =
     </header>
     <main class={variant}><slot /></main>
     <footer>
-      <a href={`${base}/colophon/`} class="md-link">How this site is built</a>
+      <a
+        href={`${base}/colophon/`}
+        class="md-link"
+        aria-current={on('colophon') ? 'page' : undefined}
+        >How this site is built</a
+      >
       {
         mdHref && (
           <a href={mdHref} class="md-link">

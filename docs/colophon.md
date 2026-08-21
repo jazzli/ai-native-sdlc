@@ -92,7 +92,7 @@ published position, and the site
 [downgraded its own confidence](questions/preconditions-for-agentic-adoption.md)
 in public, with the tension stated rather than smoothed.
 
-## What would change this page
+## What would change my mind
 
 - Evidence that the review gates missed a defect class that shipped —
   which the public issue tracker would record.
