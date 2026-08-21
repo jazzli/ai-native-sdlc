@@ -26,7 +26,17 @@ missing its falsifier section.
 - [docs/protocol.md](docs/protocol.md) — the five rules governing all of it
 - [site/](site/) — the public site: single-sourced from the files above,
   agent-ingestible (raw markdown variants + `llms.txt`), zero client JS
+- [watch/](watch/) — the daily discovery sweep: practitioner feeds, Hacker
+  News, arXiv, releases, and change-detection targets into a triage queue
 - [AGENTS.md](AGENTS.md) — working rules for coding agents in this repo
+
+## Challenging a position
+
+Every position page carries a challenge link that opens a pre-filled issue
+naming that position. Challenges pass the same signal filter as any other
+source — does it publish methodology, report null results, is it primary —
+and the monthly watch triages them ahead of its own research. A challenge
+that fails the filter is answered on the record rather than deleted.
 
 ## Working on the site
 
