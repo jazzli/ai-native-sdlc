@@ -1,12 +1,14 @@
 # AGENTS.md
 
-Research content engine for an eventual public reference on AI-native
-software development. Everything here is plain markdown built around one
-traceability chain:
+Research content engine behind a public reference on AI-native software
+development, live at https://jazzli.github.io/ai-native-sdlc/. The content is
+plain markdown built around one traceability chain:
 
 `docs/playbook.md` → `docs/questions/*.md` → `sources.md#<citekey>` → primary source
 
-Read `docs/protocol.md` (one page, five rules) before changing content.
+Two supporting trees serve it: `site/` (Astro; publishes the content) and
+`watch/` (the daily discovery sweep). Read `docs/protocol.md` (one page,
+five rules) before changing content.
 
 ## Requirements
 
@@ -27,6 +29,10 @@ Read `docs/protocol.md` (one page, five rules) before changing content.
 - Verify with `lychee --config lychee.toml --no-progress .` before pushing;
   never weaken `lychee.toml` or the workflow to get green. New accept-codes
   or excludes need a comment naming the host and reason.
+- `watch/` runs the daily discovery sweep. Keep `discover.mjs` a thin I/O
+  shell: pure logic belongs in `watch/lib.mjs`, which the site's vitest
+  suite covers, and `npm run lint` / `format:check` in `site/` span both
+  trees. Nothing load-bearing here sits outside a gate.
 - Work on a feature branch; open a PR; CI must pass. Commits end with a
   `Co-Authored-By:` trailer.
 - One-time setup: `git config core.hooksPath .githooks` — the pre-commit
