@@ -15,7 +15,12 @@ const notes = defineCollection({
 // Playbook, protocol, and the source registry have no frontmatter — loose schema.
 const singles = defineCollection({
   loader: glob({
-    pattern: ['docs/playbook.md', 'docs/protocol.md', 'sources.md'],
+    pattern: [
+      'docs/playbook.md',
+      'docs/protocol.md',
+      'docs/colophon.md',
+      'sources.md',
+    ],
     base: '..',
   }),
   schema: z.object({}).passthrough(),

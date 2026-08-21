@@ -11,7 +11,13 @@ export function ogSlug(pathname: string, base: string): string | null {
   p = p.replace(/^\/+|\/+$/g, '');
   if (p === '') return 'index';
   if (/^(positions|questions)\/[a-z0-9-]+$/.test(p)) return p;
-  if (p === 'sources' || p === 'protocol' || p === 'changelog') return p;
+  if (
+    p === 'sources' ||
+    p === 'protocol' ||
+    p === 'colophon' ||
+    p === 'changelog'
+  )
+    return p;
   return null;
 }
 
@@ -79,6 +85,14 @@ export function allCardTargets(): { slug: string; spec: CardSpec }[] {
         kind: 'page',
         title: 'Changelog',
         subtitle: "What changed, when — from the registry's own review log",
+      },
+    },
+    {
+      slug: 'colophon',
+      spec: {
+        kind: 'page',
+        title: 'Colophon',
+        subtitle: 'The practices this site recommends, applied to building it',
       },
     },
   );

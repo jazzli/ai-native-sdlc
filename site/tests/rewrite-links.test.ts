@@ -73,6 +73,16 @@ describe('rewriteTarget', () => {
     expect(rewriteTarget('questions/', ctx)).toBe('/ai-native-sdlc/');
   });
 
+  it('rewrites colophon links', () => {
+    expect(rewriteTarget('colophon.md', ctx)).toBe('/ai-native-sdlc/colophon/');
+    expect(rewriteTarget('docs/colophon.md', ctx)).toBe(
+      '/ai-native-sdlc/colophon/',
+    );
+    expect(rewriteTarget('../colophon.md', ctx)).toBe(
+      '/ai-native-sdlc/colophon/',
+    );
+  });
+
   it('throws on unrecognized internal links', () => {
     expect(() => rewriteTarget('random-file.txt', ctx)).toThrow(/Unrecognized/);
   });
