@@ -44,7 +44,7 @@ const FONTS = [
 ];
 
 // Satori consumes plain element objects; no JSX/React needed.
-type El = {
+export type CardElement = {
   type: string;
   props: { style?: Record<string, unknown>; children?: unknown };
 };
@@ -52,7 +52,7 @@ const el = (
   type: string,
   style: Record<string, unknown>,
   children?: unknown,
-): El => ({
+): CardElement => ({
   type,
   props: { style, children },
 });
@@ -60,13 +60,40 @@ const el = (
 const chipColor = (s: NonNullable<CardSpec['status']>) =>
   s === 'working-answer' ? C.working : s === 'open' ? C.open : C.parked;
 
-export async function renderCard(spec: CardSpec): Promise<Buffer> {
+// Vendored fonts are latin + latin-1-supplement subsets only. Anything outside
+// printable ASCII, latin-1 supplement, and this slice of general punctuation
+// (hyphens/dashes/quotes through per-mille and the angle quotation marks) is
+// tofu at render time — fail the build instead of shipping it silently.
+const UNCOVERED_CHAR = /[^ -~ -ÿ‐-‧‰-›×]/;
+
+export function normalizeCardText(s: string): string {
+  const normalized = s.replace(/→/g, '›').replace(/←/g, '‹');
+  const match = UNCOVERED_CHAR.exec(normalized);
+  if (match) {
+    const ch = match[0];
+    const codePoint = ch
+      .codePointAt(0)!
+      .toString(16)
+      .toUpperCase()
+      .padStart(4, '0');
+    throw new Error(
+      `unsupported character in card text: "${ch}" (U+${codePoint})`,
+    );
+  }
+  return normalized;
+}
+
+export function cardElement(spec: CardSpec): CardElement {
   if (spec.kind === 'note' && (!spec.status || !spec.updated)) {
     throw new Error(`note card requires status and updated: "${spec.title}"`);
   }
   if (spec.kind === 'page' && !spec.subtitle) {
     throw new Error(`page card requires a subtitle: "${spec.title}"`);
   }
+
+  const titleText = normalizeCardText(spec.title);
+  const subtitleText =
+    spec.kind === 'page' ? normalizeCardText(spec.subtitle!) : undefined;
 
   const meta =
     spec.kind === 'note'
@@ -102,10 +129,13 @@ export async function renderCard(spec: CardSpec): Promise<Buffer> {
         )
       : el('div', { display: 'flex' });
 
+  // display: 'block' (not 'flex') is required here — satori's line-clamp
+  // engine only engages on block-display elements; a flex display silently
+  // disables lineClamp and lets the title/subtitle overflow uncontrolled.
   const title = el(
     'div',
     {
-      display: 'flex',
+      display: 'block',
       fontSize: spec.title.length > 70 ? 52 : 64,
       fontWeight: 700,
       color: C.fg,
@@ -113,7 +143,7 @@ export async function renderCard(spec: CardSpec): Promise<Buffer> {
       lineClamp: 3,
       marginTop: 28,
     },
-    spec.title,
+    titleText,
   );
 
   const subtitle =
@@ -121,13 +151,13 @@ export async function renderCard(spec: CardSpec): Promise<Buffer> {
       ? el(
           'div',
           {
-            display: 'flex',
+            display: 'block',
             fontSize: 30,
             color: C.muted,
             marginTop: 24,
             lineClamp: 2,
           },
-          spec.subtitle,
+          subtitleText,
         )
       : el('div', { display: 'flex' });
 
@@ -183,6 +213,11 @@ export async function renderCard(spec: CardSpec): Promise<Buffer> {
     ],
   );
 
+  return root;
+}
+
+export async function renderCard(spec: CardSpec): Promise<Buffer> {
+  const root = cardElement(spec);
   const svg = await satori(root as never, {
     width: 1200,
     height: 630,
