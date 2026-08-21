@@ -33,6 +33,15 @@ can later be published and machine-ingested without rework.
    again at the quarterly re-rank. A note faithfully echoing a wrong entry is
    the failure this catches; no other rule here can see it.
 
+## Reader challenges
+
+Anyone reading a position can open a challenge from its page — a pre-filled
+issue naming the position and asking for the evidence. Challenges are an
+intake, not an exception: they pass Rule 1's filter like any other source,
+and one that moves a position becomes a registry entry, a note revision, and
+a changelog line. A challenge that fails the filter is answered in the issue
+and left on the record rather than deleted.
+
 ## Question notes
 
 One file per question in [questions/](questions/), kebab-case slug. Exactly
