@@ -46,11 +46,13 @@
     },
     {
       "name": "Spec Kit releases",
-      "url": "https://github.com/github/spec-kit/releases.atom"
+      "url": "https://github.com/github/spec-kit/releases.atom",
+      "always": true
     },
     {
       "name": "AGENTS.md commits",
-      "url": "https://github.com/agentsmd/agents.md/commits/main.atom"
+      "url": "https://github.com/agentsmd/agents.md/commits/main.atom",
+      "always": true
     }
   ],
   "apis": [

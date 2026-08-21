@@ -24,6 +24,22 @@ const matches = (text) => {
   return kw.some((k) => t.includes(k));
 };
 
+// Feed titles are attacker-reachable (anyone can post to HN). Neutralize
+// markdown link-hijacks, backticks, and @-mentions (zero-width break), cap
+// length, and only accept http(s) links with parens/whitespace encoded.
+const sanitize = (s) =>
+  s
+    .slice(0, 200)
+    .replace(/[\[\]`]/g, '\\$&')
+    .replace(/[()]/g, (c) => (c === '(' ? '&#40;' : '&#41;'))
+    .replace(/@/g, '@\u200b');
+const safeLink = (u) =>
+  /^https?:\/\//.test(u) ? u.replace(/\)/g, '%29').replace(/\s/g, '%20') : '';
+const entry = (label, title, link) => {
+  const l = safeLink(link);
+  findings.push(l ? `- **${label}**: [${sanitize(title)}](${l})` : `- **${label}**: ${sanitize(title)}`);
+};
+
 async function get(url) {
   const res = await fetch(url, { headers: { 'user-agent': 'ai-native-sdlc-discovery/1.0' }, signal: AbortSignal.timeout(20_000) });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -32,9 +48,13 @@ async function get(url) {
 
 const pick = (xml, tag) => xml.match(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`, 'i'))?.[1]?.trim() ?? '';
 const pickLink = (xml) => xml.match(/<link[^>]*href="([^"]+)"/i)?.[1] ?? pick(xml, 'link');
-const clean = (s) => s.replace(/<!\[CDATA\[|\]\]>/g, '').replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&#?\w+;/g, ' ').trim();
+// Strip, decode, strip again: GitHub's Atom feeds carry HTML escaped as
+// text, which only becomes tags after decoding.
+const strip = (s) => s.replace(/<!\[CDATA\[|\]\]>/g, '').replace(/<[^>]+>/g, ' ');
+const decode = (s) => s.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"');
+const clean = (s) => strip(decode(strip(s))).replace(/&#?\w+;/g, ' ').replace(/\s+/g, ' ').trim();
 
-async function scanFeed({ name, url }) {
+async function scanFeed({ name, url, always }) {
   const xml = await get(url);
   const items = xml.match(/<item[\s>][\s\S]*?<\/item>|<entry[\s>][\s\S]*?<\/entry>/gi) ?? [];
   for (const item of items) {
@@ -42,8 +62,8 @@ async function scanFeed({ name, url }) {
     if (!date || date < since) continue;
     const title = clean(pick(item, 'title'));
     const summary = clean(pick(item, 'description') || pick(item, 'summary') || pick(item, 'content')).slice(0, 300);
-    if (!matches(`${title} ${summary}`)) continue;
-    findings.push(`- **${name}**: [${title}](${pickLink(item)})`);
+    if (!always && !matches(`${title} ${summary}`)) continue;
+    entry(name, title, pickLink(item));
   }
 }
 
@@ -52,8 +72,10 @@ async function scanHn(queries) {
     const url = `https://hn.algolia.com/api/v1/search_by_date?query=${encodeURIComponent(q)}&tags=story&numericFilters=created_at_i>${Math.floor(since / 1000)}`;
     const hits = JSON.parse(await get(url)).hits ?? [];
     for (const h of hits.slice(0, 5)) {
+      const title = clean(h.title ?? '');
+      if (!matches(title)) continue; // query results stray; apply the same gate
       const link = h.url ?? `https://news.ycombinator.com/item?id=${h.objectID}`;
-      findings.push(`- **HN** ("${q}"): [${clean(h.title ?? '')}](${link}) (${h.points ?? 0} pts)`);
+      entry(`HN (${h.points ?? 0} pts)`, title, link);
     }
   }
 }
@@ -61,12 +83,13 @@ async function scanHn(queries) {
 async function scanArxiv(query) {
   const url = `https://export.arxiv.org/api/query?search_query=${encodeURIComponent(query)}&sortBy=submittedDate&sortOrder=descending&max_results=15`;
   const xml = await get(url);
-  for (const entry of xml.match(/<entry>[\s\S]*?<\/entry>/g) ?? []) {
-    const date = new Date(pick(entry, 'published')).getTime();
+  for (const ent of xml.match(/<entry>[\s\S]*?<\/entry>/g) ?? []) {
+    const date = new Date(pick(ent, 'published')).getTime();
     if (!date || date < since) continue;
-    const title = clean(pick(entry, 'title')).replace(/\s+/g, ' ');
-    const id = pick(entry, 'id');
-    findings.push(`- **arXiv**: [${title}](${id})`);
+    const title = clean(pick(ent, 'title'));
+    const summary = clean(pick(ent, 'summary'));
+    if (!matches(`${title} ${summary}`)) continue;
+    entry('arXiv', title, pick(ent, 'id'));
   }
 }
 
@@ -110,11 +133,17 @@ const body = [
 ].join('\n');
 
 console.log(body);
+const sourceCount = list.feeds.length + list.apis.length + list.targets.length;
+if (!DRY && findings.length === 0 && errors.length >= Math.ceil(sourceCount / 2)) {
+  console.error(`[FAILING: ${errors.length}/${sourceCount} sources errored with zero findings — silence would be indistinguishable from health]`);
+  process.exit(1);
+}
 if (DRY || findings.length === 0) {
   console.error(DRY ? '[dry run: no issue posted]' : '[no findings: no issue posted]');
   process.exit(0);
 }
 const gh = (args, input) => execFileSync('gh', args, { input, encoding: 'utf8' });
+gh(['label', 'create', 'discovery', '--force', '--color', '1D7F6B', '--description', 'Daily discovery digest — triage through the signal filter']);
 const existing = gh(['issue', 'list', '--label', 'discovery', '--state', 'open', '--json', 'number', '--jq', '.[0].number // empty']).trim();
 if (existing) {
   gh(['issue', 'comment', existing, '--body-file', '-'], body);
