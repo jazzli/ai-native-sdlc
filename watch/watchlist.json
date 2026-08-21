@@ -53,6 +53,10 @@
       "name": "AGENTS.md commits",
       "url": "https://github.com/agentsmd/agents.md/commits/main.atom",
       "always": true
+    },
+    {
+      "name": "AI Engineer talks (YouTube)",
+      "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCLKPca3kwwd-B59HNr-_lvA"
     }
   ],
   "apis": [
