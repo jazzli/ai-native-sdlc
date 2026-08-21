@@ -140,7 +140,8 @@ review the checks themselves.
 
 Where agents genuinely ship production code — OpenAI's zero-manual-code
 product, Stripe's thousand-plus agent PRs a week, Ramp's third of all
-merges — three first-party accounts converge on the same surround:
+merges, Uber's org-wide adoption with costs up sixfold — four first-party
+accounts converge on the same surround:
 pre-warmed full-environment sandboxes, verification the agent runs itself,
 curated tools, the repository as system of record, and a review loop.
 Model choice appears in none of them as the differentiator. These are
