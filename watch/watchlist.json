@@ -1,0 +1,92 @@
+{
+  "comment": "Daily discovery + change-detection watchlist. Discovery is not admission: everything found here still enters the registry only through the signal filter, triaged by the monthly intelligent watch. Feeds are RSS/Atom; targets are deterministic checks.",
+  "keywords": [
+    "coding agent",
+    "agentic",
+    "AGENTS.md",
+    "claude code",
+    "codex",
+    "spec-driven",
+    "sdlc",
+    "ai-assisted",
+    "ai assisted",
+    "harness",
+    "prompt injection",
+    "slopsquatting",
+    "package hallucination",
+    "swe-bench",
+    "context engineering",
+    "mcp",
+    "model context protocol",
+    "dora",
+    "pair programming",
+    "code review",
+    "llm"
+  ],
+  "feeds": [
+    {
+      "name": "Simon Willison",
+      "url": "https://simonwillison.net/atom/everything/"
+    },
+    {
+      "name": "Latent Space",
+      "url": "https://www.latent.space/feed"
+    },
+    {
+      "name": "MCP blog",
+      "url": "https://blog.modelcontextprotocol.io/index.xml"
+    },
+    {
+      "name": "Stripe dev blog",
+      "url": "https://stripe.dev/feed"
+    },
+    {
+      "name": "GitHub blog (AI)",
+      "url": "https://github.blog/ai-and-ml/feed/"
+    },
+    {
+      "name": "Spec Kit releases",
+      "url": "https://github.com/github/spec-kit/releases.atom"
+    },
+    {
+      "name": "AGENTS.md commits",
+      "url": "https://github.com/agentsmd/agents.md/commits/main.atom"
+    }
+  ],
+  "apis": [
+    {
+      "name": "Hacker News",
+      "type": "hn-algolia",
+      "queries": [
+        "coding agent",
+        "AGENTS.md",
+        "spec-driven development",
+        "agentic engineering",
+        "AI SDLC"
+      ]
+    },
+    {
+      "name": "arXiv cs.SE",
+      "type": "arxiv",
+      "query": "cat:cs.SE AND (all:\"coding agent\" OR all:agentic OR all:\"AI-assisted software\")"
+    }
+  ],
+  "targets": [
+    {
+      "name": "DORA publications",
+      "type": "page-hash",
+      "url": "https://dora.dev/research/publications/"
+    },
+    {
+      "name": "MCP spec versions",
+      "type": "page-hash",
+      "url": "https://modelcontextprotocol.io/specification/versioning"
+    },
+    {
+      "name": "typescript-eslint TS peer range",
+      "type": "npm-peer",
+      "pkg": "typescript-eslint",
+      "peer": "typescript"
+    }
+  ]
+}
