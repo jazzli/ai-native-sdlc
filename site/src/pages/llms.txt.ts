@@ -36,6 +36,7 @@ ${open.map(line).join('\n')}
 - [Playbook](${abs('/index.md')}): all positions in one document
 - [Source registry](${abs('/sources.md')}): tiered, filter-stated, primary-verified sources
 - [Research protocol](${abs('/protocol.md')}): the five rules governing this content
+- [Changelog feed](${abs('/changelog.xml')}): Atom feed of the registry's review log
 `;
   return new Response(body, {
     headers: { 'Content-Type': 'text/plain; charset=utf-8' },

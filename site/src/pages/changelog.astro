@@ -1,0 +1,43 @@
+---
+import Base from '../layouts/Base.astro';
+import { parseReviewLog } from '../lib/review-log';
+import { entryHtml, entryAnchor } from '../lib/changelog';
+import { CONTENT } from '../lib/site-config';
+
+const base = import.meta.env.BASE_URL;
+const entries = await Promise.all(
+  parseReviewLog(CONTENT.sourcesFile).map(async (e) => ({
+    ...e,
+    html: await entryHtml(e.markdown),
+    anchor: entryAnchor(e),
+  })),
+);
+const dates = [...new Set(entries.map((e) => e.date))];
+---
+
+<Base
+  title="Changelog"
+  description="What changed, when — generated from the source registry's own review log."
+>
+  <h1>Changelog</h1>
+  <p>
+    Generated from the registry's
+    <a href={`${base}/sources/#review-log`}>review log</a> — the same record the research
+    protocol maintains. Subscribe:
+    <a href={`${base}/changelog.xml`}>Atom feed</a>.
+  </p>
+  {
+    dates.map((date) => (
+      <>
+        <h2>{date}</h2>
+        <ul>
+          {entries
+            .filter((e) => e.date === date)
+            .map((e) => (
+              <li id={e.anchor} set:html={e.html} />
+            ))}
+        </ul>
+      </>
+    ))
+  }
+</Base>

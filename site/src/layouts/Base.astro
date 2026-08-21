@@ -34,6 +34,12 @@ const isPositions =
     <meta name="color-scheme" content="light dark" />
     <link rel="icon" href={favicon} />
     <link rel="canonical" href={canonicalURL} />
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="AI-Native SDLC changelog"
+      href={`${base}/changelog.xml`}
+    />
     <title>{pageTitle}</title>
     {description && <meta name="description" content={description} />}
     <meta property="og:type" content="article" />
@@ -54,6 +60,10 @@ const isPositions =
         <a
           href={`${base}/protocol/`}
           aria-current={on('protocol') ? 'page' : undefined}>Protocol</a
+        >
+        <a
+          href={`${base}/changelog/`}
+          aria-current={on('changelog') ? 'page' : undefined}>Changelog</a
         >
       </nav>
       <p class="strapline">Every position states what would overturn it.</p>
