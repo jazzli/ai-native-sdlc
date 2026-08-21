@@ -21,7 +21,14 @@
     "dora",
     "pair programming",
     "code review",
-    "llm"
+    "llm",
+    "智能体",
+    "大模型",
+    "ai编程",
+    "ai 编程",
+    "软件工程",
+    "代码生成",
+    "编程"
   ],
   "feeds": [
     {
@@ -57,6 +64,34 @@
     {
       "name": "AI Engineer talks (YouTube)",
       "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCLKPca3kwwd-B59HNr-_lvA"
+    },
+    {
+      "name": "Lenny's Podcast",
+      "url": "https://api.substack.com/feed/podcast/10845.rss"
+    },
+    {
+      "name": "Big Technology Podcast",
+      "url": "https://feeds.megaphone.fm/LI3617121267"
+    },
+    {
+      "name": "The AI Daily Brief",
+      "url": "https://anchor.fm/s/f7cac464/podcast/rss"
+    },
+    {
+      "name": "TMTPost 钛媒体",
+      "url": "https://www.tmtpost.com/feed"
+    },
+    {
+      "name": "硅谷101",
+      "url": "https://feeds.fireside.fm/sv101/rss"
+    },
+    {
+      "name": "乱翻书",
+      "url": "https://feed.xyzfm.space/yxuruh3f9mc4"
+    },
+    {
+      "name": "张小珺商业访谈录",
+      "url": "https://feed.xyzfm.space/dk4yh3pkpjp3"
     }
   ],
   "apis": [
