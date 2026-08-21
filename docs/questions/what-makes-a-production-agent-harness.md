@@ -1,7 +1,7 @@
 ---
 title: What surrounds agents where they actually ship production code?
 status: working-answer
-updated: 2026-08-20
+updated: 2026-08-21
 ---
 ## Question
 
@@ -11,10 +11,12 @@ surrounding system actually consist of?
 
 ## Current position
 
-Three first-party accounts now exist — OpenAI (~1M lines, zero
+Four first-party accounts now exist — OpenAI (~1M lines, zero
 manually-written code), Stripe (1,000+ fully agent-produced PRs weekly
-under $1T of payment volume), Ramp (~30% of merged PRs within months) —
-and they converge on five elements:
+under $1T of payment volume), Ramp (~30% of merged PRs within months), and
+Uber (84% of developers on agentic tools, 11% of PRs agent-opened, a named
+internal tool per harness element — and costs up 6× since 2024, the first
+account to volunteer a cost figure) — converging on five elements:
 
 1. **Isolated, pre-warmed, full-environment sandboxes** — Stripe's
    ten-second devboxes, Ramp's Modal sandboxes rebuilt every 30 minutes,
@@ -53,6 +55,10 @@ model is that note's position; OpenAI's is its falsifier in progress.
   Toolshed, human-review-mandatory, imperfect runs acknowledged.
 - [ramp-inspect-2026](../../sources.md#ramp-inspect-2026) — full
   environment parity, self-closing verification loop, build-over-buy.
+- [uber-2026](../../sources.md#uber-2026) — the fourth account, at the
+  largest org scale; figures via access-journalism rather than a
+  first-party post, stated as such. The 6× cost growth is the evidence
+  class the other three omit.
 - [apostolou-2026](../../sources.md#apostolou-2026) — the field's blocker
   is absent output verification; these harnesses are, structurally, that
   gap being closed by the companies past it.

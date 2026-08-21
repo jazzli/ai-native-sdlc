@@ -49,6 +49,7 @@ read it before citing a figure.
 | <a id="apostolou-2026"></a>[Agentic AI in Industry: Adoption Level and Deployment Barriers](https://arxiv.org/abs/2605.14675) (Apostolou, Bosch, Holmström Olsson) | 16 practitioners across 12 companies on a six-level maturity framework: 7 at L1 (AI assistants), 4 at L2, **1 at L3 (multi-agent orchestration)**. Names the capability–deployment **verification gap**: 4 companies hold higher-level experimental capabilities they cannot productionize because output verification mechanisms are absent | **Filter:** qualitative methodology stated (n=16/12) ✓; reports barriers, not wins ✓; primary ✓. Small n — treat as existence proof and direction, not as rates. Verified at abstract 2026-08-20 |
 | <a id="spracklen-2025"></a>[We Have a Package for You! A Comprehensive Analysis of Package Hallucinations by Code Generating LLMs](https://arxiv.org/abs/2406.10279) (Spracklen et al., USENIX Security 2025) | 576,000 code samples across 16 LLMs in two languages: hallucinated-package rates of **at least 5.2% (commercial) and 21.7% (open-source)**; 205,474 unique hallucinated names — the substrate of slopsquatting supply-chain attacks | **Filter:** passes all three — methodology published, the adverse finding is the content, primary. Figures verified at abstract 2026-08-20. The repeatability claim (43% of names recur on every rerun) is in the paper body, relayed here via secondaries — verify before citing it |
 | <a id="faros-2026"></a>[AI Engineering Report 2026: The Acceleration Whiplash](https://www.faros.ai/research/ai-acceleration-whiplash) (Faros AI) | Telemetry from 22,000 developers across 4,000 teams, two years, within-org low-vs-high AI-adoption comparison. Throughput up: epics **+66.2%**, tasks **+33.7%**, PR merge rate **+16.2%**. Quality down: bugs/developer **+54%**, bugs/PR +28%, incidents/PR **+242.7%**, median review time **5×**, code churn 10×, PR size +51% | Its sharpest claim: **"engineering maturity is not a shield"** — high performers showed similar instability patterns, which the report itself frames as contradicting DORA 2025. Construct caveat: DORA's amplifier is about organizational performance; Faros measures delivery-instability telemetry — tension, not a clean refutation. **Filter:** methodology published (sample, source, comparison design) ✓; adverse findings are the content ✓; primary (vendor telemetry, self-published) ✓. Verified at the report page 2026-08-21; secondaries date publication ~April 2026 |
+| <a id="gao-chen-2026"></a>[From Agent Behaviour to Agent-Friendly Documentation: An Empirical Study of How Coding Agents Discover, Read, and Write Technical Documentation](https://arxiv.org/abs/2608.20195) (Gao & Chen) | 557 agentic sessions (94,813 events, 3,033 doc interactions) + 33,097 agentic PRs (690,260 file-change records). **Instruction files and working notes take 60.5% of all agent documentation interactions** vs 10.6% for classical docs and 1.3% for API references; consultation→editing linkage is weak (adjacent transition 0.002, OR 1.33); consultation associates with **less** immediate testing (lift 0.23); 70.2% of consultation is self-initiated vs 7.5% failure-driven; code changes precede doc changes 4.7× | **Filter:** passes all three — methodology and scale published, negative findings central, primary with released pipeline and event data. Verified at abstract 2026-08-21. Surfaced by the daily discovery sweep the day it was submitted |
 
 ---
 
@@ -85,10 +86,14 @@ How people actually work, from people who actually ship.
   an executable, version-controlled spec is the source of truth, not the code.
   Read the primary repos, not the roundup blogs — [GitHub Spec Kit](https://github.com/github/spec-kit),
   AWS Kiro, OpenSpec, BMAD, Tessl.
-  **Negative finding (checked 2026-08-19):** Spec Kit's repo publishes no efficacy
-  data of any kind — no percentages, no iteration counts, no comparison against
-  ad-hoc prompting. The order-of-magnitude rework reduction widely attributed to
-  GitHub's internal use of it appears only in secondary blogs, never in the repo.
+  **Negative finding (checked 2026-08-19, re-verified at the 1.0.0 release
+  2026-08-21):** Spec Kit publishes no efficacy data of any kind — no
+  percentages, no iteration counts, no comparison against ad-hoc prompting.
+  The order-of-magnitude rework reduction widely attributed to GitHub's
+  internal use of it appears only in secondary blogs, never in the repo.
+  The 1.0.0 release also explicitly rejects traditional stability
+  semantics ("ours is more of a wave"), on the anecdotal claim that
+  AI-driven migration makes compatibility promises unnecessary.
   Academic taxonomy: [From Prompt to Process](https://arxiv.org/abs/2606.04967) —
   a six-dimension taxonomy (specification, context, roles, execution, validation,
   portability) assessed over six frameworks: Spec Kit, OpenSpec, BMAD, Get Shit
@@ -148,6 +153,19 @@ How people actually work, from people who actually ship.
   code." **Filter:** primary for its own practice; self-reported, and
   reports no limits at all — fails the null-results question hardest of the
   three. Verified at the post 2026-08-20
+
+- <a id="uber-2026"></a>**[Agentic SDLC at Uber](https://www.youtube.com/watch?v=17-YSUHo6Lk)**
+  (Medisetty & Huda, AI Engineer talk, 2026; figures via
+  [The Pragmatic Engineer's inside look](https://newsletter.pragmaticengineer.com/p/how-uber-uses-ai-for-development),
+  Mar 2026, interviews with named Uber engineers.) Scale self-report: 84% of
+  developers on agentic coding tools, 65–72% of IDE-tool code AI-generated,
+  92% using agents monthly, 11% of PRs agent-opened, Claude Code adoption
+  32%→63% in two months — and **AI-related costs up 6× since 2024**, the one
+  adverse datum. Internal harness tooling named: Minion (background agents),
+  Shepherd (migrations), uReview (AI review), Autocover (5,000+ generated
+  tests/month). **Filter:** talk primary for its own practice; figures via
+  access-journalism secondary (partially paywalled) — self-reported, no
+  methodology. Verified 2026-08-21
 
 ---
 
@@ -239,6 +257,7 @@ If it passes none, it goes in Tier 5 or not at all.
 | Date | Action |
 | --- | --- |
 | 2026-08-19 | Initial compilation |
+| 2026-08-21 | First discovery-queue triage: gao-chen-2026 admitted (behavioral evidence on agent documentation use, surfaced same-day by the sweep) and uber-2026 admitted (fourth first-party harness account); Spec Kit negative finding re-verified at its 1.0.0 milestone; MCP page change checked — no new revision |
 | 2026-08-21 | Discovery layer added: a free daily workflow now sweeps practitioner feeds (blogs, HN, arXiv, releases, podcasts) and change-detection targets into a triage queue — closing the gap between monthly falsifier research and where field wisdom first appears. Discovery is not admission: the signal filter still gates entry |
 | 2026-08-21 | Colophon published: the repo's own build history as a case study — every playbook practice mapped to its commit/PR receipts, non-exercised positions stated, with its own falsifier section |
 | 2026-08-21 | **Falsifier movement — first post-launch registry change**: faros-2026 admitted (22k-developer telemetry; throughput up, instability up, and "engineering maturity is not a shield"). The preconditions note's replication falsifier has partially triggered; confidence downgraded there, and the delivery-impact note gains independent corroboration plus a new tension. Surfaced by the falsifier watch's first run |
