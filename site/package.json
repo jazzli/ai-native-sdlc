@@ -8,9 +8,9 @@
     "preview": "astro preview",
     "test": "vitest run",
     "typecheck": "astro sync && tsc --noEmit",
-    "lint": "eslint .",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
+    "lint": "eslint . && eslint --config ../watch/eslint.config.js ../watch/discover.mjs ../watch/lib.mjs",
+    "format": "prettier --write . ../watch/discover.mjs ../watch/lib.mjs ../watch/watchlist.json",
+    "format:check": "prettier --check . ../watch/discover.mjs ../watch/lib.mjs ../watch/watchlist.json",
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
