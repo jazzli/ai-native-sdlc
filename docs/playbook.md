@@ -73,7 +73,12 @@ more code through broken gates, faster: amplified dysfunction, and the
 deep end of the ROI J-curve with no climb out. Adaptation is real — AI's
 throughput relationship flipped positive between DORA's 2024 and 2025 data
 — but instability stayed elevated, and only a fifth of surveyed teams sit
-in the top archetype. Cap agents at
+in the top archetype. And the claim now carries live counter-evidence:
+independent telemetry across 22,000 developers finds high-maturity
+organizations showing similar instability growth — "engineering maturity
+is not a shield." The constructs differ enough that this is tension, not
+refutation, but this position's confidence is formally downgraded until
+a second replication settles it. Cap agents at
 individual-assist until the foundations hold. That agents themselves are
 the highest-leverage tool for fixing those foundations — test debt, CI
 speed — is inference here, not a cited finding; no cited source makes
@@ -83,11 +88,14 @@ that claim directly.
 ## Expect throughput before stability
 
 AI adoption now improves delivery throughput — a 2024→2025 sign flip in
-DORA's data, independently corroborated by Atlassian's matched customer
-study — but it still raises delivery instability, and unmanaged instability
-can negate the throughput gains downstream. Treat that gap as the work:
-value stream management and platform quality are DORA's named multipliers
-for turning local speed into delivered value. And budget for the J-curve's
+DORA's data, corroborated by Atlassian's matched study and now by Faros
+telemetry across 22,000 developers — but it still raises delivery
+instability (bugs per developer +54%, incidents per PR tripled, in the
+same telemetry), and unmanaged instability can negate the throughput gains
+downstream. Treat that gap as the work — while knowing the remedy is now
+contested: the same telemetry finds mature engineering organizations not
+visibly protected. Named multipliers, held more lightly than before:
+value stream management and platform quality, per DORA. And budget for the J-curve's
 dip as tuition, not failure — it decomposes into a learning curve, a
 verification tax, and pipeline adaptation.
 → [why, and what would change this](questions/does-ai-adoption-improve-delivery.md)
