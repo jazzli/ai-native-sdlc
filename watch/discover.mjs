@@ -35,8 +35,12 @@ const sanitize = (s) =>
     .replace(/@/g, '@\u200b');
 const safeLink = (u) =>
   /^https?:\/\//.test(u) ? u.replace(/\)/g, '%29').replace(/\s/g, '%20') : '';
+const seen = new Set();
 const entry = (label, title, link) => {
   const l = safeLink(link);
+  const key = l || title;
+  if (seen.has(key)) return; // two queries can surface the same item
+  seen.add(key);
   findings.push(l ? `- **${label}**: [${sanitize(title)}](${l})` : `- **${label}**: ${sanitize(title)}`);
 };
 
