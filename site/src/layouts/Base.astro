@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import { SITE_ORIGIN } from '../lib/site-config';
+import { ogSlug } from '../lib/og-slug';
 interface Props {
   title: string;
   description?: string;
@@ -14,6 +15,7 @@ const path = Astro.url.pathname;
 // so the canonical URL is just the origin plus that — prepending SITE_BASE
 // again would double it up.
 const canonicalURL = `${SITE_ORIGIN}${path}`;
+const ogCard = ogSlug(path, base);
 const pageTitle = `${title} · AI-Native SDLC`;
 // Inline SVG favicon — the falsifier's ink ground with the status marker at
 // its centre. A data URI, so the page still makes no external request and the
@@ -45,6 +47,19 @@ const isPositions =
     <meta property="og:type" content="article" />
     <meta property="og:title" content={pageTitle} />
     {description && <meta property="og:description" content={description} />}
+    {
+      ogCard && (
+        <>
+          <meta
+            property="og:image"
+            content={`${SITE_ORIGIN}${base}/og/${ogCard}.png`}
+          />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
+          <meta name="twitter:card" content="summary_large_image" />
+        </>
+      )
+    }
   </head>
   <body>
     <header class="masthead">
