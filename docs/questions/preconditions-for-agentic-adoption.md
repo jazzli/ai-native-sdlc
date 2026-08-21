@@ -1,7 +1,7 @@
 ---
 title: What must be true of a team before agentic adoption amplifies rather than degrades?
 status: working-answer
-updated: 2026-08-20
+updated: 2026-08-21
 ---
 ## Question
 
@@ -41,6 +41,16 @@ harmonious high-achiever archetype against 38% across the three struggling
 ones (foundational challenges 10%, legacy bottleneck 11%, constrained by
 process 17%) — most teams are at or below the bar this note describes.
 
+**Confidence downgraded 2026-08-21.** The replication falsifier below has
+partially triggered: Faros telemetry (22,000 developers, independent of
+DORA's survey population) finds **"engineering maturity is not a shield"** —
+high performers showed similar instability growth under heavy AI adoption.
+This is tension, not refutation: DORA's amplifier concerns organizational
+performance and value, Faros measures delivery-instability telemetry, and
+the constructs differ. But the strong reading of this note — that
+foundations reliably convert agent throughput into stable delivery — can no
+longer be stated without this counter-evidence beside it.
+
 Teams below the bar should cap agents at individual-assist level while
 fixing foundations. That agents themselves are the highest-leverage tool
 for fixing those foundations — test debt, CI speed — is this note's
@@ -67,6 +77,9 @@ inference; no cited source makes the claim.
   foundations are what made adoption pay.
 - [forrester-2026](../../sources.md#forrester-2026) — orchestrated-SDLC
   framing; adoption staging toward end-to-end automation.
+- [faros-2026](../../sources.md#faros-2026) — the counter-evidence:
+  maturity-not-a-shield from independent telemetry; see the confidence
+  downgrade above.
 
 ## What would change my mind
 
@@ -74,4 +87,7 @@ inference; no cited source makes the claim.
   building the foundations bottom-up at scale, making preconditions
   endogenous rather than prior.
 - Amplifier-effect data failing to replicate outside DORA's survey
-  population.
+  population. **Partially triggered 2026-08-21** (faros-2026,
+  maturity-not-a-shield); a second independent replication failure, or
+  DORA's own data showing high-maturity orgs suffering equal instability,
+  would flip this note to open.

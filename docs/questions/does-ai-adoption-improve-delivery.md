@@ -1,7 +1,7 @@
 ---
 title: Does AI adoption actually improve software delivery performance?
 status: working-answer
-updated: 2026-08-20
+updated: 2026-08-21
 ---
 ## Question
 
@@ -28,6 +28,15 @@ organizational performance"). Atlassian's propensity-matched customer data
 (19% more merged PRs) corroborates the throughput half from an independent
 dataset; it says nothing about stability.
 
+**Strengthened and complicated 2026-08-21.** Faros telemetry (22,000
+developers) independently replicates BOTH halves — throughput up (epics
++66.2%, tasks +33.7%), instability up (bugs/developer +54%, incidents/PR
++242.7%, review time 5×) — the strongest outside-DORA confirmation this
+note has. But it also cuts against the "net is decided by systems spend"
+clause: Faros finds high-maturity organizations showing similar instability
+patterns, so whether spending on foundations actually buys the translation
+is now contested rather than assumed.
+
 ## Evidence
 
 - [dora-2025](../../sources.md#dora-2025) — the 2024→2025 sign flips;
@@ -39,6 +48,9 @@ dataset; it says nothing about stability.
   framed as "the tuition cost of transformation," before returns.
 - [atlassian-2026](../../sources.md#atlassian-2026) — 19% more merged PRs
   under a matched design; throughput only, no stability measure.
+- [faros-2026](../../sources.md#faros-2026) — independent two-sided
+  replication (throughput up, instability up) plus the
+  maturity-not-a-shield finding that contests the systems-spend clause.
 
 ## What would change my mind
 
