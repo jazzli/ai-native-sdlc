@@ -1,7 +1,7 @@
 ---
 title: Does spec-driven development actually reduce rework and drift?
 status: working-answer
-updated: 2026-08-20
+updated: 2026-08-21
 ---
 ## Question
 
@@ -33,7 +33,8 @@ one-line fixes.
 
 - [sdd-2026](../../sources.md#sdd-2026) — consolidation across GitHub Spec
   Kit, AWS Kiro, OpenSpec, BMAD, Tessl; the From Prompt to Process taxonomy.
-  Carries no efficacy statistics — its own guidance is to read the primary
+  Carries no efficacy statistics (re-verified at Spec Kit's 1.0.0
+  milestone, 2026-08-21) — its own guidance is to read the primary
   repos, not the roundup blogs where the rework figure circulates. The
   taxonomy paper (read 2026-08-20) supports the mechanism: frameworks
   converge on persistent artifacts, traceability, and human review as

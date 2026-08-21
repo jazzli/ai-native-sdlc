@@ -1,7 +1,7 @@
 ---
 title: Do AGENTS.md-style context files actually pay off?
 status: working-answer
-updated: 2026-08-20
+updated: 2026-08-21
 ---
 ## Question
 
@@ -38,6 +38,12 @@ Expect cheaper runs, not better ones.
   a paired design, with correctness explicitly unevaluated.
 - [agents-md](../../sources.md#agents-md) — adoption scale and format
   context (60k+ repos; the spec itself).
+- [gao-chen-2026](../../sources.md#gao-chen-2026) — behavioral
+  corroboration at scale: instruction files dominate agent documentation
+  interactions (60.5% of all), yet consultation links only weakly to the
+  editing that follows (adjacent transition 0.002, OR 1.33) and associates
+  with *less* immediate testing — heavy use, thin measurable payoff, from
+  an independent method.
 - [openai-harness-2026](../../sources.md#openai-harness-2026) — first-party
   corroboration at scale: "one big AGENTS.md" failed in predictable ways
   (context crowding, guidance dilution, instant rot, unverifiability) and
