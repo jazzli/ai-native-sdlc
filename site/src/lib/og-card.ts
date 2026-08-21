@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import path from 'node:path';
 import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
 
@@ -20,8 +21,13 @@ const C = {
   parked: '#9a9a9a',
 };
 
+// Read from the project root (site/), not via import.meta.url: Astro's
+// prerender build step for API-route getStaticPaths bundles/relocates this
+// module into dist/.prerender/chunks/, which breaks a URL resolved relative
+// to the module's own location. process.cwd() is the site/ root for both
+// astro (dev/build) and vitest, matching CONTENT's path convention below.
 const fontFile = (f: string) =>
-  fs.readFileSync(new URL(`../og-fonts/${f}`, import.meta.url));
+  fs.readFileSync(path.join(process.cwd(), 'src/og-fonts', f));
 const FONTS = [
   {
     name: 'Inter',
