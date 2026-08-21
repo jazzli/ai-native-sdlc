@@ -239,6 +239,7 @@ If it passes none, it goes in Tier 5 or not at all.
 | Date | Action |
 | --- | --- |
 | 2026-08-19 | Initial compilation |
+| 2026-08-21 | Colophon published: the repo's own build history as a case study — every playbook practice mapped to its commit/PR receipts, non-exercised positions stated, with its own falsifier section |
 | 2026-08-21 | **Falsifier movement — first post-launch registry change**: faros-2026 admitted (22k-developer telemetry; throughput up, instability up, and "engineering maturity is not a shield"). The preconditions note's replication falsifier has partially triggered; confidence downgraded there, and the delivery-impact note gains independent corroboration plus a new tension. Surfaced by the falsifier watch's first run |
 | 2026-08-20 | **Site launched**: repo public, Pages live at jazzli.github.io/ai-native-sdlc, first deploy green, required checks (site-build, linkChecker) active on main |
 | 2026-08-20 | Harness pass: openai-harness-2026, stripe-minions-2026, ramp-inspect-2026 admitted (all primary-verified first-party accounts); harness note seeded; OpenAI's big-AGENTS.md failure added to the context-files note as corroboration |
