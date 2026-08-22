@@ -45,7 +45,11 @@ five rules) before changing content.
   unaffected, so this misleads only locally — which is where it matters,
   since it is where the change is being judged.
 - Work on a feature branch; open a PR; CI must pass. Commits end with a
-  `Co-Authored-By:` trailer.
+  `Co-Authored-By:` trailer. This is enforced on `main`, not merely asked:
+  a direct push is refused with `GH013`, `site-build` and `linkChecker`
+  must be green, and the branch cannot be force-pushed or deleted. No
+  approving review is required — GitHub does not permit self-approval, so
+  a non-zero count would deadlock a single-maintainer repository.
 - One-time setup: `git config core.hooksPath .githooks` — the pre-commit
   hook checks note shape and internal links. Never bypass it with
   `--no-verify`.
