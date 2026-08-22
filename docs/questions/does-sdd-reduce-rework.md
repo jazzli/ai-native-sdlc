@@ -36,7 +36,7 @@ one-line fixes.
   it saves, so a check demanding a spec for every change would be wrong in
   exactly the cases the position excludes.
 - The observable proxy is ordering, not existence. Specs live in
-  `docs/superpowers/specs/` under version control, and a spec whose commit
+  `docs/design/` under version control, and a spec whose commit
   postdates the work it describes is a reconstruction. `git log` answers
   that without new tooling.
 - The human checkpoint sits at the start of feature-sized work: agree the
