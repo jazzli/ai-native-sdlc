@@ -1,0 +1,30 @@
+---
+// A note that reaches a working answer moves from /questions/ to /positions/,
+// which breaks every link already made to it — the outcome the falsifier
+// watch exists to produce. Every note is therefore published at both paths:
+// its current section renders the note, the other redirects here.
+//
+// Meta refresh rather than script: the rendered-output tests forbid inline
+// script on any page, and a redirect that needs JS fails exactly the readers
+// least able to recover from it.
+interface Props {
+  to: string;
+  title: string;
+}
+const { to, title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Moved — {title}</title>
+    <meta http-equiv="refresh" content={`0; url=${to}`} />
+    <link rel="canonical" href={to} />
+    <meta name="robots" content="noindex, follow" />
+  </head>
+  <body>
+    <p>This note is now at <a href={to}>{to}</a>.</p>
+  </body>
+</html>

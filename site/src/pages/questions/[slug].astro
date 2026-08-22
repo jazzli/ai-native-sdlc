@@ -1,16 +1,30 @@
 ---
 import { getCollection, render } from 'astro:content';
 import NoteLayout from '../../layouts/NoteLayout.astro';
+import Redirect from '../../layouts/Redirect.astro';
+import { kindFor } from '../../lib/note-route';
 
+// Every note is built under both sections. The one matching its status
+// renders; the other redirects to it, so a link made before a status change
+// still resolves. See Redirect.astro.
 export async function getStaticPaths() {
-  const notes = await getCollection(
-    'notes',
-    (n) => n.data.status !== 'working-answer',
-  );
-  return notes.map((note) => ({ params: { slug: note.id }, props: { note } }));
+  const notes = await getCollection('notes');
+  return notes.map((note) => ({
+    params: { slug: note.id },
+    props: { note, canonical: kindFor(note.data.status) === 'questions' },
+  }));
 }
-const { note } = Astro.props;
-const { Content } = await render(note);
+const { note, canonical } = Astro.props;
+const { Content } = canonical ? await render(note) : { Content: null };
+const to = `${import.meta.env.BASE_URL}/${kindFor(note.data.status)}/${note.id}/`;
 ---
 
-<NoteLayout note={note}><Content /></NoteLayout>
+{
+  canonical && Content ? (
+    <NoteLayout note={note}>
+      <Content />
+    </NoteLayout>
+  ) : (
+    <Redirect to={to} title={note.data.title} />
+  )
+}

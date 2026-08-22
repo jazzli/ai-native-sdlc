@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
 import { SITE_ORIGIN, SITE_BASE } from '../lib/site-config';
+import { kindFor } from '../lib/note-route';
 
 export const GET: APIRoute = async () => {
   // Collection order is a loader implementation detail (it changed between
@@ -10,12 +11,12 @@ export const GET: APIRoute = async () => {
   );
   const abs = (p: string) => `${SITE_ORIGIN}${SITE_BASE}${p}`;
   const line = (n: (typeof notes)[number]) => {
-    const kind = n.data.status === 'working-answer' ? 'positions' : 'questions';
+    const kind = kindFor(n.data.status);
     const date = n.data.updated.toISOString().slice(0, 10);
     return `- [${n.data.title}](${abs(`/${kind}/${n.id}.md`)}): ${n.data.status}, updated ${date}`;
   };
-  const positions = notes.filter((n) => n.data.status === 'working-answer');
-  const open = notes.filter((n) => n.data.status !== 'working-answer');
+  const positions = notes.filter((n) => kindFor(n.data.status) === 'positions');
+  const open = notes.filter((n) => kindFor(n.data.status) === 'questions');
 
   const body = `# AI-Native SDLC
 

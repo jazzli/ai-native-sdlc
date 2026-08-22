@@ -2,11 +2,12 @@ import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { SITE_ORIGIN, SITE_BASE, CONTENT } from './site-config';
+import { kindFor, type Status } from './note-route';
 
 export interface ManifestPosition {
   id: string;
   title: string;
-  status: 'working-answer' | 'open' | 'parked';
+  status: Status;
   updated: string;
   digest: string;
   url: string;
@@ -64,7 +65,7 @@ export function buildManifest(
     .sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
     .map((n) => {
       const source = readNote(n.id);
-      const kind = n.status === 'working-answer' ? 'positions' : 'questions';
+      const kind = kindFor(n.status);
       return {
         id: n.id,
         title: n.title,
