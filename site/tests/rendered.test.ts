@@ -214,9 +214,28 @@ describe.skipIf(!built)('adoption contract artifacts', () => {
   });
 
   it('serves a digest identical to the manifest, so a check cannot go stale', () => {
-    expect(read('positions.digest').trim()).toBe(
+    expect(read('positions.digest.txt').trim()).toBe(
       JSON.parse(read('positions.json')).digest,
     );
+  });
+
+  // Pages types by extension and offers no override, so `.digest` was served
+  // as application/octet-stream. `.txt` is canonical; the original URL stays
+  // because it was published in the drift check on /adopt. The two must never
+  // disagree — an adopter on either one compares against the same string.
+  it('keeps the retained .digest alias byte-identical to the canonical one', () => {
+    expect(read('positions.digest')).toBe(read('positions.digest.txt'));
+  });
+
+  it('wires the published drift check to the correctly-typed endpoint', () => {
+    // Two sh blocks are published: the starter download and the drift check.
+    // Assert against the one that fetches a digest, not whichever comes first.
+    const blocks = [...read('adopt.md').matchAll(/```sh\n([\s\S]*?)```/g)].map(
+      (m) => m[1],
+    );
+    const drift = blocks.filter((b) => b.includes('digest'));
+    expect(drift, 'a drift-check block is published').toHaveLength(1);
+    expect(drift[0]).toContain('positions.digest.txt');
   });
 
   it('pins a schema version downstream parsers can check', () => {

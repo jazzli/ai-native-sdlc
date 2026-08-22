@@ -143,9 +143,12 @@ prose, which is where this reliably breaks.
 
 ## Checking for drift
 
-`positions.digest` serves the top-level digest as bare text, so the common
-case is one string compared against another — no JSON parsed in shell, where
-key order and whitespace quietly become load-bearing.
+`positions.digest.txt` serves the top-level digest as bare text, so the
+common case is one string compared against another — no JSON parsed in shell,
+where key order and whitespace quietly become load-bearing. The older
+`positions.digest` still serves the same bytes; it is typed
+`application/octet-stream` because GitHub Pages types by extension, which is
+why the `.txt` form is the one to wire up.
 
 Exit codes are `0` unchanged, `1` moved, `2` check failed. They are distinct
 deliberately: a site you cannot reach is not a playbook that changed, and a
@@ -156,7 +159,7 @@ check that conflates them trains you to ignore it.
 BASE=https://jazzli.github.io/ai-native-sdlc
 LOCK=docs/sdlc-upstream.json
 
-LIVE=$(curl -fsS "$BASE/positions.digest") || {
+LIVE=$(curl -fsS "$BASE/positions.digest.txt") || {
   echo "drift check failed: cannot reach $BASE" >&2
   exit 2
 }
@@ -174,8 +177,8 @@ exit 1
 ```
 
 Only the naming half needs `jq`. If you would rather add no dependency, the
-first three lines stand alone: compare `positions.digest` against the digest
-you recorded and read the manifest by hand when it moves.
+first three lines stand alone: compare `positions.digest.txt` against the
+digest you recorded and read the manifest by hand when it moves.
 
 ## What you are adopting
 

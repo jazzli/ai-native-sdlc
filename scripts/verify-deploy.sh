@@ -26,7 +26,13 @@ while [ $i -lt 10 ]; do
 done
 
 json=$(curl -fsS "$BASE/positions.json") || { echo "positions.json unreachable"; exit 1; }
-digest=$(curl -fsS "$BASE/positions.digest" | tr -d '\n\r ')
+digest=$(curl -fsS "$BASE/positions.digest.txt" | tr -d '\n\r ')
+alias_digest=$(curl -fsS "$BASE/positions.digest" | tr -d '\n\r ')
+# Pages types by extension with no override available, so the content type is
+# a property of publication that no build test can see. The drift check reads
+# this with curl and is indifferent, but a browser downloads octet-stream
+# rather than showing it and some clients refuse it outright.
+ctype=$(curl -s -o /dev/null -w '%{content_type}' "$BASE/positions.digest.txt")
 lock=$(curl -fsS "$BASE/starter/sdlc-upstream.json")
 
 manifest_digest=$(printf '%s' "$json" | python3 -c 'import json,sys;print(json.load(sys.stdin)["digest"])')
@@ -35,8 +41,19 @@ lock_digest=$(printf '%s' "$lock" | python3 -c 'import json,sys;print(json.load(
 # The drift check every adopter runs compares these two strings. If they ever
 # disagree, every downstream check reports drift that did not happen.
 [ "$digest" = "$manifest_digest" ] \
-  && note "positions.digest == manifest digest" "ok ($digest)" \
-  || bad "positions.digest == manifest digest" "$digest vs $manifest_digest"
+  && note "positions.digest.txt == manifest digest" "ok ($digest)" \
+  || bad "positions.digest.txt == manifest digest" "$digest vs $manifest_digest"
+
+# The retained alias must never drift from the canonical endpoint: adopters
+# who wired the original URL compare against the same string.
+[ "$alias_digest" = "$digest" ] \
+  && note "positions.digest alias agrees" "ok" \
+  || bad "positions.digest alias agrees" "$alias_digest vs $digest"
+
+case "$ctype" in
+  text/plain*) note "positions.digest.txt content type" "ok ($ctype)" ;;
+  *) bad "positions.digest.txt content type" "$ctype, expected text/plain" ;;
+esac
 
 # A starter downloaded today must not report drift the moment it is wired up.
 [ "$lock_digest" = "$manifest_digest" ] \
