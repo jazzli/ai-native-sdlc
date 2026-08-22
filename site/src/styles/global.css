@@ -585,6 +585,28 @@ footer:not(:has(a)) {
   border: 0;
 }
 
+/* Bypass block (WCAG 2.4.1). Every page puts a masthead, strapline and
+   four nav links ahead of the prose; without this a keyboard or screen
+   reader user tabs through all of it on every page. Off-screen until
+   focused, then rendered in the falsifier slab's ink so it is unmistakable. */
+.skip {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 10;
+}
+.skip:focus {
+  left: 0;
+  padding: 0.6rem 1rem;
+  background: var(--slab-bg);
+  color: var(--slab-fg);
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  text-decoration: none;
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 /* --- Motion --------------------------------------------------------------- */
 @media (prefers-reduced-motion: no-preference) {
   a,
