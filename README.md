@@ -37,6 +37,8 @@ missing its falsifier section.
   agent-ingestible (raw markdown variants + `llms.txt`), zero client JS
 - [watch/](watch/) — the daily discovery sweep: practitioner feeds, Hacker
   News, arXiv, releases, and change-detection targets into a triage queue
+- [docs/design/](docs/design/) — design records, and the historical
+  implementation plans that followed them
 - [AGENTS.md](AGENTS.md) — working rules for coding agents in this repo
 
 ## Adopting this

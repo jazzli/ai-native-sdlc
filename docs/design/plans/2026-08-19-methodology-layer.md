@@ -4,15 +4,13 @@
 > It documents how the change was built, not current intent. The shipped
 > code is authoritative where the two differ.
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
-
 **Goal:** Build the research content engine for ai-native-sdlc: protocol, four seeded question notes, full-prose playbook, citekey anchors in the source registry, and lychee link-checking in CI.
 
 **Architecture:** Three plain-markdown layers connected by a hard traceability chain — `docs/playbook.md → docs/questions/*.md → sources.md#<citekey> → primary source`. lychee in GitHub Actions mechanically enforces the chain. No generators, no databases.
 
 **Tech Stack:** Markdown, YAML frontmatter (3 fields), GitHub Actions, lychee (via lycheeverse/lychee-action).
 
-**Spec:** `docs/superpowers/specs/2026-08-19-methodology-layer-design.md`
+**Spec:** `docs/design/2026-08-19-methodology-layer.md`
 
 ## Global Constraints
 
@@ -640,7 +638,7 @@ max_retries = 2
 # Bot-hostile hosts return 403/429 to CI runners; a rot check should not
 # fail on anti-bot responses.
 accept = ["200..=299", "403", "429"]
-exclude_path = ["docs/superpowers"]
+exclude_path = ["docs/design"]
 ```
 
 - [ ] **Step 2: Write .github/workflows/links.yml with exactly this content**

@@ -10,7 +10,7 @@ the repo's full history goes public. Order matters.
 - [ ] Merge PR #6 if not already merged.
 - [ ] Re-read the public-history audit (final review, 2026-08-20): no secrets,
       no real emails, `.superpowers/` never tracked. Two deliberate exposures
-      to be comfortable with: `docs/superpowers/**` (plans/specs go public)
+      to be comfortable with: `docs/design/**` (plans/specs go public)
       and the registry's on-the-record vendor critiques (Forrester, Anthropic
       trends report, the Spec Kit figure). Both are the repo's posture; just
       confirm it consciously.
