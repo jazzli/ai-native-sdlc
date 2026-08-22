@@ -1,6 +1,9 @@
 {
   "name": "ai-native-sdlc-site",
   "private": true,
+  "engines": {
+    "node": ">=22 <23"
+  },
   "type": "module",
   "scripts": {
     "dev": "astro dev",
