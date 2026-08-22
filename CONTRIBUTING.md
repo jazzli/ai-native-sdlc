@@ -45,7 +45,8 @@ npm run lint && npm run typecheck && npm run format:check
 ```
 
 One-time setup: `git config core.hooksPath .githooks`. The pre-commit hook
-checks note shape and internal links; do not bypass it with `--no-verify`.
+checks note shape and internal links, and the commit-msg hook checks the
+subject line. Do not bypass either with `--no-verify`.
 
 Work on a branch and open a pull request. `main` requires both status checks
 to pass and cannot be pushed to directly. Pull requests state why the change

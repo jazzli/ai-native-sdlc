@@ -1,0 +1,31 @@
+#!/bin/sh
+# Commit-message conventions from AGENTS.md. The subject becomes permanent
+# history; a squash merge takes it from the pull request title instead, which
+# CI checks separately.
+subject=$(sed -n '1p' "$1")
+fail=0
+
+# Ignore the message git generates for a merge or a fixup.
+case "$subject" in Merge\ *|fixup!\ *|squash!\ *) exit 0 ;; esac
+
+len=${#subject}
+if [ "$len" -gt 72 ]; then
+  echo "commit-msg: subject is $len characters, limit is 72:"
+  echo "  $subject"
+  fail=1
+fi
+
+case "$subject" in *.) echo "commit-msg: subject ends with a period"; fail=1 ;; esac
+
+# Trailer lines only — a body that discusses the convention is fine.
+if grep -qE '^(Co-Authored-By|Co-authored-by):.*(Claude|GPT|Copilot|Gemini|Cursor)' "$1"; then
+  echo "commit-msg: model co-author trailer. AI authorship is disclosed once"
+  echo "  in the README, not per commit. See AGENTS.md."
+  fail=1
+fi
+if grep -qiE 'generated with \[?(claude|copilot|cursor|gemini)' "$1"; then
+  echo "commit-msg: tool-attribution footer. See AGENTS.md."
+  fail=1
+fi
+
+exit $fail
