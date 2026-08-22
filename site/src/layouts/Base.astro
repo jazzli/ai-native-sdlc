@@ -62,6 +62,7 @@ const isPositions =
     }
   </head>
   <body>
+    <a class="skip" href="#main">Skip to content</a>
     <header class="masthead">
       <a class="wordmark" href={`${base}/`}>AI-Native SDLC</a>
       <nav aria-label="Sections">
@@ -83,7 +84,7 @@ const isPositions =
       </nav>
       <p class="strapline">Every position states what would overturn it.</p>
     </header>
-    <main class={variant}><slot /></main>
+    <main id="main" class={variant}><slot /></main>
     <footer>
       <a
         href={`${base}/colophon/`}

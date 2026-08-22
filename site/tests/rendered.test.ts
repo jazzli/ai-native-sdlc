@@ -108,6 +108,14 @@ describe.skipIf(!built)('rendered output', () => {
     expect(fs.existsSync(path.join(DIST, 'changelog.xml'))).toBe(true);
   });
 
+  it('offers a skip-to-content link targeting main on every page', () => {
+    for (const p of allPages) {
+      const html = read(p);
+      expect(html, p).toContain('class="skip" href="#main"');
+      expect(html, p).toContain('<main id="main"');
+    }
+  });
+
   it('ships zero client-side JavaScript', () => {
     for (const p of allPages) expect(read(p), p).not.toContain('<script');
   });
