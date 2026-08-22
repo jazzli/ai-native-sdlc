@@ -82,6 +82,10 @@ describe('buildManifest', () => {
     expect(ids).toEqual([...ids].sort());
   });
 
+  // The second build uses a different date deliberately: a downstream
+  // policy reports when this digest moves, so were the build date ever
+  // folded in, every adopter would see drift on a day no position
+  // changed and would learn to ignore the alarm.
   it('produces identical digests for identical content', () => {
     const again = buildManifest(realNotes, '2099-12-31');
     expect(again.digest).toBe(m.digest);

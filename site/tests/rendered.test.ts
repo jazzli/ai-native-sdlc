@@ -103,7 +103,11 @@ describe.skipIf(!built)('rendered output', () => {
     const md = fs
       .readdirSync(DIST, { recursive: true } as never)
       .filter((f) => String(f).endsWith('.md'))
-      .map(String);
+      .map(String)
+      // playbook.md is a deliberate alias of index.md: the adoption
+      // instructions name the playbook by that word, so the guessed URL
+      // must resolve. It has no page of its own, hence no 1:1 partner.
+      .filter((f) => f !== 'playbook.md');
     expect(md.length).toBe(allPages.length - 1);
     expect(fs.existsSync(path.join(DIST, 'changelog.xml'))).toBe(true);
   });
@@ -143,5 +147,31 @@ describe.skipIf(!built)('rendered output', () => {
 
   it('ships zero client-side JavaScript', () => {
     for (const p of allPages) expect(read(p), p).not.toContain('<script');
+  });
+});
+
+// The adoption contract's executable surface. A dogfooding pass — following
+// /adopt cold against a scratch repo — found the published drift check
+// reported an unreachable site as upstream drift, and depended on JSON key
+// order and pretty-printing that nothing guarded. The fix serves the digest
+// as text so a scheduler compares strings; these pin the artifacts that
+// downstream policies now depend on.
+describe.skipIf(!built)('adoption contract artifacts', () => {
+  it('serves the top-level digest as bare text', () => {
+    expect(read('positions.digest').trim()).toMatch(/^[0-9a-f]{12}$/);
+  });
+
+  it('serves a digest identical to the manifest, so a check cannot go stale', () => {
+    expect(read('positions.digest').trim()).toBe(
+      JSON.parse(read('positions.json')).digest,
+    );
+  });
+
+  it('pins a schema version downstream parsers can check', () => {
+    expect(JSON.parse(read('positions.json')).schemaVersion).toBe(1);
+  });
+
+  it('answers /playbook.md, which the instructions send adopters to', () => {
+    expect(read('playbook.md')).toContain('# AI-Native SDLC Playbook');
   });
 });

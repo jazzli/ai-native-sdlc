@@ -14,7 +14,13 @@ export interface ManifestPosition {
   falsifiers: string[];
 }
 
+// Bumped only when a consumer's parser would need to change. Downstream
+// policies pin this so a field rename surfaces as a version mismatch
+// rather than as silently-missing data.
+export const MANIFEST_SCHEMA_VERSION = 1;
+
 export interface Manifest {
+  schemaVersion: number;
   generated: string;
   digest: string;
   site: string;
@@ -74,6 +80,7 @@ export function buildManifest(
     });
 
   return {
+    schemaVersion: MANIFEST_SCHEMA_VERSION,
     generated,
     // Over the per-position digests only: "did anything move?" without being
     // perturbed by the generation date.
