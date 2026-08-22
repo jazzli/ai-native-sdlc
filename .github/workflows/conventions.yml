@@ -1,0 +1,48 @@
+name: Conventions
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+permissions: {}
+concurrency:
+  group: conventions-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  pr-title:
+    name: pr-title
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # Squash is the only merge strategy here, so the pull request title
+      # becomes the permanent commit subject. It is checked against the same
+      # rule the commit-msg hook applies locally.
+      #
+      # The title is untrusted input and reaches the script through the
+      # environment, never through ${{ }} interpolation into shell.
+      - name: Check the title against AGENTS.md conventions
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+          BODY: ${{ github.event.pull_request.body }}
+        run: |
+          fail=0
+          len=${#TITLE}
+          # GitHub appends " (#N)" to the squashed subject.
+          if [ "$len" -gt 72 ]; then
+            echo "::error::Title is $len characters; the limit is 72, and the merge appends \" (#N)\"."
+            fail=1
+          fi
+          case "$TITLE" in
+            *.) echo "::error::Title ends with a period."; fail=1 ;;
+          esac
+          case "$TITLE" in
+            [a-z]*) echo "::error::Title should start with a capital: sentence case, imperative." ; fail=1 ;;
+          esac
+          if printf '%s' "$BODY" | grep -qiE 'generated with \[?(claude|copilot|cursor|gemini)'; then
+            echo "::error::Tool-attribution footer in the description. AI authorship is disclosed once in the README; see AGENTS.md."
+            fail=1
+          fi
+          if printf '%s' "$BODY" | grep -qE '^(Co-Authored-By|Co-authored-by):.*(Claude|GPT|Copilot|Gemini|Cursor)'; then
+            echo "::error::Model co-author trailer in the description. See AGENTS.md."
+            fail=1
+          fi
+          [ "$fail" = 0 ] && echo "Title and description follow the conventions."
+          exit $fail
