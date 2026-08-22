@@ -534,7 +534,7 @@ aside.falsifier :focus-visible {
 /* display:block+overflow-x:auto used to live directly on `table`, but that
    strips the table role from the accessibility tree and gives no keyboard
    affordance for the horizontal scroll. rehypeTableScroll wraps every table
-   in .table-scroll (tabindex="0" role="region"); the scroll behaviour moves
+   in .table-scroll (tabindex="0" role="region"); the scroll behavior moves
    here, onto the wrapper, so `table` keeps its native display and semantics. */
 table {
   border-collapse: collapse;

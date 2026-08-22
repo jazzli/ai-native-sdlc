@@ -28,6 +28,10 @@ artifacts, not as a record of how the work went.
   rhetorical emphasis, decorative formatting, and emoji.
 - Preserve the distinctions the protocol depends on — evidence, inference,
   confidence, falsifiability — and state them plainly.
+- American English throughout. Recurring terms are spelled: AI-native,
+  AI-Native SDLC (the project), agent, coding agent, SDLC, GitHub, open
+  source (noun) and open-source (adjective), machine-readable, fail closed
+  (verb) and fail-closed (adjective), pre-commit, changelog.
 
 ### AI authorship
 
