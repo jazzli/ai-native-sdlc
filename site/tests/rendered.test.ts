@@ -226,4 +226,27 @@ describe.skipIf(!built)('adoption contract artifacts', () => {
   it('answers /playbook.md, which the instructions send adopters to', () => {
     expect(read('playbook.md')).toContain('# AI-Native SDLC Playbook');
   });
+
+  // Both agent-facing surfaces listed each position by the *question* it
+  // answers, so an agent skimming them collected interrogatives under a
+  // heading reading "Positions" — and an adopter mapping by id wrote them
+  // into a policy as rules.
+  it('states positions as claims, on every agent-facing surface', () => {
+    for (const p of JSON.parse(read('positions.json')).positions) {
+      if (p.status !== 'working-answer') continue;
+      expect(p.claim, p.id).toBeTruthy();
+      expect(p.claim, `${p.id} is a claim, not a question`).not.toMatch(/\?$/);
+    }
+    const listed = read('llms.txt')
+      .split('## Positions')[1]
+      .split('## ')[0]
+      .split('\n')
+      .filter((l) => l.startsWith('- ['))
+      .map((l) => l.slice(3, l.indexOf(']')));
+    expect(listed).toHaveLength(9);
+    for (const l of listed) {
+      expect(l, 'listed as a claim').not.toMatch(/\?$/);
+      expect(l, 'not a section heading').not.toBe('No position yet');
+    }
+  });
 });

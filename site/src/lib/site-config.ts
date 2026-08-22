@@ -7,4 +7,5 @@ export const SITE_BASE = '/ai-native-sdlc';
 export const CONTENT = {
   questionsDir: '../docs/questions',
   sourcesFile: '../sources.md',
+  playbookFile: '../docs/playbook.md',
 } as const;

@@ -54,8 +54,11 @@ the difference is that a person deliberately pointed you at this page.
    mechanical enforcement, and the condition that would revoke it. Carry
    the `falsifiers` array across verbatim: a position without its falsifier
    is a rule, not a claim. Carry `status: open` entries as open questions,
-   never as guidance. Record a position you cannot enforce mechanically as
-   unenforced, rather than dropping it. Adjust the path to this project's
+   never as guidance. Base each rule on the position's `claim`, which is
+   what it asserts; its `title` is the question it answers, and a policy
+   built from titles records interrogatives where rules belong. Record a
+   position you cannot enforce mechanically as unenforced, rather than
+   dropping it. Adjust the path to this project's
    conventions if it has others, but keep it version-controlled.
 3. Write `docs/sdlc-upstream.json` beside it, in the shape given under
    [Recording what you adopted](#recording-what-you-adopted). Digests belong
