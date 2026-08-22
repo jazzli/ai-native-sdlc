@@ -5,6 +5,7 @@ import rehypeStringify from 'rehype-stringify';
 import { visit } from 'unist-util-visit';
 import type { Root, Html } from 'mdast';
 import { SITE_ORIGIN, SITE_BASE, CONTENT } from './site-config';
+import smartypants from 'remark-smartypants';
 import { remarkRewriteLinks } from './rewrite-links';
 import type { LogEntry } from './review-log';
 
@@ -24,6 +25,10 @@ function remarkRejectHtml() {
 // fail-closed enforcement applies to changelog entries as to notes.
 const processor = remark()
   .use(remarkRejectHtml)
+  // Astro applies smartypants to markdown pages but not to this standalone
+  // processor, so changelog entries rendered with straight quotes and
+  // hyphens while every other page rendered typographic ones.
+  .use(smartypants)
   .use(remarkRewriteLinks({ base: `${SITE_ORIGIN}${SITE_BASE}`, ...CONTENT }))
   .use(remarkRehype)
   .use(rehypeStringify);
