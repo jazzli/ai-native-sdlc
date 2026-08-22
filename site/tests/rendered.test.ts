@@ -172,6 +172,39 @@ describe.skipIf(!built)('rendered output', () => {
     for (const p of allPages) expect(read(p), p).not.toContain('<script');
   });
 
+  it('lists every canonical page in the sitemap, and no redirect stub', () => {
+    const locs = [...read('sitemap.xml').matchAll(/<loc>([^<]+)<\/loc>/g)].map(
+      (m) => m[1].replace(/^https:\/\/[^/]+\/ai-native-sdlc/, ''),
+    );
+    for (const p of allPages) {
+      const want =
+        p === 'index.html' ? '/' : `/${p.replace('/index.html', '/')}`;
+      expect(locs, want).toContain(want);
+    }
+    // Stubs carry noindex and point at the canonical page; listing them
+    // would invite a crawler to index the redirect instead of the note.
+    for (const r of redirects)
+      expect(locs).not.toContain(`/${r.replace('/index.html', '/')}`);
+  });
+
+  it('points crawlers at the sitemap and agents at the manifests', () => {
+    const robots = read('robots.txt');
+    expect(robots).toContain('/sitemap.xml');
+    expect(robots).toContain('/llms.txt');
+    expect(robots).toContain('/positions.json');
+  });
+
+  it('declares each page as what it is, and describes notes by their claim', () => {
+    expect(read('index.html')).toContain('og:type" content="website"');
+    const note = read('positions/does-sdd-reduce-rework/index.html');
+    expect(note).toContain('og:type" content="article"');
+    // A description repeating the page title tells a search result nothing.
+    const title = note.match(/<title>([^<·]+)/)![1].trim();
+    const desc = note.match(/name="description" content="([^"]+)"/)![1];
+    expect(desc).not.toBe(title);
+    expect(desc).not.toMatch(/\?$/);
+  });
+
   // A note that reaches a working answer moves from /questions/ to
   // /positions/ — the outcome the falsifier watch exists to cause — and
   // every link already made to it breaks. Both paths are always built: one
