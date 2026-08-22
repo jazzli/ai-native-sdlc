@@ -122,8 +122,8 @@ URL does not. Read `url` from the manifest when you need it.
 
 ## Recording what you adopted
 
-[`/starter/sdlc-upstream.json`](https://jazzli.github.io/ai-native-sdlc/starter/sdlc-upstream.json)
-is served in this shape, filled in and ready to commit, so you should not
+`https://jazzli.github.io/ai-native-sdlc/starter/sdlc-upstream.json` is
+served in this shape, filled in and ready to commit, so you should not
 need to write one. It is machine-readable because the drift check reads it
 back: recording digests in sentences means writing a parser for your own
 prose, which is where this reliably breaks.
