@@ -1,10 +1,19 @@
 # AI-Native SDLC Playbook
 
-Positions, in prose, each traceable to a question note that holds the
-evidence and — as important — what would overturn it. Sections exist only
-where a question has reached a working answer; "no position yet" is said
-out loud. Governed by the [research protocol](protocol.md). To apply these to your own
-repository, see [adopt](adopt.md) — one line, pasted at a coding agent.
+How to build software with AI agents, and what the evidence actually
+supports. The positions below — on specs, review, context files, security,
+and what surrounds agents where they genuinely ship — each state what would
+overturn them.
+
+That last part is the point. Every claim here traces to a primary source,
+and positions get downgraded in public when evidence arrives; the
+[changelog](https://jazzli.github.io/ai-native-sdlc/changelog/) is the
+record. Some questions remain open with no position at all; sections exist
+only where a question has reached a working answer.
+
+To apply these to your own repository, see [adopt](adopt.md) — one line,
+pasted at a coding agent. The method behind all of it is the
+[research protocol](protocol.md).
 
 ## Use spec-driven development for agent-executed feature work
 
