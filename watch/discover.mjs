@@ -137,7 +137,9 @@ const body = [
   "",
   collected.length
     ? collected.join("\n")
-    : "_No matching items in the window._",
+    : errors.length
+      ? "_No matching items in the window — but the sources below failed to fetch, so this may be under-reporting._"
+      : "_No matching items in the window._",
   errors.length
     ? `\n<details><summary>Fetch errors (${errors.length})</summary>\n\n${errors.map((e) => `- ${e}`).join("\n")}\n</details>`
     : "",
@@ -157,9 +159,16 @@ if (
   );
   process.exit(1);
 }
-if (DRY || collected.length === 0) {
+// Post when there is something to say OR something is broken. Silence on a
+// zero-finding day with dead sources is how a sweep rots unnoticed: the
+// errors would reach only a workflow log nobody reads, and the monthly
+// watch -- which proposes removals from "recurring fetch errors across the
+// month's digests" -- would never see them either.
+if (DRY || (collected.length === 0 && errors.length === 0)) {
   console.error(
-    DRY ? "[dry run: no issue posted]" : "[no findings: no issue posted]",
+    DRY
+      ? "[dry run: no issue posted]"
+      : "[all sources healthy, nothing new: no issue posted]",
   );
   process.exit(0);
 }

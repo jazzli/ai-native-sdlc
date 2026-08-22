@@ -43,12 +43,20 @@ that fails the filter is answered on the record rather than deleted.
 ```
 cd site
 npm ci
-npm run dev        # local dev server
-npm test           # plugin + enforcement tests
-npm run typecheck  # tsc --noEmit
-npm run lint       # eslint
-npm run format     # prettier
+npm run dev           # local dev server
+npm run build         # static build into site/dist
+npm test              # unit + rendered-output tests
+npm run typecheck     # astro sync && tsc --noEmit
+npm run lint          # eslint, spanning site/ and watch/
+npm run format:check  # prettier, spanning site/ and watch/
+npm run test:coverage # informational; no thresholds
 ```
+
+`npm test` runs two suites. The unit tests always run; the rendered-output
+tests in `tests/rendered.test.ts` assert against `site/dist` and **skip when
+it is absent** — so run `npm run build` first to exercise them the way CI
+does. CI builds before testing and sets `REQUIRE_RENDERED=1`, which turns a
+missing `dist/` into a failure rather than a silent skip.
 
 One-time repo setup: `git config core.hooksPath .githooks`
 
