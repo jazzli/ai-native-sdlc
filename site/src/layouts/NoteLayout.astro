@@ -2,6 +2,9 @@
 import Base from './Base.astro';
 import { challengeUrl } from '../lib/challenge';
 import { kindFor } from '../lib/note-route';
+import fs from 'node:fs';
+import { extractClaims } from '../lib/manifest';
+import { CONTENT } from '../lib/site-config';
 import type { CollectionEntry } from 'astro:content';
 interface Props {
   note: CollectionEntry<'notes'>;
@@ -10,6 +13,11 @@ const { note } = Astro.props;
 const { title, status, updated } = note.data;
 const base = import.meta.env.BASE_URL;
 const kind = kindFor(status);
+// The note's title is the question it answers; its claim is what the page
+// argues. A description repeating the title tells a search result nothing.
+const claim = extractClaims(fs.readFileSync(CONTENT.playbookFile, 'utf8'))[
+  note.id
+];
 const date = updated.toISOString().slice(0, 10);
 const label = status.replace(/-/g, ' ');
 const challenge = challengeUrl({
@@ -23,7 +31,8 @@ const challenge = challengeUrl({
 
 <Base
   title={title}
-  description={title}
+  description={claim ?? title}
+  ogType="article"
   mdHref={`${base}/${kind}/${note.id}.md`}
 >
   <article class="note">

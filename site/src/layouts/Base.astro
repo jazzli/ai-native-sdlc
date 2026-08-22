@@ -5,10 +5,12 @@ import { ogSlug } from '../lib/og-slug';
 interface Props {
   title: string;
   description?: string;
+  /** `article` for question notes; every other page is a `website`. */
+  ogType?: 'website' | 'article';
   mdHref?: string;
   variant?: string;
 }
-const { title, description, mdHref, variant } = Astro.props;
+const { title, description, mdHref, variant, ogType = 'website' } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const path = Astro.url.pathname;
 // Astro.url.pathname is already base-prefixed (e.g. "/ai-native-sdlc/sources/"),
@@ -72,7 +74,7 @@ const isPositions =
     />
     <title>{pageTitle}</title>
     {description && <meta name="description" content={description} />}
-    <meta property="og:type" content="article" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:title" content={pageTitle} />
     {description && <meta property="og:description" content={description} />}
     {
