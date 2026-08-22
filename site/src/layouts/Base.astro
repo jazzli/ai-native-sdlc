@@ -42,6 +42,34 @@ const isPositions =
       title="AI-Native SDLC changelog"
       href={`${base}/changelog.xml`}
     />
+    {
+      /* Make every page self-describing to an agent that lands on it: the
+         clean markdown mirror of this page, the site index, and the
+         positions manifest an adopter needs. Without these an agent has to
+         already know the conventions to find them. */
+    }
+    {
+      mdHref && (
+        <link
+          rel="alternate"
+          type="text/markdown"
+          title="This page as markdown"
+          href={mdHref}
+        />
+      )
+    }
+    <link
+      rel="alternate"
+      type="text/plain"
+      title="llms.txt site index"
+      href={`${base}/llms.txt`}
+    />
+    <link
+      rel="alternate"
+      type="application/json"
+      title="Positions manifest"
+      href={`${base}/positions.json`}
+    />
     <title>{pageTitle}</title>
     {description && <meta name="description" content={description} />}
     <meta property="og:type" content="article" />

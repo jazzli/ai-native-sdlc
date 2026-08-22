@@ -125,6 +125,22 @@ describe.skipIf(!built)('rendered output', () => {
       expect(p.falsifiers.length, p.id).toBeGreaterThan(0);
   });
 
+  it('makes every page self-describing to an agent that lands on it', () => {
+    for (const p of allPages) {
+      const html = read(p);
+      expect(html, `${p} llms.txt`).toContain('type="text/plain"');
+      expect(html, `${p} manifest`).toContain('/positions.json"');
+    }
+    // Pages with a raw variant advertise it; the changelog has none by
+    // design (it serves Atom instead), so assert against the actual set.
+    const withMd = allPages.filter((p) => !p.startsWith('changelog/'));
+    for (const p of withMd) {
+      expect(read(p), `${p} markdown alternate`).toContain(
+        'type="text/markdown"',
+      );
+    }
+  });
+
   it('ships zero client-side JavaScript', () => {
     for (const p of allPages) expect(read(p), p).not.toContain('<script');
   });
