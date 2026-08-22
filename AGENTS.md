@@ -33,6 +33,9 @@ five rules) before changing content.
   shell: pure logic belongs in `watch/lib.mjs`, which the site's vitest
   suite covers, and `npm run lint` / `format:check` in `site/` span both
   trees. Nothing load-bearing here sits outside a gate.
+- `site/tests/rendered.test.ts` asserts invariants over built output and
+  skips when `site/dist` is absent — run `npm run build` before `npm test`
+  to exercise it locally, as CI does (`REQUIRE_RENDERED=1`).
 - Work on a feature branch; open a PR; CI must pass. Commits end with a
   `Co-Authored-By:` trailer.
 - One-time setup: `git config core.hooksPath .githooks` — the pre-commit

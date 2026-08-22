@@ -1,5 +1,9 @@
 # Methodology Layer Implementation Plan
 
+> **Historical record.** This plan is complete and its work is merged.
+> It documents how the change was built, not current intent. The shipped
+> code is authoritative where the two differ.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Build the research content engine for ai-native-sdlc: protocol, four seeded question notes, full-prose playbook, citekey anchors in the source registry, and lychee link-checking in CI.

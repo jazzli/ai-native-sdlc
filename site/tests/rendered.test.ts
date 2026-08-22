@@ -1,0 +1,114 @@
+import { describe, it, expect, beforeAll } from 'vitest';
+import fs from 'node:fs';
+import path from 'node:path';
+
+// Smoke assertions over built output. The .astro layer is the highest-churn
+// code in the repo and had no automated check: three real defects shipped to
+// review here (changelog headings unstyled by a stray <section> wrapper, the
+// colophon's falsifier slab silently absent, an empty footer's stray rule).
+// Each was caught by a human looking at output. These assert the invariants
+// those defects violated.
+//
+// Requires a build. Skipped locally when dist/ is absent; REQUIRE_RENDERED=1
+// (set in CI, which builds first) turns absence into a failure so the checks
+// can never silently vanish.
+const DIST = path.resolve(__dirname, '../dist');
+const built = fs.existsSync(DIST);
+
+if (!built && process.env.REQUIRE_RENDERED === '1') {
+  throw new Error(
+    'REQUIRE_RENDERED=1 but site/dist is missing — run `npm run build` first',
+  );
+}
+
+const read = (p: string) => fs.readFileSync(path.join(DIST, p), 'utf8');
+const glob = (dir: string) =>
+  fs.existsSync(path.join(DIST, dir))
+    ? fs
+        .readdirSync(path.join(DIST, dir), { withFileTypes: true })
+        .filter((d) => d.isDirectory())
+    : [];
+
+describe.skipIf(!built)('rendered output', () => {
+  let notePages: string[] = [];
+  let allPages: string[] = [];
+
+  beforeAll(() => {
+    notePages = [
+      ...glob('positions').map((d) => `positions/${d.name}/index.html`),
+      ...glob('questions').map((d) => `questions/${d.name}/index.html`),
+    ];
+    allPages = fs
+      .readdirSync(DIST, { recursive: true } as never)
+      .filter((f) => String(f).endsWith('index.html'))
+      .map(String);
+  });
+
+  it('builds the expected page set', () => {
+    expect(notePages.length).toBe(11);
+    expect(allPages.length).toBe(16);
+  });
+
+  it('renders the falsifier slab on every note page', () => {
+    for (const p of notePages) {
+      expect(read(p).match(/class="falsifier"/g)?.length, p).toBe(1);
+    }
+  });
+
+  it('offers a challenge link on every note page', () => {
+    for (const p of notePages) {
+      expect(read(p), p).toContain('issues/new?labels=challenge');
+    }
+  });
+
+  it('keeps changelog date headings unwrapped, so main > h2 styling applies', () => {
+    const html = read('changelog/index.html');
+    expect(html).toContain('<h2');
+    expect(html).not.toContain('<section');
+  });
+
+  it('ships a colophon link in the footer of every page', () => {
+    for (const p of allPages)
+      expect(read(p), p).toContain('How this site is built');
+  });
+
+  it('points every page at an OG card that exists, and 404 at none', () => {
+    for (const p of allPages) {
+      const m = read(p).match(
+        /property="og:image" content="[^"]*\/og\/([^"]+)"/,
+      );
+      expect(m, p).not.toBeNull();
+      expect(
+        fs.existsSync(path.join(DIST, 'og', m![1])),
+        `${p} → og/${m![1]}`,
+      ).toBe(true);
+    }
+    expect(read('404.html')).not.toContain('og:image');
+  });
+
+  it('preserves every registry citekey anchor on the sources page', () => {
+    const inSource = fs.readFileSync(
+      path.resolve(__dirname, '../../sources.md'),
+      'utf8',
+    );
+    const keys = [...inSource.matchAll(/<a id="([a-z0-9-]+)"/g)].map(
+      (m) => m[1],
+    );
+    const html = read('sources/index.html');
+    expect(keys.length).toBeGreaterThanOrEqual(30);
+    for (const k of keys) expect(html, k).toContain(`id="${k}"`);
+  });
+
+  it('serves a raw markdown variant for every page except the changelog', () => {
+    const md = fs
+      .readdirSync(DIST, { recursive: true } as never)
+      .filter((f) => String(f).endsWith('.md'))
+      .map(String);
+    expect(md.length).toBe(allPages.length - 1);
+    expect(fs.existsSync(path.join(DIST, 'changelog.xml'))).toBe(true);
+  });
+
+  it('ships zero client-side JavaScript', () => {
+    for (const p of allPages) expect(read(p), p).not.toContain('<script');
+  });
+});

@@ -26,8 +26,13 @@ jobs:
       - run: npm run format:check
       - run: npm run lint
       - run: npm run typecheck
-      - run: npm test
+      # Build first so the rendered smoke tests have output to assert on;
+      # REQUIRE_RENDERED turns a missing dist/ into a failure, so those
+      # checks cannot silently skip in CI the way they do locally.
       - run: npm run build
+      - run: npm test
+        env:
+          REQUIRE_RENDERED: '1'
       - name: Upload Pages artifact
         if: github.event_name == 'push'
         uses: actions/upload-pages-artifact@v5
