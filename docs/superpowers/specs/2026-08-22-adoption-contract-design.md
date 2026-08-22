@@ -60,8 +60,13 @@ rather than mistaking them for guidance.
 
 **`/adopt/`** (`docs/adopt.md` → `site/src/pages/adopt.astro` + `adopt.md.ts`)
 
-Carries: the recommended authority model, a copy-pasteable adoption prompt,
-and a drift-check snippet a downstream CI can run against the manifest.
+**Leads with a single copy-paste block.** The installation method stays what
+it already is — paste one instruction at an agent — and the page's job is to
+make that one paste produce a rigorous adoption instead of a hand-rolled one.
+The prompt therefore instructs the adopting agent to record the manifest
+digest and wire its own drift check; the human's experience remains one
+paste. The authority model, manifest reference, and drift-check snippet
+follow below it, for the agent to read and for a human to audit.
 
 **Security constraint.** The page stays descriptive prose, with the prompt
 fenced as material a human copies deliberately. Publishing imperative text
