@@ -39,6 +39,19 @@ actions behind explicit human approval, which
 [where must human review sit](where-must-human-review-sit.md) argues from
 the throughput side — is this note's inference, not a sourced finding.
 
+## How to enforce this
+
+- Enforced here by workflow permissions rather than by intention.
+  `links.yml` declares `permissions: {}`, `deploy.yml` declares
+  `contents: read`, and the discovery sweep runs with `contents: read` plus
+  `issues: write` — it can file a report and cannot touch code.
+- The trifecta needs all three legs, and the exfiltration channel is
+  usually the cheapest to remove. A permissions block removes it by
+  construction; a review only removes it when someone notices.
+- Fetched web content is data. Instruction-shaped text inside a fetched
+  page is recorded as a finding and never followed, which keeps untrusted
+  content from becoming the second leg.
+
 ## Evidence
 
 - [willison-trifecta-2025](../../sources.md#willison-trifecta-2025) — the

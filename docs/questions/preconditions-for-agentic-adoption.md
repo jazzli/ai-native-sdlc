@@ -56,6 +56,19 @@ fixing foundations. That agents themselves are the highest-leverage tool
 for fixing those foundations — test debt, CI speed — is this note's
 inference; no cited source makes the claim.
 
+## How to enforce this
+
+- Not a check but an ordering constraint, which is testable by asking what
+  existed before the automation did. Here the daily discovery sweep was
+  added after CI was green and the tests were enforced.
+- The usable form of the question is whether your automation could do
+  damage that nothing would catch. If no check would fail, the foundation
+  it depends on is missing, whatever the intention was.
+- Scaling agents onto a codebase with no gates converts agent throughput
+  directly into human review load. That conversion is the cost this
+  position is about, and it is invisible until the review queue is the
+  bottleneck.
+
 ## Evidence
 
 - [dora-2025](../../sources.md#dora-2025) — amplifier thesis; nearly 5,000

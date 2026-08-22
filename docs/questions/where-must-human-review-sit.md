@@ -33,6 +33,18 @@ Open sub-question, unresolved: whether review capacity itself becomes the
 bottleneck that erases throughput gains — and if so, whether the answer is
 tiered/sampled review rather than more gates.
 
+## How to enforce this
+
+- Enforced here by a branch ruleset on `main` requiring `site-build` and
+  `linkChecker` to pass before a merge. The gate is the merge, not the
+  keystroke, and it does not care how careful the author was.
+- Automation that watches this repository reports and never writes. The
+  monthly falsifier watch proposes only and never edits, and its workflow
+  holds `contents: read`, so the permission matches the instruction rather
+  than relying on it.
+- The question to ask of any gate is whether a sufficiently diligent human
+  could skip it. If they can, it is a habit rather than a gate.
+
 ## Evidence
 
 - [dora-roi-2026](../../sources.md#dora-roi-2026) — J-curve; the

@@ -26,6 +26,19 @@ above all a small self-built eval on your own repo's tasks. Ten
 representative in-repo issues should beat any leaderboard for a selection
 decision, but that is an untested prior.
 
+## How to enforce this
+
+- Not mechanically enforceable. No check can determine why a tool was
+  chosen, and any proxy for it would be gameable by the person writing the
+  justification.
+- The human checkpoint is a recorded reason at the point of choice. A tool
+  change should name what it was evaluated against in your own repository
+  — a task it failed before, a workload it now handles. A leaderboard
+  position is not such a reason.
+- The observable failure is a tool switch whose recorded justification is
+  a benchmark score, which is the measurement this position holds does not
+  discriminate within the frontier set.
+
 ## Evidence
 
 - [benchmarks-position-2026](../../sources.md#benchmarks-position-2026) —

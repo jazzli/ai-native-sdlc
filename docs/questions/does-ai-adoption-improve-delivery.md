@@ -37,6 +37,18 @@ clause: Faros finds high-maturity organizations showing similar instability
 patterns, so whether spending on foundations actually buys the translation
 is now contested rather than assumed.
 
+## How to enforce this
+
+- Not a rule to enforce. This is a forecast that sets expectations, and
+  treating it as a target would invert it — the predicted shape is a cost
+  to notice, not an outcome to pursue.
+- What it demands mechanically is that both halves are measured.
+  Throughput improving while stability degrades is only visible if
+  delivery rate and failure rate are tracked together; tracking one makes
+  the prediction unfalsifiable in your own repository.
+- The checkpoint is any decision to expand agent use. If only throughput
+  is measured, this position predicts you will not see what it costs.
+
 ## Evidence
 
 - [dora-2025](../../sources.md#dora-2025) — the 2024→2025 sign flips;

@@ -29,6 +29,19 @@ mechanism, not the numbers — and for small tasks, spec overhead plausibly
 exceeds rework savings, so the position covers feature-sized work, not
 one-line fixes.
 
+## How to enforce this
+
+- Not mechanically enforced here, and the position argues against
+  enforcing it. Below feature size the ceremony costs more than the rework
+  it saves, so a check demanding a spec for every change would be wrong in
+  exactly the cases the position excludes.
+- The observable proxy is ordering, not existence. Specs live in
+  `docs/superpowers/specs/` under version control, and a spec whose commit
+  postdates the work it describes is a reconstruction. `git log` answers
+  that without new tooling.
+- The human checkpoint sits at the start of feature-sized work: agree the
+  spec before execution, or record why the work did not need one.
+
 ## Evidence
 
 - [sdd-2026](../../sources.md#sdd-2026) — consolidation across GitHub Spec
