@@ -10,6 +10,40 @@ Two supporting trees serve it: `site/` (Astro; publishes the content) and
 `watch/` (the daily discovery sweep). Read `docs/protocol.md` (one page,
 five rules) before changing content.
 
+## Writing for the public record
+
+Commits, pull requests, documentation, and site copy are read by people
+deciding whether to trust the positions. Write them as durable engineering
+artifacts, not as a record of how the work went.
+
+- Commit subjects: sentence case, imperative, no trailing period, 72
+  characters or fewer. One logical change per commit.
+- Commit bodies only when the subject is insufficient. State the problem,
+  the decision, and any consequence a future reader needs. Omit
+  implementation chronology, dead ends, and self-assessment.
+- Pull requests answer why the change exists, what materially changes, what
+  a reviewer must decide, and how it was verified. A small change gets a
+  short description. Do not narrate the process that produced it.
+- Prose is direct and calibrated. Avoid first-person narration of the work,
+  rhetorical emphasis, decorative formatting, and emoji.
+- Preserve the distinctions the protocol depends on — evidence, inference,
+  confidence, falsifiability — and state them plainly.
+- American English throughout. Recurring terms are spelled: AI-native,
+  AI-Native SDLC (the project), agent, coding agent, SDLC, GitHub, open
+  source (noun) and open-source (adjective), machine-readable, fail closed
+  (verb) and fail-closed (adjective), pre-commit, changelog.
+
+### AI authorship
+
+This project is built with coding agents, and says so once, in the README,
+rather than in every artifact they touch. Do not add `Co-Authored-By:`
+trailers naming a model, or tool-attribution footers to pull requests: the
+model that happened to run is not authorship, and downstream readers cannot
+act on it. The maintainer is accountable for everything merged here.
+
+Automated actors that write to this repository — the discovery sweep, the
+falsifier watch, Dependabot — identify themselves in the content they post.
+
 ## Requirements
 
 - Never assert more than the cited registry entry records. If a claim needs
@@ -44,8 +78,8 @@ five rules) before changing content.
   site/node_modules/.astro` before building. CI checks out fresh and is
   unaffected, so this misleads only locally — which is where it matters,
   since it is where the change is being judged.
-- Work on a feature branch; open a PR; CI must pass. Commits end with a
-  `Co-Authored-By:` trailer. This is enforced on `main`, not merely asked:
+- Work on a feature branch; open a PR; CI must pass. This is enforced on
+  `main`, not merely asked:
   a direct push is refused with `GH013`, `site-build` and `linkChecker`
   must be green, and the branch cannot be force-pushed or deleted. No
   approving review is required — GitHub does not permit self-approval, so
