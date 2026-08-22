@@ -8,6 +8,10 @@ on:
   schedule:
     - cron: "0 9 * * 1"   # weekly, Monday 09:00 UTC — link rot happens between commits
   workflow_dispatch:
+# Deny by default at the top level; the job below grants only what it needs.
+# Without this, a job added later without its own block inherits the repo
+# default rather than nothing.
+permissions: {}
 jobs:
   linkChecker:
     runs-on: ubuntu-latest
