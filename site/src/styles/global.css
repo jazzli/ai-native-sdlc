@@ -424,6 +424,47 @@ main.playbook > h2 + ul > li {
   padding-left: 1.15rem;
 }
 
+/* --- Contents: the playbook's index -------------------------------------- */
+/* Quiet by design. The falsifier is the page's one visual event, so this
+   stays a plain numbered list — the numerals carry the count without the
+   lede having to claim one. */
+nav.contents {
+  margin: 0 0 3rem;
+  padding-bottom: 1.4rem;
+  border-bottom: 1px solid var(--rule);
+}
+nav.contents .contents-label {
+  margin: 0 0 0.85rem;
+  font: 500 var(--label)/1.4 var(--mono);
+  letter-spacing: var(--label-track);
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+nav.contents ol {
+  margin: 0;
+  padding: 0 0 0 1.6rem;
+  display: grid;
+  gap: 0.42rem;
+}
+nav.contents li {
+  padding-left: 0.2rem;
+  font: 400 0.95rem/1.35 var(--sans);
+  color: var(--ink-faint);
+}
+nav.contents li::marker {
+  color: var(--ink-faint);
+  font: 400 0.8rem var(--mono);
+}
+nav.contents a {
+  color: var(--ink-soft);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+nav.contents a:hover {
+  color: var(--accent);
+  border-bottom-color: var(--link-underline);
+}
+
 /* --- The falsifier: the one inverted object ------------------------------ */
 /* Reader intake. Deliberately quiet and placed after the falsifier slab:
    the moment a reader knows what would overturn a position is the moment to

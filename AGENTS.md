@@ -36,6 +36,14 @@ five rules) before changing content.
 - `site/tests/rendered.test.ts` asserts invariants over built output and
   skips when `site/dist` is absent — run `npm run build` before `npm test`
   to exercise it locally, as CI does (`REQUIRE_RENDERED=1`).
+- Astro caches rendered markdown, and editing a remark/rehype plugin does
+  not invalidate it — only touching content or `astro.config.ts` does. A
+  local build can therefore emit output the current plugins would not
+  produce, and the rendered tests will happily pass against it. When
+  changing anything in the markdown pipeline, `rm -rf site/.astro
+  site/node_modules/.astro` before building. CI checks out fresh and is
+  unaffected, so this misleads only locally — which is where it matters,
+  since it is where the change is being judged.
 - Work on a feature branch; open a PR; CI must pass. Commits end with a
   `Co-Authored-By:` trailer.
 - One-time setup: `git config core.hooksPath .githooks` — the pre-commit

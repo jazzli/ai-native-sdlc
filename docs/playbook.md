@@ -11,8 +11,8 @@ and positions get downgraded in public when evidence arrives; the
 record. Some questions remain open with no position at all; sections exist
 only where a question has reached a working answer.
 
-To apply these to your own repository, see [adopt](adopt.md) — one line,
-pasted at a coding agent. The method behind all of it is the
+To apply these to your own repository, see [adopt](adopt.md) — two commands
+and no agent, or one line pasted at a coding agent. The method behind all of it is the
 [research protocol](protocol.md).
 
 ## Use spec-driven development for agent-executed feature work
