@@ -4,7 +4,9 @@ import GithubSlugger from 'github-slugger';
 import { visit } from 'unist-util-visit';
 import type { Root, Link, Definition, Image, Html } from 'mdast';
 
-export type Status = 'open' | 'working-answer' | 'parked';
+import { kindFor, type Status } from './note-route';
+
+export type { Status };
 export type StatusMap = Record<string, Status>;
 export interface Ctx {
   base: string;
@@ -69,9 +71,7 @@ export function rewriteTarget(url: string, ctx: Ctx): string | null {
     const slug = note[1];
     const status = ctx.statusMap[slug];
     if (!status) throw new Error(`Link to unknown note: "${url}"`);
-    return status === 'working-answer'
-      ? `${b}/positions/${slug}/`
-      : `${b}/questions/${slug}/`;
+    return `${b}/${kindFor(status)}/${slug}/`;
   }
   throw new Error(`Unrecognized internal link: "${url}"`);
 }

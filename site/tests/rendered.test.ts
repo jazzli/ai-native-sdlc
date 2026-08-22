@@ -32,21 +32,32 @@ const glob = (dir: string) =>
 describe.skipIf(!built)('rendered output', () => {
   let notePages: string[] = [];
   let allPages: string[] = [];
+  let redirects: string[] = [];
+
+  // Each note is built under both sections — one renders it, the other
+  // redirects — so "page" here means the rendering one. Redirect stubs are
+  // held separately and asserted on their own terms below.
+  const isRedirect = (p: string) => read(p).includes('http-equiv="refresh"');
 
   beforeAll(() => {
-    notePages = [
+    const noteHtml = [
       ...glob('positions').map((d) => `positions/${d.name}/index.html`),
       ...glob('questions').map((d) => `questions/${d.name}/index.html`),
     ];
+    notePages = noteHtml.filter((p) => !isRedirect(p));
+    redirects = noteHtml.filter(isRedirect);
     allPages = fs
       .readdirSync(DIST, { recursive: true } as never)
       .filter((f) => String(f).endsWith('index.html'))
-      .map(String);
+      .map(String)
+      .filter((p) => !redirects.includes(p));
   });
 
   it('builds the expected page set', () => {
     expect(notePages.length).toBe(11);
     expect(allPages.length).toBe(17);
+    // One stub per note: the section it is not currently published under.
+    expect(redirects.length).toBe(11);
   });
 
   it('renders the falsifier slab on every note page', () => {
@@ -100,15 +111,27 @@ describe.skipIf(!built)('rendered output', () => {
   });
 
   it('serves a raw markdown variant for every page except the changelog', () => {
-    const md = fs
-      .readdirSync(DIST, { recursive: true } as never)
-      .filter((f) => String(f).endsWith('.md'))
-      .map(String)
-      // playbook.md is a deliberate alias of index.md: the adoption
-      // instructions name the playbook by that word, so the guessed URL
-      // must resolve. It has no page of its own, hence no 1:1 partner.
-      .filter((f) => f !== 'playbook.md');
-    expect(md.length).toBe(allPages.length - 1);
+    const md = new Set(
+      fs
+        .readdirSync(DIST, { recursive: true } as never)
+        .filter((f) => String(f).endsWith('.md'))
+        .map(String),
+    );
+    // Membership rather than a count: deliberate extras exist (playbook.md
+    // aliases index.md so the URL the adoption instructions imply resolves),
+    // and a count would make every future addition look like a regression.
+    const variant = (page: string) =>
+      page === 'index.html'
+        ? 'index.md'
+        : page.replace(/\/index\.html$/, '.md');
+    for (const page of allPages) {
+      if (page.startsWith('changelog/')) continue;
+      expect(md.has(variant(page)), variant(page)).toBe(true);
+    }
+    // A redirect cannot help an agent holding a stale `.md` URL, so the note
+    // is served under both sections.
+    for (const r of redirects)
+      expect(md.has(variant(r)), variant(r)).toBe(true);
     expect(fs.existsSync(path.join(DIST, 'changelog.xml'))).toBe(true);
   });
 
@@ -147,6 +170,35 @@ describe.skipIf(!built)('rendered output', () => {
 
   it('ships zero client-side JavaScript', () => {
     for (const p of allPages) expect(read(p), p).not.toContain('<script');
+  });
+
+  // A note that reaches a working answer moves from /questions/ to
+  // /positions/ — the outcome the falsifier watch exists to cause — and
+  // every link already made to it breaks. Both paths are always built: one
+  // renders, the other redirects. Publishing `url` in the manifest makes
+  // this the site's problem, not only the reader's.
+  it('redirects each note from the section it is not published under', () => {
+    const canonical = new Set(
+      notePages.map((p) => p.replace('/index.html', '/')),
+    );
+    expect(redirects.length).toBe(notePages.length);
+    for (const r of redirects) {
+      const html = read(r);
+      const to = html.match(/url=([^"']+)/)?.[1];
+      expect(to, `${r} names a target`).toBeTruthy();
+      const rel = to!.replace(/^\/ai-native-sdlc\//, '');
+      // Same note, other section — never a different slug.
+      expect(rel.split('/')[1], `${r} keeps the slug`).toBe(r.split('/')[1]);
+      expect(rel.split('/')[0], `${r} switches section`).not.toBe(
+        r.split('/')[0],
+      );
+      // The target renders. A redirect pointing at another redirect would
+      // bounce a reader between two dead URLs forever.
+      expect(canonical.has(rel), `${r} -> ${rel} must render`).toBe(true);
+      expect(fs.existsSync(path.join(DIST, rel, 'index.html'))).toBe(true);
+      expect(html, `${r} noindex`).toContain('noindex');
+      expect(html, `${r} canonical`).toContain(`rel="canonical" href="${to}"`);
+    }
   });
 });
 

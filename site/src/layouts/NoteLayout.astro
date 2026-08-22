@@ -1,6 +1,7 @@
 ---
 import Base from './Base.astro';
 import { challengeUrl } from '../lib/challenge';
+import { kindFor } from '../lib/note-route';
 import type { CollectionEntry } from 'astro:content';
 interface Props {
   note: CollectionEntry<'notes'>;
@@ -8,7 +9,7 @@ interface Props {
 const { note } = Astro.props;
 const { title, status, updated } = note.data;
 const base = import.meta.env.BASE_URL;
-const kind = status === 'working-answer' ? 'positions' : 'questions';
+const kind = kindFor(status);
 const date = updated.toISOString().slice(0, 10);
 const label = status.replace(/-/g, ' ');
 const challenge = challengeUrl({

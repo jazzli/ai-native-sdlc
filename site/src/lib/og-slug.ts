@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { CONTENT } from './site-config';
 import { buildStatusMap } from './rewrite-links';
+import { kindFor } from './note-route';
 import type { CardSpec } from './og-card';
 
 // Maps a rendered page pathname to its card slug; null = page has no card.
@@ -41,7 +42,7 @@ export function allCardTargets(): { slug: string; spec: CardSpec }[] {
     const { title, updated } = noteTitle(
       path.join(CONTENT.questionsDir, `${slug}.md`),
     );
-    const kind = status === 'working-answer' ? 'positions' : 'questions';
+    const kind = kindFor(status);
     targets.push({
       slug: `${kind}/${slug}`,
       spec: { kind: 'note', title, status, updated },
@@ -49,7 +50,7 @@ export function allCardTargets(): { slug: string; spec: CardSpec }[] {
   }
 
   const positions = Object.values(statusMap).filter(
-    (s) => s === 'working-answer',
+    (s) => kindFor(s) === 'positions',
   ).length;
   const sources = (
     fs.readFileSync(CONTENT.sourcesFile, 'utf8').match(/<a id="/g) ?? []
