@@ -231,6 +231,21 @@ describe.skipIf(!built)('adoption contract artifacts', () => {
   // answers, so an agent skimming them collected interrogatives under a
   // heading reading "Positions" — and an adopter mapping by id wrote them
   // into a policy as rules.
+  // A fresh adopter downloads the starter and wires the drift check. If the
+  // lockfile's digest disagreed with the manifest by even a build, their
+  // very first check would report drift and they would learn to ignore it.
+  it('serves a starter whose lockfile agrees with the manifest it ships beside', () => {
+    const lock = JSON.parse(read('starter/sdlc-upstream.json'));
+    const manifest = JSON.parse(read('positions.json'));
+    expect(lock.digest).toBe(manifest.digest);
+    expect(lock.schemaVersion).toBe(manifest.schemaVersion);
+    for (const p of manifest.positions)
+      expect(lock.positions[p.id], p.id).toBe(p.digest);
+    const policy = read('starter/sdlc-policy.md');
+    expect(policy).toContain('# AI-Native SDLC policy');
+    expect(policy).not.toMatch(/TODO|FIXME/);
+  });
+
   it('states positions as claims, on every agent-facing surface', () => {
     for (const p of JSON.parse(read('positions.json')).positions) {
       if (p.status !== 'working-answer') continue;

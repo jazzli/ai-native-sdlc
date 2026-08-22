@@ -258,6 +258,7 @@ If it passes none, it goes in Tier 5 or not at all.
 
 | Date | Action |
 | --- | --- |
+| 2026-08-23 | Adoption no longer requires composing a policy: `/starter/sdlc-policy.md` and `/starter/sdlc-upstream.json` are generated from the manifest and served ready to commit, so a repository can adopt the playbook with two `curl` commands and no agent. |
 | 2026-08-23 | Positions now publish how they are enforced. Each states its mechanism or says plainly that it has none: three of nine are mechanically enforceable, one partly, and the remaining five name a human checkpoint instead. Position digests move again — no position changed. |
 | 2026-08-23 | Positions now publish the claim they assert, not only the question they answer: `positions.json` gains a `claim` field and llms.txt lists claims. Every position digest moves as a result — no position changed. |
 | 2026-08-19 | Initial compilation |
