@@ -234,6 +234,25 @@ describe.skipIf(!built)('adoption contract artifacts', () => {
   // A fresh adopter downloads the starter and wires the drift check. If the
   // lockfile's digest disagreed with the manifest by even a build, their
   // very first check would report drift and they would learn to ignore it.
+  // 1,400 words across ten sections used to open with three paragraphs of
+  // lede and then the first position, with no way to see the shape of the
+  // argument. The list is generated from the headings, so it cannot drift
+  // from them the way a hand-kept index would.
+  it('indexes the playbook from its own headings, with every link resolving', () => {
+    const html = read('index.html');
+    const nav = html.match(/<nav class="contents"[\s\S]*?<\/nav>/)?.[0];
+    expect(nav, 'contents nav present').toBeTruthy();
+    const hrefs = [...nav!.matchAll(/href="#([^"]+)"/g)].map((m) => m[1]);
+    const ids = [...html.matchAll(/<h2[^>]*id="([^"]+)"/g)].map((m) => m[1]);
+    expect(hrefs.length, 'one entry per section').toBe(ids.length);
+    for (const h of hrefs) expect(ids, `#${h} resolves`).toContain(h);
+  });
+
+  it('keeps the generated index out of the markdown an agent fetches', () => {
+    for (const f of ['index.md', 'playbook.md'])
+      expect(read(f), f).not.toContain('nav class="contents"');
+  });
+
   it('serves a starter whose lockfile agrees with the manifest it ships beside', () => {
     const lock = JSON.parse(read('starter/sdlc-upstream.json'));
     const manifest = JSON.parse(read('positions.json'));

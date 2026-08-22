@@ -2,6 +2,7 @@ import { defineConfig } from 'astro/config';
 import { rehypeHeadingIds, unified } from '@astrojs/markdown-remark';
 import { SITE_ORIGIN, SITE_BASE, CONTENT } from './src/lib/site-config';
 import { remarkRewriteLinks } from './src/lib/rewrite-links';
+import { rehypeContents } from './src/lib/rehype-contents';
 import { rehypeFalsifier } from './src/lib/rehype-falsifier';
 import { rehypeTableScroll } from './src/lib/rehype-table-scroll';
 
@@ -25,7 +26,12 @@ export default defineConfig({
       // matches on the heading id, so ids must be applied explicitly first.
       // rehypeTableScroll reads preceding heading text for its aria-label, so
       // it also needs ids-and-text already in place — order after both.
-      rehypePlugins: [rehypeHeadingIds, rehypeFalsifier, rehypeTableScroll],
+      rehypePlugins: [
+        rehypeHeadingIds,
+        rehypeContents,
+        rehypeFalsifier,
+        rehypeTableScroll,
+      ],
     }),
   },
 });
