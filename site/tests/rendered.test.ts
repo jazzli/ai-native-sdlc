@@ -46,7 +46,7 @@ describe.skipIf(!built)('rendered output', () => {
 
   it('builds the expected page set', () => {
     expect(notePages.length).toBe(11);
-    expect(allPages.length).toBe(16);
+    expect(allPages.length).toBe(17);
   });
 
   it('renders the falsifier slab on every note page', () => {
@@ -114,6 +114,15 @@ describe.skipIf(!built)('rendered output', () => {
       expect(html, p).toContain('class="skip" href="#main"');
       expect(html, p).toContain('<main id="main"');
     }
+  });
+
+  it('publishes a parseable positions manifest whose ids match the built pages', () => {
+    const m = JSON.parse(read('positions.json'));
+    expect(m.digest).toMatch(/^[0-9a-f]{12}$/);
+    const built = notePages.map((p) => p.split('/')[1]).sort();
+    expect(m.positions.map((x: { id: string }) => x.id).sort()).toEqual(built);
+    for (const p of m.positions)
+      expect(p.falsifiers.length, p.id).toBeGreaterThan(0);
   });
 
   it('ships zero client-side JavaScript', () => {

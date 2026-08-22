@@ -3,7 +3,8 @@
 Positions, in prose, each traceable to a question note that holds the
 evidence and — as important — what would overturn it. Sections exist only
 where a question has reached a working answer; "no position yet" is said
-out loud. Governed by the [research protocol](protocol.md).
+out loud. Governed by the [research protocol](protocol.md). To apply these to your own
+repository, see [adopt](adopt.md) — one line, pasted at a coding agent.
 
 ## Use spec-driven development for agent-executed feature work
 

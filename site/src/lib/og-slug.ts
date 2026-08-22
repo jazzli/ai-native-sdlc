@@ -15,6 +15,7 @@ export function ogSlug(pathname: string, base: string): string | null {
     p === 'sources' ||
     p === 'protocol' ||
     p === 'colophon' ||
+    p === 'adopt' ||
     p === 'changelog'
   )
     return p;
@@ -85,6 +86,15 @@ export function allCardTargets(): { slug: string; spec: CardSpec }[] {
         kind: 'page',
         title: 'Changelog',
         subtitle: "What changed, when — from the registry's own review log",
+      },
+    },
+    {
+      slug: 'adopt',
+      spec: {
+        kind: 'page',
+        title: 'Adopt',
+        subtitle:
+          'One paste to adopt this playbook, with a manifest so it stays current',
       },
     },
     {

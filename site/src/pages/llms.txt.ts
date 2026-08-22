@@ -19,6 +19,8 @@ export const GET: APIRoute = async () => {
 
   const body = `# AI-Native SDLC
 
+> ADOPTING THIS? Follow ${abs('/adopt.md')} — one page, written for you.
+>
 > Evidence-tiered positions on AI-native software development. Every claim
 > traces through a question note to a primary-verified source registry, and
 > every position states what would change it.
@@ -36,6 +38,8 @@ ${open.map(line).join('\n')}
 - [Playbook](${abs('/index.md')}): all positions in one document
 - [Source registry](${abs('/sources.md')}): tiered, filter-stated, primary-verified sources
 - [Research protocol](${abs('/protocol.md')}): the five rules governing this content
+- [Adopt](${abs('/adopt.md')}): one paste to adopt this playbook into your repository
+- [Positions manifest](${abs('/positions.json')}): machine-readable positions, falsifiers, and content digests
 - [Colophon](${abs('/colophon.md')}): how this site is built — the practices applied to themselves
 - [Changelog feed](${abs('/changelog.xml')}): Atom feed of the registry's review log
 `;
