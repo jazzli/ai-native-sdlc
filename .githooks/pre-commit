@@ -4,7 +4,11 @@
 fail=0
 for f in docs/questions/*.md; do
   [ "$(grep -c '^title:\|^status:\|^updated:' "$f")" = 3 ] || { echo "pre-commit: bad frontmatter (need exactly title/status/updated): $f"; fail=1; }
-  grep -q '^## What would change my mind' "$f" || { echo "pre-commit: missing falsifier section: $f"; fail=1; }
+  grep -qE '^## What would change my mind[[:space:]]*$' "$f" || { echo "pre-commit: missing falsifier section: $f"; fail=1; }
+  # Positions only: an open question has no position, so nothing to enforce.
+  if grep -q '^status: working-answer' "$f"; then
+    grep -qE '^## How to enforce this[[:space:]]*$' "$f" || { echo "pre-commit: missing enforcement section: $f"; fail=1; }
+  fi
 done
 if command -v lychee >/dev/null 2>&1; then
   lychee --config lychee.toml --offline --no-progress . >/dev/null 2>&1 || { echo "pre-commit: lychee --offline failed (broken internal link or anchor)"; fail=1; }

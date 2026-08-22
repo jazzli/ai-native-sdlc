@@ -47,9 +47,15 @@ and left on the record rather than deleted.
 One file per question in [questions/](questions/), kebab-case slug. Exactly
 three frontmatter fields (`title`, `status`, `updated`); `status` is
 `open | working-answer | parked`. Body sections: `## Question`,
-`## Current position`, `## Evidence`, `## What would change my mind` — the
-last one is mandatory and concrete. A stale `status` is an accepted cost; a
-claim without a falsifier is not.
+`## Current position`, `## Evidence`, `## What would change my mind`, and —
+once a note reaches a working answer — `## How to enforce this`.
+
+The falsifier is mandatory and concrete: a claim without one is not
+publishable. The enforcement section is mandatory for a position, and it
+must say plainly when a position cannot be mechanically enforced. Most
+cannot. A rule that reads like a gate but is not one is worse than an
+acknowledged human checkpoint, because only the first is mistaken for
+safety. A stale `status` is an accepted cost.
 
 ## Cadence
 

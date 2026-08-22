@@ -14,6 +14,7 @@ export interface ManifestPosition {
   markdown: string;
   // Present for positions; absent while a question is still open.
   claim?: string;
+  enforcement?: string[];
   falsifiers: string[];
 }
 
@@ -35,19 +36,29 @@ export interface Manifest {
 const short = (s: string) =>
   createHash('sha256').update(s).digest('hex').slice(0, 12);
 
-// Bullets under "## What would change my mind" — the part a downstream
-// adoption most needs, since a position carried without its falsifier is a
-// rule rather than a claim.
-export function extractFalsifiers(markdown: string): string[] {
-  const section = markdown.split(/^## What would change my mind\s*$/m)[1];
+// Bullets under a named `##` heading, stopping at the next one.
+export function extractBullets(markdown: string, heading: string): string[] {
+  const section = markdown.split(new RegExp(`^## ${heading}\\s*$`, 'm'))[1];
   if (!section) return [];
-  const body = section.split(/^## /m)[0];
-  return body
+  return section
+    .split(/^## /m)[0]
     .split(/^- /m)
     .slice(1)
     .map((b) => b.replace(/\s+/g, ' ').trim())
     .filter(Boolean);
 }
+
+// The part a downstream adoption most needs: a position carried without its
+// falsifier is a rule rather than a claim.
+export const extractFalsifiers = (markdown: string): string[] =>
+  extractBullets(markdown, 'What would change my mind');
+
+// How the position is made to stick — or a plain statement that it cannot
+// be, which most cannot. /adopt asks adopters to record the mechanical
+// enforcement of each position and, until now, handed them nothing to work
+// from: a generated policy said "Enforcement: TODO" nine times.
+export const extractEnforcement = (markdown: string): string[] =>
+  extractBullets(markdown, 'How to enforce this');
 
 // The playbook states each position as a heading and links its note. That
 // heading IS the claim — "Use spec-driven development for agent-executed
@@ -94,6 +105,16 @@ export function buildManifest(
         throw new Error(
           `Position "${n.id}" has no playbook section linking it, so no claim to publish`,
         );
+      const enforcement =
+        kind === 'positions' ? extractEnforcement(source) : undefined;
+      // An empty section publishes a position with nothing under
+      // `enforcement`, which reads as "no enforcement needed" rather than
+      // "nobody wrote it". Saying a position cannot be enforced is a
+      // sentence someone has to write.
+      if (enforcement && enforcement.length === 0)
+        throw new Error(
+          `Position "${n.id}" has no bullets under "## How to enforce this"`,
+        );
       return {
         id: n.id,
         title: n.title,
@@ -109,6 +130,7 @@ export function buildManifest(
         url: `${base}/${kind}/${n.id}/`,
         markdown: `${base}/${kind}/${n.id}.md`,
         ...(claim ? { claim } : {}),
+        ...(enforcement ? { enforcement } : {}),
         falsifiers: extractFalsifiers(source),
       };
     });

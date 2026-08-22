@@ -46,6 +46,18 @@ The review-placement divergence bears directly on
 [where must human review sit](where-must-human-review-sit.md): Stripe's
 model is that note's position; OpenAI's is its falsifier in progress.
 
+## How to enforce this
+
+- Not mechanically enforceable. This is a claim about where effort is best
+  spent, and no build step can check a budgeting decision.
+- The measurable proxy is what the harness catches that a human did not,
+  and it is worth recording rather than asserting. This repository keeps a
+  self-correction record in its colophon and a dated review log, both of
+  which exist to make that number checkable rather than remembered.
+- The decision point arrives when a result disappoints. Reaching for a
+  different model before improving the harness is the pattern this
+  position warns against, and it is a choice someone makes explicitly.
+
 ## Evidence
 
 - [openai-harness-2026](../../sources.md#openai-harness-2026) — the

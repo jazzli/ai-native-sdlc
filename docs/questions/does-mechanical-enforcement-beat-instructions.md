@@ -29,6 +29,22 @@ no-ops when its target is missing enforces nothing — and agents can game
 checks (bypass flags, deleting failing tests, rewriting assertions), so the
 checks themselves need human review.
 
+## How to enforce this
+
+- Enforced here, and this note is the reason the rest are honest about
+  not being. Every rule this repository states in prose either has a check
+  behind it or is knowingly marked unenforced: the pre-commit hook refuses
+  a note missing `## What would change my mind`, the build throws on a link
+  to an unknown note or an unknown `sources.md` anchor, and the manifest
+  refuses to publish a position whose playbook section no longer states a
+  claim.
+- The test of whether a rule is really enforced is to break it and watch
+  something fail. Assertions here are mutation-tested that way: violate the
+  invariant deliberately, and exactly one test must fail.
+- Where a rule cannot be checked, say so where the rule is written. Prose
+  that reads like a guarantee and is not one is the failure this position
+  describes.
+
 ## Evidence
 
 - [gloaguen-2026](../../sources.md#gloaguen-2026) — instructions respected,

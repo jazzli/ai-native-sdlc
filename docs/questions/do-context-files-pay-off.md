@@ -29,6 +29,18 @@ The synthesis both support: if you keep a context file, hand-write it,
 keep it minimal and requirement-focused, and never auto-generate it.
 Expect cheaper runs, not better ones.
 
+## How to enforce this
+
+- Partly enforceable, and the unenforceable half is the point. Nothing
+  checks that a context file is hand-written or short.
+- What can be checked is the corollary: any rule in `AGENTS.md` that
+  actually matters has a mechanism behind it, because the file buys
+  efficiency and not correctness. The audit is to read each "never" and
+  "must" in it and name what fails when that rule is violated. Rules with
+  no answer belong in a check or in the bin.
+- Treating a context file as a correctness control is the failure this
+  position warns about. It is a prompt, not a gate.
+
 ## Evidence
 
 - [gloaguen-2026](../../sources.md#gloaguen-2026) — the null on success,

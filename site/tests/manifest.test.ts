@@ -5,6 +5,7 @@ import {
   buildManifest,
   extractFalsifiers,
   extractClaims,
+  extractEnforcement,
 } from '../src/lib/manifest';
 import { CONTENT } from '../src/lib/site-config';
 
@@ -185,5 +186,50 @@ describe('published claims', () => {
       (p, i) => p.digest !== base.positions[i].digest,
     );
     expect(moved.map((p) => p.id)).toEqual(['does-sdd-reduce-rework']);
+  });
+});
+
+// /adopt asks adopters to record how each position is mechanically enforced
+// and, until now, handed them nothing: a policy generated from the manifest
+// during the dogfooding pass read "Enforcement: TODO" nine times. Most
+// positions cannot be mechanically enforced, and saying so is the point —
+// a rule recorded as enforced when nothing checks it is worse than one
+// recorded as a human checkpoint.
+describe('published enforcement', () => {
+  const m = buildManifest(realNotes, '2026-08-23');
+
+  it('gives every position enforcement, and no open question any', () => {
+    for (const p of m.positions) {
+      if (p.status === 'working-answer') {
+        expect(p.enforcement, p.id).toBeTruthy();
+        expect(p.enforcement!.length, p.id).toBeGreaterThan(0);
+      } else expect(p.enforcement, p.id).toBeUndefined();
+    }
+  });
+
+  it('refuses to publish a position whose section is present but empty', () => {
+    const hollow = (id: string) => {
+      const src = fs.readFileSync(
+        path.join(CONTENT.questionsDir, `${id}.md`),
+        'utf8',
+      );
+      return src.replace(
+        /## How to enforce this[\s\S]*?(?=## Evidence)/,
+        '## How to enforce this\n\n',
+      );
+    };
+    expect(() => buildManifest(realNotes, '2026-08-23', hollow)).toThrow(
+      /no bullets under/,
+    );
+  });
+
+  it('stops at the next heading, taking no evidence bullets with it', () => {
+    const md = [
+      '## How to enforce this',
+      '- Enforced by the hook.',
+      '## Evidence',
+      '- not enforcement',
+    ].join('\n');
+    expect(extractEnforcement(md)).toEqual(['Enforced by the hook.']);
   });
 });
