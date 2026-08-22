@@ -1,0 +1,16 @@
+---
+import { getEntry, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+const adopt = await getEntry('singles', 'docs/adopt');
+if (!adopt) throw new Error('adopt singleton missing');
+const { Content } = await render(adopt);
+const base = import.meta.env.BASE_URL;
+---
+
+<Base
+  title="Adopt"
+  description="One paste to adopt this playbook into your repository, with a machine-readable manifest so it stays current."
+  mdHref={`${base}/adopt.md`}
+>
+  <Content />
+</Base>

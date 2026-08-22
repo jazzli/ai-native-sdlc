@@ -75,6 +75,8 @@ describe('rewriteTarget', () => {
 
   it('rewrites colophon links', () => {
     expect(rewriteTarget('colophon.md', ctx)).toBe('/ai-native-sdlc/colophon/');
+    expect(rewriteTarget('adopt.md', ctx)).toBe('/ai-native-sdlc/adopt/');
+    expect(rewriteTarget('docs/adopt.md', ctx)).toBe('/ai-native-sdlc/adopt/');
     expect(rewriteTarget('docs/colophon.md', ctx)).toBe(
       '/ai-native-sdlc/colophon/',
     );

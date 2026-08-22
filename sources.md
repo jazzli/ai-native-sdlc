@@ -259,6 +259,7 @@ If it passes none, it goes in Tier 5 or not at all.
 | Date | Action |
 | --- | --- |
 | 2026-08-19 | Initial compilation |
+| 2026-08-22 | Adoption contract published: /adopt (one-line install) and /positions.json (stable ids, per-position content digests, falsifiers carried across) — after a downstream repo adopted the playbook and had to hand-roll an authority model, map positions by prose heading, and record currency as a bare date |
 | 2026-08-21 | Reader-challenge intake opened: every position page now carries a pre-filled challenge form, and reader challenges are named in the protocol as an intake through the same filter — the correction machinery stops being internal-only |
 | 2026-08-21 | First discovery-queue triage: gao-chen-2026 admitted (behavioral evidence on agent documentation use, surfaced same-day by the sweep) and uber-2026 admitted (fourth first-party harness account); Spec Kit negative finding re-verified at its 1.0.0 milestone; MCP page change checked — no new revision |
 | 2026-08-21 | Discovery layer added: a free daily workflow now sweeps practitioner feeds (blogs, HN, arXiv, releases, podcasts) and change-detection targets into a triage queue — closing the gap between monthly falsifier research and where field wisdom first appears. Discovery is not admission: the signal filter still gates entry |
