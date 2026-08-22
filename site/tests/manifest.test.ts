@@ -1,7 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
-import { buildManifest, extractFalsifiers } from '../src/lib/manifest';
+import {
+  buildManifest,
+  extractFalsifiers,
+  extractClaims,
+} from '../src/lib/manifest';
 import { CONTENT } from '../src/lib/site-config';
 
 const realNotes = fs
@@ -115,5 +119,71 @@ describe('buildManifest', () => {
     expect(m.protocol).toContain('/protocol/');
     expect(m.changelog).toContain('/changelog.xml');
     expect(m.generated).toBe('2026-01-01');
+  });
+});
+
+describe('extractClaims', () => {
+  const playbook = [
+    '# Playbook',
+    '## Use spec-driven development for agent-executed feature work',
+    'Some prose.',
+    '→ [why](questions/does-sdd-reduce-rework.md)',
+    '## No position yet',
+    '→ [the open one](questions/still-open.md)',
+    '## A section citing nothing',
+    'Prose with no note link.',
+  ].join('\n');
+
+  it('maps each note to the heading of the section linking it', () => {
+    const c = extractClaims(playbook);
+    expect(c['does-sdd-reduce-rework']).toBe(
+      'Use spec-driven development for agent-executed feature work',
+    );
+  });
+
+  it('ignores sections that link no note', () => {
+    expect(Object.keys(extractClaims(playbook))).toHaveLength(2);
+  });
+});
+
+// The manifest published only `title` — the *question* a note answers — so an
+// adopter mapping by id recorded "Does SDD actually reduce rework?" where its
+// rule belonged. The claim is the playbook heading, authored in one place and
+// derived here rather than restated.
+describe('published claims', () => {
+  const m = buildManifest(realNotes, '2026-08-23');
+
+  it('gives every position a claim, and no open question one', () => {
+    for (const p of m.positions) {
+      if (p.status === 'working-answer') expect(p.claim, p.id).toBeTruthy();
+      else expect(p.claim, p.id).toBeUndefined();
+    }
+  });
+
+  it('states claims as assertions, never as the question they answer', () => {
+    for (const p of m.positions.filter((x) => x.claim)) {
+      expect(p.claim, p.id).not.toMatch(/\?\s*$/);
+      expect(p.claim, `${p.id} restates its title`).not.toBe(p.title);
+    }
+  });
+
+  it('refuses to publish a position whose claim is missing', () => {
+    expect(() =>
+      buildManifest(realNotes, '2026-08-23', undefined, () => '# Playbook\n'),
+    ).toThrow(/no playbook section/);
+  });
+
+  it('moves the digest when a claim changes, so drift checks fire', () => {
+    const base = buildManifest(realNotes, '2026-08-23');
+    const edited = buildManifest(realNotes, '2026-08-23', undefined, () =>
+      fs
+        .readFileSync(CONTENT.playbookFile, 'utf8')
+        .replace(/^## Use spec-driven/m, '## Prefer spec-driven'),
+    );
+    expect(edited.digest).not.toBe(base.digest);
+    const moved = edited.positions.filter(
+      (p, i) => p.digest !== base.positions[i].digest,
+    );
+    expect(moved.map((p) => p.id)).toEqual(['does-sdd-reduce-rework']);
   });
 });

@@ -258,6 +258,7 @@ If it passes none, it goes in Tier 5 or not at all.
 
 | Date | Action |
 | --- | --- |
+| 2026-08-23 | Positions now publish the claim they assert, not only the question they answer: `positions.json` gains a `claim` field and llms.txt lists claims. Every position digest moves as a result — no position changed. |
 | 2026-08-19 | Initial compilation |
 | 2026-08-22 | Adoption contract published: /adopt (one-line install) and /positions.json (stable ids, per-position content digests, falsifiers carried across) — after a downstream repo adopted the playbook and had to hand-roll an authority model, map positions by prose heading, and record currency as a bare date |
 | 2026-08-21 | Reader-challenge intake opened: every position page now carries a pre-filled challenge form, and reader challenges are named in the protocol as an intake through the same filter — the correction machinery stops being internal-only |
