@@ -1,0 +1,13 @@
+# Blank issues stay enabled: the site builds pre-filled challenge issues by
+# URL, and a template would replace a form that already names the position
+# under dispute with a generic one.
+blank_issues_enabled: true
+contact_links:
+  - name: Challenge a position
+    url: https://jazzli.github.io/ai-native-sdlc/
+    about: >-
+      Open the position you disagree with and use its challenge link. It
+      pre-fills the issue with the position and how it was published.
+  - name: How contributions are handled
+    url: https://github.com/jazzli/ai-native-sdlc/blob/main/CONTRIBUTING.md
+    about: The filter a source or challenge passes, and the order changes land in.
