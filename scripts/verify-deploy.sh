@@ -61,7 +61,7 @@ esac
   || bad "starter lockfile == manifest digest" "$lock_digest vs $manifest_digest"
 
 for p in / /adopt/ /protocol/ /sources/ /changelog/ /llms.txt /playbook.md \
-         /starter/sdlc-policy.md /changelog.xml; do
+         /starter/sdlc-policy.md /check-policy.mjs /changelog.xml; do
   code=$(curl -s -o /dev/null -w '%{http_code}' "$BASE$p")
   [ "$code" = 200 ] && note "GET $p" "200" || bad "GET $p" "$code"
 done
@@ -98,6 +98,15 @@ for pair in "questions/does-sdd-reduce-rework:positions" \
     && note "stale /$stale/ redirects" "ok" \
     || bad "stale /$stale/ redirects" "no refresh to /$want/"
 done
+
+# Adopters fetch the checker and run it. A truncated or half-deployed copy
+# would fail at their end, not ours, so confirm it is whole enough to parse.
+checker=$(curl -fsS "$BASE/check-policy.mjs" 2>/dev/null || true)
+if printf '%s' "$checker" | grep -q 'export function checkPolicy'; then
+  note "check-policy.mjs is complete" "ok"
+else
+  bad "check-policy.mjs is complete" "missing its entry point"
+fi
 
 [ "$fail" = 0 ] && echo "deploy verified" || echo "deploy verification FAILED"
 exit $fail

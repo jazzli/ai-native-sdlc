@@ -180,6 +180,27 @@ Only the naming half needs `jq`. If you would rather add no dependency, the
 first three lines stand alone: compare `positions.digest.txt` against the
 digest you recorded and read the manifest by hand when it moves.
 
+## Checking your policy
+
+The contract above is checkable. This runs against your policy and its
+lockfile, needs no dependencies, and writes nothing:
+
+```sh
+curl -fsSL https://jazzli.github.io/ai-native-sdlc/check-policy.mjs \
+  -o check-policy.mjs
+node check-policy.mjs docs/sdlc-policy.md docs/sdlc-upstream.json
+```
+
+It reports what this page requires: every position mapped by `id`,
+falsifiers carried, a digest recorded for each, the schema version matched,
+no placeholders left. Errors are contract violations. A digest that has
+moved is a warning, not an error — a policy pinned to an older digest is
+correct and out of date, which is a thing to review rather than a thing to
+fix. Exit codes are `0` conforming, `1` errors, `2` the check could not run.
+
+It checks what is present, not how it is arranged, so a policy you have
+reorganised still passes.
+
 ## What you are adopting
 
 Positions here carry confidence, not certainty. Every one states what would
