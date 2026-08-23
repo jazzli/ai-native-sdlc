@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import {
   renderCard,
   cardElement,
@@ -6,6 +6,12 @@ import {
   type CardSpec,
   type CardElement,
 } from '../src/lib/og-card';
+
+// These render real PNGs through satori and resvg, font loading included, and
+// take about six seconds together. The default five-second timeout sits inside
+// that range, so the suite failed intermittently under parallel load on work
+// that was progressing normally.
+vi.setConfig({ testTimeout: 20_000 });
 
 const PNG_MAGIC = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
 const pngWidth = (b: Buffer) => b.readUInt32BE(16);
