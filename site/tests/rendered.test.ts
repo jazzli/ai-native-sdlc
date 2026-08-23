@@ -329,6 +329,32 @@ describe.skipIf(!built)('adoption contract artifacts', () => {
     expect(served).toContain('export function checkPolicy');
   });
 
+  // The map's value is that an uncovered domain is visible. A published
+  // manifest that quietly dropped them would be worse than none.
+  it('publishes uncovered domains rather than omitting them', () => {
+    const c = JSON.parse(read('capabilities.json'));
+    expect(c.schemaVersion).toBe(1);
+    const uncovered = c.capabilities.filter(
+      (d: { evidence: string }) => d.evidence === 'uncovered',
+    );
+    expect(uncovered.length).toBeGreaterThan(0);
+    for (const d of uncovered) {
+      expect(d.positions, d.id).toEqual([]);
+      expect(d.openQuestions, d.id).toEqual([]);
+    }
+    // Every note the manifest publishes is placed somewhere on the map.
+    const placed = c.capabilities.flatMap(
+      (d: { positions: string[]; openQuestions: string[] }) => [
+        ...d.positions,
+        ...d.openQuestions,
+      ],
+    );
+    const ids = JSON.parse(read('positions.json')).positions.map(
+      (p: { id: string }) => p.id,
+    );
+    expect(placed.slice().sort()).toEqual(ids.slice().sort());
+  });
+
   it('states positions as claims, on every agent-facing surface', () => {
     for (const p of JSON.parse(read('positions.json')).positions) {
       if (p.status !== 'working-answer') continue;

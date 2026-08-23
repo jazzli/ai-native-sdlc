@@ -32,6 +32,9 @@ missing its falsifier section.
   position, evidence, and **what would change my mind**
 - [sources.md](sources.md) — the registry: tiered, filter-stated,
   primary-verified
+- [docs/capabilities.md](docs/capabilities.md) — the capability map: which
+  domains of an agentic SDLC this project has a position on, which it carries
+  open, and which it has nothing to say about
 - [docs/protocol.md](docs/protocol.md) — the five rules governing all of it
 - [site/](site/) — the public site: single-sourced from the files above,
   agent-ingestible (raw markdown variants + `llms.txt`), zero client JS
