@@ -217,6 +217,21 @@ a project may enforce something in a way a file-level probe cannot see. The
 report separates what it saw, what needs the host's API to determine, and
 what requires judgment it cannot make.
 
+Some questions cannot be answered from files at all — whether a check is
+required before a merge, whether a branch can be force-pushed, whether
+secret scanning is on. Those go to the code host:
+
+```sh
+curl -fsSL https://jazzli.github.io/ai-native-sdlc/assess-host.mjs -o assess-host.mjs
+node assess-host.mjs
+```
+
+It is separate and opt-in because reading a repository's files and querying
+its host are different trust models. It handles no token: every request goes
+through the `gh` CLI using authentication the operator already has, and
+nothing is written. Where a query is refused it says so, because "cannot
+see" and "not configured" are different answers.
+
 It also reports the repository's profile and whether a repository of that
 shape has ever been assessed here. One has: Node, npm, GitHub Actions,
 GitHub. Everything else reports `assessment-only` — the observations are
