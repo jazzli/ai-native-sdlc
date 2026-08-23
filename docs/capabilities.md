@@ -28,6 +28,9 @@ an open question reports `open`, and one linking no note reports
 Support is a claim about this project's mechanisms, not about the domain.
 A domain can be first class and still rest on a single narrow position.
 
+To assess a repository against this map, see
+[adopt](adopt.md).
+
 ## Repository and change boundaries
 
 Discovering what a repository contains, which commands are canonical, which

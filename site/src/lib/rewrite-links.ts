@@ -63,6 +63,8 @@ export function rewriteTarget(url: string, ctx: Ctx): string | null {
   if (/^(?:\.\.\/)*(?:docs\/)?protocol\.md$/.test(url)) return `${b}/protocol/`;
   if (/^(?:\.\.\/)*(?:docs\/)?colophon\.md$/.test(url)) return `${b}/colophon/`;
   if (/^(?:\.\.\/)*(?:docs\/)?adopt\.md$/.test(url)) return `${b}/adopt/`;
+  if (/^(?:\.\.\/)*(?:docs\/)?capabilities\.md$/.test(url))
+    return `${b}/capabilities/`;
   if (/^(?:\.\.\/)*(?:docs\/)?playbook\.md$/.test(url)) return `${b}/`;
   if (/^questions\/?$/.test(url)) return `${b}/`;
 

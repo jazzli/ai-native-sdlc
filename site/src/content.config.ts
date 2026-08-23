@@ -20,6 +20,7 @@ const singles = defineCollection({
       'docs/protocol.md',
       'docs/colophon.md',
       'docs/adopt.md',
+      'docs/capabilities.md',
       'sources.md',
     ],
     base: '..',

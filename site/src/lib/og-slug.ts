@@ -17,6 +17,7 @@ export function ogSlug(pathname: string, base: string): string | null {
     p === 'protocol' ||
     p === 'colophon' ||
     p === 'adopt' ||
+    p === 'capabilities' ||
     p === 'changelog'
   )
     return p;
@@ -96,6 +97,15 @@ export function allCardTargets(): { slug: string; spec: CardSpec }[] {
         title: 'Adopt',
         subtitle:
           'One paste to adopt this playbook, with a manifest so it stays current',
+      },
+    },
+    {
+      slug: 'capabilities',
+      spec: {
+        kind: 'page',
+        title: 'Capability Map',
+        subtitle:
+          'Which domains this project has a position on, and which it does not',
       },
     },
     {
