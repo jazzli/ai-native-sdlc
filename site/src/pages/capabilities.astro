@@ -1,0 +1,16 @@
+---
+import { getEntry, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+const capabilities = await getEntry('singles', 'docs/capabilities');
+if (!capabilities) throw new Error('capabilities singleton missing');
+const { Content } = await render(capabilities);
+const base = import.meta.env.BASE_URL;
+---
+
+<Base
+  title="Capability Map"
+  description="Which domains of an agentic software lifecycle this project has a position on, which it carries open, and which it has nothing to say about."
+  mdHref={`${base}/capabilities.md`}
+>
+  <Content />
+</Base>

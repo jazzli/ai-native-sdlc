@@ -201,6 +201,27 @@ fix. Exit codes are `0` conforming, `1` errors, `2` the check could not run.
 It checks what is present, not how it is arranged, so a policy you have
 reorganised still passes.
 
+## Assessing a repository
+
+The [capability map](capabilities.md) names the domains of an agentic
+software lifecycle and records what this project knows about each. This
+reports what is observably present in a repository, domain by domain:
+
+```sh
+curl -fsSL https://jazzli.github.io/ai-native-sdlc/assess.mjs -o assess.mjs
+node assess.mjs .
+```
+
+It does not score or rank, and absence of an observation is not a finding:
+a project may enforce something in a way a file-level probe cannot see. The
+report separates what it saw, what needs the host's API to determine, and
+what requires judgment it cannot make.
+
+It also reports the repository's profile and whether a repository of that
+shape has ever been assessed here. One has: Node, npm, GitHub Actions,
+GitHub. Everything else reports `assessment-only` — the observations are
+still facts, but the mapping from them to practice is not validated.
+
 ## What you are adopting
 
 Positions here carry confidence, not certainty. Every one states what would

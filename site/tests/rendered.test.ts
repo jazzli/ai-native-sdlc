@@ -55,7 +55,7 @@ describe.skipIf(!built)('rendered output', () => {
 
   it('builds the expected page set', () => {
     expect(notePages.length).toBe(11);
-    expect(allPages.length).toBe(17);
+    expect(allPages.length).toBe(18);
     // One stub per note: the section it is not currently published under.
     expect(redirects.length).toBe(11);
   });

@@ -61,7 +61,7 @@ esac
   || bad "starter lockfile == manifest digest" "$lock_digest vs $manifest_digest"
 
 for p in / /adopt/ /protocol/ /sources/ /changelog/ /llms.txt /playbook.md \
-         /starter/sdlc-policy.md /check-policy.mjs /capabilities.md \
+         /starter/sdlc-policy.md /check-policy.mjs /assess.mjs /capabilities.md \
          /capabilities.json /changelog.xml; do
   code=$(curl -s -o /dev/null -w '%{http_code}' "$BASE$p")
   [ "$code" = 200 ] && note "GET $p" "200" || bad "GET $p" "$code"

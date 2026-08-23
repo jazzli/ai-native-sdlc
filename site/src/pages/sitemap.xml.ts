@@ -8,6 +8,7 @@ const BASE = `${SITE_ORIGIN}${SITE_BASE}`;
 const STATIC = [
   '/',
   '/adopt/',
+  '/capabilities/',
   '/protocol/',
   '/sources/',
   '/changelog/',
