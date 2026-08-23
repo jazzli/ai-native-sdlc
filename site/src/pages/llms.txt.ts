@@ -32,6 +32,11 @@ export const GET: APIRoute = async () => {
 
 > ADOPTING THIS? Follow ${abs('/adopt.md')} — one page, written for you.
 >
+> WHAT IS COVERED? ${abs('/capabilities.json')} maps the domains of an
+> agentic SDLC to what this project knows about each. Domains marked
+> "uncovered" have no position here: this project offers nothing on them,
+> and says so rather than omitting them.
+>
 > Evidence-tiered positions on AI-native software development. Every claim
 > traces through a question note to a primary-verified source registry, and
 > every position states what would change it.

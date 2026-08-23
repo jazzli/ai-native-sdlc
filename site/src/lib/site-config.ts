@@ -8,4 +8,5 @@ export const CONTENT = {
   questionsDir: '../docs/questions',
   sourcesFile: '../sources.md',
   playbookFile: '../docs/playbook.md',
+  capabilitiesFile: '../docs/capabilities.md',
 } as const;
