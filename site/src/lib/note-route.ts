@@ -8,9 +8,3 @@ export type Kind = 'positions' | 'questions';
 // tenth encoding (the redirect map) would have joined.
 export const kindFor = (status: Status): Kind =>
   status === 'working-answer' ? 'positions' : 'questions';
-
-// The section a note is *not* published under. A status change moves a note
-// between the two, so this is where its stale URL points — and therefore
-// where the redirect to its current home belongs.
-export const otherKind = (status: Status): Kind =>
-  kindFor(status) === 'positions' ? 'questions' : 'positions';
