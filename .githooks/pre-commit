@@ -10,6 +10,13 @@ for f in docs/questions/*.md; do
     grep -qE '^## How to enforce this[[:space:]]*$' "$f" || { echo "pre-commit: missing enforcement section: $f"; fail=1; }
   fi
 done
+# verify-deploy.sh runs only after a push to main, so a syntax error in it
+# reaches CI unreviewed — one did. Parsing costs nothing and catches it here.
+for f in scripts/*.sh .githooks/pre-commit .githooks/commit-msg; do
+  [ -f "$f" ] || continue
+  sh -n "$f" 2>/dev/null || { echo "pre-commit: shell syntax error in $f"; fail=1; }
+done
+
 if command -v lychee >/dev/null 2>&1; then
   lychee --config lychee.toml --offline --no-progress . >/dev/null 2>&1 || { echo "pre-commit: lychee --offline failed (broken internal link or anchor)"; fail=1; }
 else
