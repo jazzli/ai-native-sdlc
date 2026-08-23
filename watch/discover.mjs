@@ -6,7 +6,15 @@
 import fs from "node:fs";
 import crypto from "node:crypto";
 import { execFileSync } from "node:child_process";
-import { makeMatcher, clean, pick, pickLink, createCollector } from "./lib.mjs";
+import {
+  makeMatcher,
+  createCollector,
+  parseFeed,
+  parseArxiv,
+  parseHn,
+  digestBody,
+  sweepOutcome,
+} from "./lib.mjs";
 
 const DRY = process.argv.includes("--dry");
 const ROOT = new URL("..", import.meta.url).pathname;
@@ -35,54 +43,23 @@ async function get(url) {
 }
 
 async function scanFeed({ name, url, always }) {
-  const xml = await get(url);
-  const items =
-    xml.match(/<item[\s>][\s\S]*?<\/item>|<entry[\s>][\s\S]*?<\/entry>/gi) ??
-    [];
-  for (const item of items) {
-    const date = new Date(
-      pick(item, "pubDate") ||
-        pick(item, "updated") ||
-        pick(item, "published") ||
-        0,
-    ).getTime();
-    if (!date || date < since) continue;
-    const title = clean(pick(item, "title"));
-    const summary = clean(
-      pick(item, "description") ||
-        pick(item, "summary") ||
-        pick(item, "content"),
-    ).slice(0, 300);
-    if (!always && !matches(`${title} ${summary}`)) continue;
-    entry(name, title, pickLink(item));
-  }
+  for (const it of parseFeed(await get(url), { since, always, matches }))
+    entry(name, it.title, it.link);
 }
 
 async function scanHn(queries) {
   for (const q of queries) {
     const url = `https://hn.algolia.com/api/v1/search_by_date?query=${encodeURIComponent(q)}&tags=story&numericFilters=created_at_i>${Math.floor(since / 1000)}`;
-    const hits = JSON.parse(await get(url)).hits ?? [];
-    for (const h of hits.slice(0, 5)) {
-      const title = clean(h.title ?? "");
-      if (!matches(title)) continue; // query results stray; apply the same gate
-      const link =
-        h.url ?? `https://news.ycombinator.com/item?id=${h.objectID}`;
-      entry(`HN "${q}" (${h.points ?? 0} pts)`, title, link);
-    }
+    const hits = JSON.parse(await get(url)).hits;
+    for (const h of parseHn(hits, { matches }))
+      entry(`HN "${q}" (${h.points} pts)`, h.title, h.link);
   }
 }
 
 async function scanArxiv(query) {
   const url = `https://export.arxiv.org/api/query?search_query=${encodeURIComponent(query)}&sortBy=submittedDate&sortOrder=descending&max_results=15`;
-  const xml = await get(url);
-  for (const ent of xml.match(/<entry>[\s\S]*?<\/entry>/g) ?? []) {
-    const date = new Date(pick(ent, "published")).getTime();
-    if (!date || date < since) continue;
-    const title = clean(pick(ent, "title"));
-    const summary = clean(pick(ent, "summary"));
-    if (!matches(`${title} ${summary}`)) continue;
-    entry("arXiv", title, pick(ent, "id"));
-  }
+  for (const it of parseArxiv(await get(url), { since, matches }))
+    entry("arXiv", it.title, it.link);
 }
 
 async function checkTarget(t) {
@@ -132,44 +109,22 @@ fs.mkdirSync(new URL(".", new URL(STATE_FILE, "file://")).pathname, {
 fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2));
 
 const today = new Date().toISOString().slice(0, 10);
-const body = [
-  `### ${today}`,
-  "",
-  collected.length
-    ? collected.join("\n")
-    : errors.length
-      ? "_No matching items in the window — but the sources below failed to fetch, so this may be under-reporting._"
-      : "_No matching items in the window._",
-  errors.length
-    ? `\n<details><summary>Fetch errors (${errors.length})</summary>\n\n${errors.map((e) => `- ${e}`).join("\n")}\n</details>`
-    : "",
-  "",
-  "_Discovery is not admission: triage through the signal filter._",
-].join("\n");
+const body = digestBody({ date: today, collected, errors });
 
 console.log(body);
 const sourceCount = list.feeds.length + list.apis.length + list.targets.length;
-if (
-  !DRY &&
-  collected.length === 0 &&
-  errors.length >= Math.ceil(sourceCount / 2)
-) {
-  console.error(
-    `[FAILING: ${errors.length}/${sourceCount} sources errored with zero collected — silence would be indistinguishable from health]`,
-  );
+const outcome = sweepOutcome({
+  collected,
+  errors,
+  sourceCount,
+  dry: DRY,
+});
+if (outcome.action === "fail") {
+  console.error(`[FAILING: ${outcome.reason}]`);
   process.exit(1);
 }
-// Post when there is something to say OR something is broken. Silence on a
-// zero-finding day with dead sources is how a sweep rots unnoticed: the
-// errors would reach only a workflow log nobody reads, and the monthly
-// watch -- which proposes removals from "recurring fetch errors across the
-// month's digests" -- would never see them either.
-if (DRY || (collected.length === 0 && errors.length === 0)) {
-  console.error(
-    DRY
-      ? "[dry run: no issue posted]"
-      : "[all sources healthy, nothing new: no issue posted]",
-  );
+if (outcome.action === "skip") {
+  console.error(`[${outcome.reason}]`);
   process.exit(0);
 }
 const gh = (args, input) =>
