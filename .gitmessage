@@ -1,0 +1,15 @@
+# Subject: sentence case, imperative, no trailing period, <= 72 chars.
+# Say what the change does, not what you did.
+#
+# ---- body (optional; delete if the subject is enough) ----------------
+#
+# Explain the problem this solves and the decision taken. Include a
+# consequence a future reader needs: behaviour that changes, a
+# constraint accepted, a trade-off made. Wrap at 72 columns.
+#
+# Do not narrate the work: no dead ends, no chronology, no assessment
+# of how it went. That belongs in the pull request conversation, not in
+# permanent history.
+#
+# No model co-author trailers or tool footers. AI authorship is
+# disclosed once in the README. See AGENTS.md.

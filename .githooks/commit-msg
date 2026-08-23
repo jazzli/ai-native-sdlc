@@ -17,6 +17,17 @@ fi
 
 case "$subject" in *.) echo "commit-msg: subject ends with a period"; fail=1 ;; esac
 
+# Body wrapped at 72, the width `git log` is read at. A line is only a
+# failure if it could have been wrapped: an unbroken URL or path has no
+# space to break on and is left alone.
+awk 'NR>2 && length($0)>72 {
+  prefix = substr($0, 1, 72)
+  if (index(prefix, " ") > 0 && $0 !~ /^[ \t]/) {
+    printf "commit-msg: body line %d is %d characters, wrap at 72:\n  %s\n", NR, length($0), $0
+    bad = 1
+  }
+} END { exit bad }' "$1" || fail=1
+
 # Trailer lines only — a body that discusses the convention is fine.
 if grep -qE '^(Co-Authored-By|Co-authored-by):.*(Claude|GPT|Copilot|Gemini|Cursor)' "$1"; then
   echo "commit-msg: model co-author trailer. AI authorship is disclosed once"
