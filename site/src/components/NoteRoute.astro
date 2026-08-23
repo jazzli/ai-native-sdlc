@@ -1,0 +1,25 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import NoteLayout from '../layouts/NoteLayout.astro';
+import Redirect from '../layouts/Redirect.astro';
+import { kindFor } from '../lib/note-route';
+
+interface Props {
+  note: CollectionEntry<'notes'>;
+  /** True when this section is the note's current home. */
+  canonical: boolean;
+}
+const { note, canonical } = Astro.props;
+const { Content } = canonical ? await render(note) : { Content: null };
+const to = `${import.meta.env.BASE_URL}/${kindFor(note.data.status)}/${note.id}/`;
+---
+
+{
+  canonical && Content ? (
+    <NoteLayout note={note}>
+      <Content />
+    </NoteLayout>
+  ) : (
+    <Redirect to={to} title={note.data.title} />
+  )
+}
