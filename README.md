@@ -80,7 +80,14 @@ npm run typecheck     # astro sync && tsc --noEmit
 npm run lint          # eslint, spanning site/ and watch/
 npm run format:check  # prettier, spanning site/ and watch/
 npm run test:coverage # informational; no thresholds
+npm run check-policy  # validate an adopted policy against the contract
 ```
+
+`check-policy` takes an adopter's policy and digest lockfile and checks what
+[adopt](https://jazzli.github.io/ai-native-sdlc/adopt/) requires: every
+position mapped by id, falsifiers carried, digests recorded for each. It
+asserts presence rather than layout, so a policy that has been reorganised
+still passes. Exit codes are `0` conforming, `1` errors, `2` could not run.
 
 `npm test` runs two suites. The unit tests always run; the rendered-output
 tests in `tests/rendered.test.ts` assert against `site/dist` and **skip when
