@@ -49,6 +49,8 @@ export function starterPolicy(m: Manifest): string {
       `### ${p.claim}`,
       '',
       `- **id** \`${p.id}\` — map by this, never by heading or URL.`,
+      `- **Domain** \`${p.domain}\` — the capability this sits in, so an
+  assessment of this repository and this policy name the same thing.`,
       `- **Our rule** ${p.claim}.`,
       '- **Enforced here by** _describe your mechanism, or write "nothing yet"._',
       '- **Upstream enforces it by**',
