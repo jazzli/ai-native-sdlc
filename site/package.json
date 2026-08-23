@@ -15,7 +15,8 @@
     "format": "prettier --write . ../watch/discover.mjs ../watch/lib.mjs ../watch/watchlist.json",
     "format:check": "prettier --check . ../watch/discover.mjs ../watch/lib.mjs ../watch/watchlist.json",
     "test:coverage": "vitest run --coverage",
-    "social-preview": "node --experimental-strip-types scripts/social-preview.ts"
+    "social-preview": "node --experimental-strip-types scripts/social-preview.ts",
+    "check-policy": "node --experimental-strip-types scripts/check-policy.ts"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^7.2.4",
