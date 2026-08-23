@@ -89,7 +89,10 @@ export function normalizeCardText(s: string): string {
   return normalized;
 }
 
-export function cardElement(spec: CardSpec): CardElement {
+export function cardElement(
+  spec: CardSpec,
+  size: { width: number; height: number } = { width: 1200, height: 630 },
+): CardElement {
   if (spec.kind === 'note' && (!spec.status || !spec.updated)) {
     throw new Error(`note card requires status and updated: "${spec.title}"`);
   }
@@ -170,8 +173,10 @@ export function cardElement(spec: CardSpec): CardElement {
   const root = el(
     'div',
     {
-      width: 1200,
-      height: 630,
+      // The root must fill the canvas satori renders into, or the
+      // difference shows as unpainted white.
+      width: size.width,
+      height: size.height,
       display: 'flex',
       flexDirection: 'column',
       backgroundColor: C.ground,
@@ -222,11 +227,17 @@ export function cardElement(spec: CardSpec): CardElement {
   return root;
 }
 
-export async function renderCard(spec: CardSpec): Promise<Buffer> {
-  const root = cardElement(spec);
+export async function renderCard(
+  spec: CardSpec,
+  // Page cards are 1200x630, the Open Graph default. GitHub's repository
+  // social preview wants 1280x640, so the size is a parameter rather than a
+  // second renderer.
+  size: { width: number; height: number } = { width: 1200, height: 630 },
+): Promise<Buffer> {
+  const root = cardElement(spec, size);
   const svg = await satori(root as never, {
-    width: 1200,
-    height: 630,
+    width: size.width,
+    height: size.height,
     fonts: FONTS,
   });
   return Buffer.from(new Resvg(svg).render().asPng());
