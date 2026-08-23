@@ -233,3 +233,29 @@ describe('published enforcement', () => {
     expect(extractEnforcement(md)).toEqual(['Enforced by the hook.']);
   });
 });
+
+// One vocabulary across the manifest, the capability map, and an adopted
+// policy. Without it a policy names positions while an assessment names
+// domains, and nothing relates the two.
+describe('capability domain', () => {
+  const m = buildManifest(realNotes, '2026-08-23');
+
+  it('gives every note exactly one domain', () => {
+    for (const p of m.positions) {
+      expect(p.domain, p.id).toBeTruthy();
+      expect(typeof p.domain, p.id).toBe('string');
+    }
+  });
+
+  it('refuses to publish a note the capability map does not place', () => {
+    expect(() =>
+      buildManifest(
+        realNotes,
+        '2026-08-23',
+        undefined,
+        undefined,
+        () => '## Nowhere\n\n**Support:** compatible\n',
+      ),
+    ).toThrow(/belong to no capability domain/);
+  });
+});

@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { SITE_ORIGIN, SITE_BASE, CONTENT } from './site-config';
 import { kindFor, type Status } from './note-route';
+import { buildCapabilities } from './capabilities';
 
 export interface ManifestPosition {
   id: string;
@@ -12,6 +13,8 @@ export interface ManifestPosition {
   digest: string;
   url: string;
   markdown: string;
+  /** The capability domain this note sits in. Every note has exactly one. */
+  domain: string;
   // Present for positions; absent while a question is still open.
   claim?: string;
   enforcement?: string[];
@@ -87,9 +90,19 @@ export function buildManifest(
     fs.readFileSync(path.join(CONTENT.questionsDir, `${id}.md`), 'utf8'),
   readPlaybook: () => string = () =>
     fs.readFileSync(CONTENT.playbookFile, 'utf8'),
+  readCapabilityMap: () => string = () =>
+    fs.readFileSync(CONTENT.capabilitiesFile, 'utf8'),
 ): Manifest {
   const base = `${SITE_ORIGIN}${SITE_BASE}`;
   const claims = extractClaims(readPlaybook());
+  // One vocabulary across the manifest, the capability map, and an adopted
+  // policy: without it a policy names positions and an assessment names
+  // domains, and nothing relates the two.
+  const domainOf = new Map(
+    buildCapabilities(readCapabilityMap(), notes).flatMap((c) =>
+      [...c.positions, ...c.openQuestions].map((id) => [id, c.id] as const),
+    ),
+  );
   // Sorted by id so the output — and therefore the digest — is deterministic
   // by construction rather than by loader order.
   const positions = [...notes]
@@ -115,6 +128,11 @@ export function buildManifest(
         throw new Error(
           `Position "${n.id}" has no bullets under "## How to enforce this"`,
         );
+      const domain = domainOf.get(n.id);
+      if (!domain)
+        throw new Error(
+          `Note "${n.id}" sits in no capability domain, so nothing relates it to an assessment`,
+        );
       return {
         id: n.id,
         title: n.title,
@@ -129,6 +147,7 @@ export function buildManifest(
         digest: short(claim ? `${source}\n${claim}` : source),
         url: `${base}/${kind}/${n.id}/`,
         markdown: `${base}/${kind}/${n.id}.md`,
+        domain,
         ...(claim ? { claim } : {}),
         ...(enforcement ? { enforcement } : {}),
         falsifiers: extractFalsifiers(source),
