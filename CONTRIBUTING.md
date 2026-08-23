@@ -44,7 +44,8 @@ npm test
 npm run lint && npm run typecheck && npm run format:check
 ```
 
-One-time setup: `git config core.hooksPath .githooks`. The pre-commit hook
+One-time setup: `git config core.hooksPath .githooks` and `git config
+commit.template .gitmessage`. The pre-commit hook
 checks note shape and internal links, and the commit-msg hook checks the
 subject line. Do not bypass either with `--no-verify`.
 

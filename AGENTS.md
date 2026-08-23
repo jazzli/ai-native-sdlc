@@ -33,6 +33,45 @@ artifacts, not as a record of how the work went.
   source (noun) and open-source (adjective), machine-readable, fail closed
   (verb) and fail-closed (adjective), pre-commit, changelog.
 
+### Worked examples
+
+A subject alone, where the change explains itself:
+
+```
+Wrap changelog table cells at the measure
+```
+
+A body earns its place when a decision needs explaining:
+
+```
+Serve the digest as text, without breaking the published URL
+
+GitHub Pages types responses by file extension and offers no override,
+so /positions.digest was served as application/octet-stream. The .txt
+form is now canonical. The original URL still serves the same bytes
+because it was already published in the drift check, and this project
+does not break a URL it has put in front of adopters.
+
+Content is unchanged, so no adopter sees drift from this.
+```
+
+The same change written as a work log. Do not do this:
+
+```
+Fix the digest MIME type
+
+First I tried setting the Content-Type header in the Astro route, but
+that turned out not to matter because Pages serves from disk. Then I
+looked for a _headers file, which GitHub Pages does not support.
+Eventually I realised the only lever is the file extension, so I added
+a .txt endpoint. I also had to fix a test that grabbed the wrong code
+block.
+```
+
+Both describe one change. The second records why the extension is the
+only lever available, and that adopters are unaffected — the two things
+a reader will need later. The third records the author's afternoon.
+
 ### AI authorship
 
 This project is built with coding agents, and says so once, in the README,
@@ -84,7 +123,8 @@ falsifier watch, Dependabot — identify themselves in the content they post.
   must be green, and the branch cannot be force-pushed or deleted. No
   approving review is required — GitHub does not permit self-approval, so
   a non-zero count would deadlock a single-maintainer repository.
-- One-time setup: `git config core.hooksPath .githooks`. The pre-commit hook
+- One-time setup: `git config core.hooksPath .githooks` and `git config
+  commit.template .gitmessage`. The pre-commit hook
   checks note shape and internal links; the commit-msg hook checks the
   subject against the conventions above. Never bypass either with
   `--no-verify`. Pull request titles are checked in CI, since a squash merge

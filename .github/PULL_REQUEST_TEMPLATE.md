@@ -19,3 +19,17 @@ Conventions: AGENTS.md.
 ## Risk
 
 <!-- Compatibility, downstream adopters, anything a reviewer must decide. -->
+
+## Digest impact
+
+<!--
+Required. Adopters run a scheduled check against the top-level digest, so a
+change that moves it interrupts them and one that does not must say so.
+
+  none — tooling or presentation only
+  moves — <what changed, and whether any position changed>
+
+A moving digest with no position change needs a review-log entry saying so,
+or adopters will investigate a change that did not happen.
+-->
+
