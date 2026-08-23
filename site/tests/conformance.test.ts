@@ -3,7 +3,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { buildManifest } from '../src/lib/manifest';
 import { starterPolicy, starterLock } from '../src/lib/starter';
-import { checkPolicy, errorsIn } from '../src/lib/conformance';
+// The published checker itself, not a copy: what adopters fetch is what
+// these assertions run against.
+import { checkPolicy, errorsIn } from '../../tools/check-policy.mjs';
 import { CONTENT } from '../src/lib/site-config';
 
 const realNotes = fs

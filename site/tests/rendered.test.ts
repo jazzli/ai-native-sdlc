@@ -317,6 +317,18 @@ describe.skipIf(!built)('adoption contract artifacts', () => {
     expect(policy).not.toMatch(/TODO|FIXME/);
   });
 
+  // Adopters fetch this and run it against their own policy, so what is
+  // served must be the file the suite exercises, not a copy of it.
+  it('serves the conformance checker the tests import', () => {
+    const served = read('check-policy.mjs');
+    const source = fs.readFileSync(
+      path.resolve(__dirname, '../../tools/check-policy.mjs'),
+      'utf8',
+    );
+    expect(served).toBe(source);
+    expect(served).toContain('export function checkPolicy');
+  });
+
   it('states positions as claims, on every agent-facing surface', () => {
     for (const p of JSON.parse(read('positions.json')).positions) {
       if (p.status !== 'working-answer') continue;
