@@ -28,7 +28,7 @@
     "remark": "^15.0.1",
     "remark-frontmatter": "^5.0.0",
     "remark-rehype": "^11.1.2",
-    "satori": "^0.33.0",
+    "satori": "^0.33.1",
     "unist-util-visit": "^5.0.0"
   },
   "devDependencies": {
@@ -38,7 +38,7 @@
     "@vitest/coverage-v8": "^4.1.11",
     "eslint": "^10.8.1",
     "eslint-plugin-astro": "^3.1.0",
-    "fast-xml-parser": "^4.5.0",
+    "fast-xml-parser": "^5.11.0",
     "prettier": "^3.9.6",
     "prettier-plugin-astro": "^0.14.1",
     "remark-smartypants": "3.0.3",
