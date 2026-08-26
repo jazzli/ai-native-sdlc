@@ -133,7 +133,9 @@ gets overturned.
 Durable documentation, decision records, runbooks, and keeping them from
 contradicting the code.
 
-**Support:** assessment only
+→ [what-documentation-do-agents-actually-read](questions/what-documentation-do-agents-actually-read.md)
+
+**Support:** compatible
 
 ## Runtime performance
 

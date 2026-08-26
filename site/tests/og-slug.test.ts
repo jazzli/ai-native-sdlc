@@ -1,4 +1,6 @@
 import { describe, it, expect } from 'vitest';
+import fs from 'node:fs';
+import { CONTENT } from '../src/lib/site-config';
 import { ogSlug, allCardTargets } from '../src/lib/og-slug';
 import { buildStatusMap } from '../src/lib/rewrite-links';
 
@@ -29,8 +31,12 @@ describe('ogSlug', () => {
 describe('allCardTargets against real content', () => {
   const targets = allCardTargets();
 
-  it('yields exactly 19 targets', () => {
-    expect(targets).toHaveLength(19);
+  it('yields one card per note plus one per standalone page', () => {
+    const notes = fs
+      .readdirSync(CONTENT.questionsDir)
+      .filter((f) => f.endsWith('.md')).length;
+    const pages = targets.filter((t) => t.spec.kind === 'page').length;
+    expect(targets).toHaveLength(notes + pages);
   });
 
   it('covers every note with its real status routing', () => {

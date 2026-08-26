@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
+import { CONTENT } from '../src/lib/site-config';
 
 // Smoke assertions over built output. The .astro layer is the highest-churn
 // code in the repo and had no automated check: three real defects shipped to
@@ -53,11 +54,33 @@ describe.skipIf(!built)('rendered output', () => {
       .filter((p) => !redirects.includes(p));
   });
 
-  it('builds the expected page set', () => {
-    expect(notePages.length).toBe(12);
-    expect(allPages.length).toBe(19);
+  // Derived from the notes on disk rather than hardcoded. A fixed number
+  // catches a note that failed to render, but so does this, and it stops
+  // every deliberate addition from failing four unrelated tests.
+  const NOTE_COUNT = fs
+    .readdirSync(CONTENT.questionsDir)
+    .filter((f) => f.endsWith('.md')).length;
+  const STATIC_PAGES = [
+    'index.html',
+    'adopt/index.html',
+    'capabilities/index.html',
+    'changelog/index.html',
+    'colophon/index.html',
+    'protocol/index.html',
+    'sources/index.html',
+  ];
+
+  it('builds a page and a redirect stub for every note', () => {
+    expect(notePages.length).toBe(NOTE_COUNT);
     // One stub per note: the section it is not currently published under.
-    expect(redirects.length).toBe(12);
+    expect(redirects.length).toBe(NOTE_COUNT);
+  });
+
+  // Named, not counted: a page disappearing is the failure worth catching,
+  // and a count cannot say which one went.
+  it('builds every standalone page', () => {
+    for (const p of STATIC_PAGES) expect(allPages, p).toContain(p);
+    expect(allPages.length).toBe(NOTE_COUNT + STATIC_PAGES.length);
   });
 
   it('renders the falsifier slab on every note page', () => {
@@ -367,7 +390,11 @@ describe.skipIf(!built)('adoption contract artifacts', () => {
       .split('\n')
       .filter((l) => l.startsWith('- ['))
       .map((l) => l.slice(3, l.indexOf(']')));
-    expect(listed).toHaveLength(10);
+    // Derived: llms.txt must list exactly the positions the manifest holds.
+    const published = JSON.parse(read('positions.json')).positions.filter(
+      (p: { status: string }) => p.status === 'working-answer',
+    ).length;
+    expect(listed).toHaveLength(published);
     for (const l of listed) {
       expect(l, 'listed as a claim').not.toMatch(/\?$/);
       expect(l, 'not a section heading').not.toBe('No position yet');

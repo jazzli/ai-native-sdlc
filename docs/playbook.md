@@ -179,6 +179,24 @@ one test fails. That answers the question coverage cannot.
 
 → [why, and what would change this](questions/what-does-coverage-prove-for-agent-tests.md)
 
+## Write the instruction file; agents barely open the rest
+
+Across 557 agentic sessions, instruction files and working notes take 60.5%
+of documentation interactions. Classical technical documentation takes
+10.6%, API references 1.3%. Effort spent on documentation reaches an agent
+through the instruction file or not at all.
+
+Reading it does not do what you would hope. Consultation does not lead to
+updating — code changes first 4.7 times as often — and it associates with
+*less* immediate testing, not more. No documentation-based validation
+sequence was observed at all.
+
+Treat the instruction file as configuration that accretes, not prose written
+once, and keep the rules in it backed by checks. Human-facing documentation
+still has a human audience; this says nothing about that.
+
+→ [why, and what would change this](questions/what-documentation-do-agents-actually-read.md)
+
 ## No position yet
 
 - Multi-agent orchestration topologies — production deployment looks far
