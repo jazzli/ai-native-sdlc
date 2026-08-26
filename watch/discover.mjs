@@ -31,7 +31,21 @@ const state = fs.existsSync(STATE_FILE)
 const errors = [];
 
 const matches = makeMatcher(list.keywords);
-const { entry, findings: collected } = createCollector();
+// Links reported on previous runs, with the date they were last seen, so a
+// story lingering on a feed is reported once. Entries older than the window
+// are dropped: state that only grows is state nobody prunes.
+const SEEN_DAYS = Number(process.env.SEEN_DAYS ?? 30);
+const cutoff = new Date(Date.now() - SEEN_DAYS * 86400_000)
+  .toISOString()
+  .slice(0, 10);
+const seenBefore = Object.entries(state.__seen ?? {}).filter(
+  ([, date]) => date >= cutoff,
+);
+const {
+  entry,
+  findings: collected,
+  reported,
+} = createCollector(seenBefore.map(([link]) => link));
 
 async function get(url) {
   const res = await fetch(url, {
@@ -106,12 +120,24 @@ await Promise.all(jobs);
 fs.mkdirSync(new URL(".", new URL(STATE_FILE, "file://")).pathname, {
   recursive: true,
 });
+const today = new Date().toISOString().slice(0, 10);
+// Recorded before the state is written, and regardless of whether a digest
+// is posted: a link this run saw is "already reported" next time either way.
+state.__seen = Object.fromEntries([
+  ...seenBefore,
+  ...reported.map((link) => [link, today]),
+]);
 fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2));
 
-const today = new Date().toISOString().slice(0, 10);
-const body = digestBody({ date: today, collected, errors });
+const suppressed = reported.length - collected.length;
+const body = digestBody({ date: today, collected, errors, suppressed });
 
 console.log(body);
+// Always in the run log, posted or not: a zero-finding day that suppressed
+// forty repeats is healthy, and one that saw nothing at all may not be.
+console.error(
+  `[seen ${reported.length}, new ${collected.length}, suppressed ${suppressed}, errors ${errors.length}]`,
+);
 const sourceCount = list.feeds.length + list.apis.length + list.targets.length;
 const outcome = sweepOutcome({
   collected,

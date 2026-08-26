@@ -259,3 +259,62 @@ describe('parseArxiv', () => {
     expect(parseArxiv(xml, { since: SINCE, matches: matchAgents })).toEqual([]);
   });
 });
+
+// A story lingering on a feed was reported on every digest: the queue held
+// the same Zalando post three times and Spec Kit three times in five days.
+// That is triage load carrying no new information.
+describe('createCollector across runs', () => {
+  const link = 'https://e.example/a';
+
+  it('reports a link the first time it is seen', () => {
+    const c = createCollector([]);
+    c.entry('Feed', 'A story', link);
+    expect(c.findings).toHaveLength(1);
+    expect(c.reported).toEqual([link]);
+  });
+
+  it('does not report a link a previous run already reported', () => {
+    const c = createCollector([link]);
+    c.entry('Feed', 'A story', link);
+    expect(c.findings).toEqual([]);
+  });
+
+  // The caller persists `reported`, so a link must stay recorded even on the
+  // run that suppresses it — otherwise it reappears every other day.
+  it('still records a suppressed link as seen', () => {
+    const c = createCollector([link]);
+    c.entry('Feed', 'A story', link);
+    expect(c.reported).toEqual([link]);
+  });
+
+  it('still deduplicates within a single run', () => {
+    const c = createCollector([]);
+    c.entry('Feed', 'A story', link);
+    c.entry('Other feed', 'Same story, other source', link);
+    expect(c.findings).toHaveLength(1);
+  });
+
+  it('falls back to the title when a link is unusable', () => {
+    const c = createCollector(['A titled story']);
+    c.entry('Feed', 'A titled story', 'javascript:alert(1)');
+    expect(c.findings).toEqual([]);
+  });
+});
+
+describe('digestBody suppression', () => {
+  it('distinguishes a quiet day from one that suppressed repeats', () => {
+    const nothing = digestBody({
+      date: '2026-08-26',
+      collected: [],
+      errors: [],
+    });
+    const repeats = digestBody({
+      date: '2026-08-26',
+      collected: [],
+      errors: [],
+      suppressed: 40,
+    });
+    expect(nothing).not.toContain('suppressed');
+    expect(repeats).toContain('40 item(s) already reported');
+  });
+});
