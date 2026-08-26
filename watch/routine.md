@@ -30,11 +30,43 @@ closing issues.
    section against the live web.
 3. **Discovery queue** — triages the rolling `discovery` issue the daily
    sweep appends to.
+
+   **The cadence is mismatched and needs an owner change.** The routine runs
+   monthly on the 19th; the sweep began appending on the 21st, so the first
+   pass would face a month of backlog. Five days produced 76 findings, and
+   the first scheduled triage on 2026-09-19 would have faced roughly 400.
+   Cross-run deduplication now suppresses stories that linger on a feed,
+   which cuts the rate but not the arithmetic: monthly triage of a daily
+   queue arrives too late to be done well. **Recommended:** weekly,
+   `0 1 * * 6`. Changing it is an owner action at
+   <https://claude.ai/code/routines>; this file records the intent, not the
+   live value.
+
+   Triaging by hand in the meantime is what surfaced
+   [nvidia-agents-md-2026](../sources.md#nvidia-agents-md-2026) and
+   [backslash-agents-md-2026](../sources.md#backslash-agents-md-2026), which
+   amended a published position.
 4. **Watchlist self-maintenance** — proposes additions and removals for
    `watch/watchlist.json`; proposes only, never edits.
 
 Output is one `Falsifier watch YYYY-MM` issue when something moved, or a
 no-change report when nothing did.
+
+## Why the sweep does not guess at primary sources
+
+Triage load would fall if the digest sorted findings into "probably primary
+research" and "probably not". It does not, deliberately.
+
+The two most valuable sources the queue has produced were published on
+vendor blogs — NVIDIA's developer blog and Backslash's. A host-based
+classifier would have sorted both into the low-priority pile, and the
+roundup that summarised them, on a site indistinguishable by host, into the
+same one. What made them primary was their relationship to the work, not
+their domain name, and no cheap signal captures that.
+
+Deduplication is different: "this exact link was reported on 2026-08-22" is
+a fact, not a judgment. The sweep does the deterministic part and leaves the
+filter's third question to whoever triages.
 
 ## Restoring or editing it
 

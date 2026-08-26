@@ -47,21 +47,34 @@ export const pickLink = (xml) =>
 
 // Dedupes by link (two queries can surface the same item) and formats one
 // digest line per finding.
-export const createCollector = () => {
+// Deduplicates within a run and, when given what previous runs reported,
+// across days. A story that stays on a feed for a week was appearing on
+// every digest: the queue held Zalando three times and Spec Kit three times
+// in five days, which is triage load that carries no new information.
+//
+// Change-detection signals are collected separately and never passed here —
+// a page changing again is new information, not a repeat.
+export const createCollector = (previouslySeen = []) => {
   const seen = new Set();
+  const before = new Set(previouslySeen);
+  const reported = [];
   const findings = [];
   const entry = (label, title, link) => {
     const l = safeLink(link);
     const key = l || title;
     if (seen.has(key)) return;
     seen.add(key);
+    reported.push(key);
+    if (before.has(key)) return;
     findings.push(
       l
         ? `- **${sanitize(label)}**: [${sanitize(title)}](${l})`
         : `- **${sanitize(label)}**: ${sanitize(title)}`,
     );
   };
-  return { entry, findings };
+  // Everything this run saw, repeat or not — the caller persists it so the
+  // next run can tell "already reported" from "new".
+  return { entry, findings, reported };
 };
 
 // --- parsing -------------------------------------------------------------
@@ -120,7 +133,7 @@ export const parseHn = (hits, { matches, limit = 5 }) =>
 
 // --- reporting -----------------------------------------------------------
 
-export const digestBody = ({ date, collected, errors }) =>
+export const digestBody = ({ date, collected, errors, suppressed = 0 }) =>
   [
     `### ${date}`,
     "",
@@ -131,6 +144,11 @@ export const digestBody = ({ date, collected, errors }) =>
         : "_No matching items in the window._",
     errors.length
       ? `\n<details><summary>Fetch errors (${errors.length})</summary>\n\n${errors.map((e) => `- ${e}`).join("\n")}\n</details>`
+      : "",
+    // A run that saw forty repeats and a run that saw nothing are different
+    // states, and suppression would otherwise make them look identical.
+    suppressed
+      ? `\n_${suppressed} item(s) already reported on an earlier digest, suppressed._`
       : "",
     "",
     "_Discovery is not admission: triage through the signal filter._",
