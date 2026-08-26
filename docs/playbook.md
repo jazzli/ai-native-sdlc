@@ -162,6 +162,23 @@ with incidents is open, and it is the standing test of our own
 review-gates position.
 → [why, and what would change this](questions/what-makes-a-production-agent-harness.md)
 
+## Don't read coverage as evidence that agent-written tests work
+
+Coverage separates a generator that exercises code from one that does not,
+and for that it is fine. It does not tell you a suite defends the change in
+front of you. Measured against code that actually contains a defect —
+the situation that matters — coverage stops predicting whether the defect is
+caught, and mutation score stops applying at all.
+
+Agent-written tests are longer and assert more per test than human-written
+ones. That is a description, not a defence: the study that measured it says
+so and calls for fault-detection work it did not do.
+
+Where an assertion carries weight, break the invariant and confirm exactly
+one test fails. That answers the question coverage cannot.
+
+→ [why, and what would change this](questions/what-does-coverage-prove-for-agent-tests.md)
+
 ## No position yet
 
 - Multi-agent orchestration topologies — production deployment looks far

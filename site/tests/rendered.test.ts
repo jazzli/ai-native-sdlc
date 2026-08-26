@@ -54,10 +54,10 @@ describe.skipIf(!built)('rendered output', () => {
   });
 
   it('builds the expected page set', () => {
-    expect(notePages.length).toBe(11);
-    expect(allPages.length).toBe(18);
+    expect(notePages.length).toBe(12);
+    expect(allPages.length).toBe(19);
     // One stub per note: the section it is not currently published under.
-    expect(redirects.length).toBe(11);
+    expect(redirects.length).toBe(12);
   });
 
   it('renders the falsifier slab on every note page', () => {
@@ -367,7 +367,7 @@ describe.skipIf(!built)('adoption contract artifacts', () => {
       .split('\n')
       .filter((l) => l.startsWith('- ['))
       .map((l) => l.slice(3, l.indexOf(']')));
-    expect(listed).toHaveLength(9);
+    expect(listed).toHaveLength(10);
     for (const l of listed) {
       expect(l, 'listed as a claim').not.toMatch(/\?$/);
       expect(l, 'not a section heading').not.toBe('No position yet');
