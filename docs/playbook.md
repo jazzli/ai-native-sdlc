@@ -120,6 +120,14 @@ output tokens) with correctness explicitly unevaluated. Both studies point
 at the same practice: if you keep one, hand-write it, keep it minimal and
 requirement-focused, never auto-generate it — and buy cheaper runs, not
 better ones. The rot half of the question has no data at all yet.
+Treat the file as an attack surface. Agents follow it, and it is not always
+written by you: a malicious dependency has been shown writing one at build
+time and getting the agent to conceal its own edit, and a file arriving by
+`git clone` has been shown staging `~/.aws/credentials` before the agent did
+what was asked. The first needs supply-chain code execution; the second
+needs nothing. Read a context file you did not write before pointing an
+agent at it.
+
 → [why, and what would change this](questions/do-context-files-pay-off.md)
 
 ## Never assemble the lethal trifecta

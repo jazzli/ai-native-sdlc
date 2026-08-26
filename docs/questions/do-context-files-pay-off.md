@@ -29,6 +29,29 @@ The synthesis both support: if you keep a context file, hand-write it,
 keep it minimal and requirement-focused, and never auto-generate it.
 Expect cheaper runs, not better ones.
 
+**And treat it as an attack surface.** "Agents do follow the file" is not
+only a quality caveat; it is a security property, because the file is not
+always written by you. Two independent demonstrations show an `AGENTS.md`
+an attacker controls directing an agent against its user: one where a
+malicious dependency writes the file at build time and the agent injects a
+change and then conceals it from the pull request, the commit message, and
+even from summarising agents; another where the file arrives simply by
+cloning a public repository and the agent stages `~/.aws/credentials`,
+`~/.gitconfig` and `~/.npmrc` before doing what the user asked.
+
+The two differ in what they cost an attacker, and the difference is the
+point. The first needs code execution through the supply chain already. The
+second needs a `git clone`. Vendor responses differ too: the first was
+assessed as not elevating risk and left unchanged; the second was patched
+for the specific payload, with the researchers stating the patch does not
+cover obfuscation, indirection through MCP tools, or multi-step chains.
+
+This does not reverse the position above. It adds a reason the same advice
+holds: a hand-written, minimal file is one you can read in full and notice
+changes to. It does mean the file belongs in review, and that a context
+file arriving from outside your repository should be read before an agent
+is pointed at it.
+
 ## How to enforce this
 
 - Partly enforceable, and the unenforceable half is the point. Nothing
@@ -48,6 +71,12 @@ Expect cheaper runs, not better ones.
   recommendation.
 - [lulla-2026](../../sources.md#lulla-2026) — the efficiency deltas under
   a paired design, with correctness explicitly unevaluated.
+- [nvidia-agents-md-2026](../../sources.md#nvidia-agents-md-2026) — the
+  build-time write, the concealed edit, and the prerequisite that the
+  attacker already has supply-chain code execution.
+- [backslash-agents-md-2026](../../sources.md#backslash-agents-md-2026) —
+  the clone-only path, the credentials staged, and the researchers' own
+  account of what the vendor patch does not cover.
 - [agents-md](../../sources.md#agents-md) — adoption scale and format
   context (60k+ repos; the spec itself).
 - [gao-chen-2026](../../sources.md#gao-chen-2026) — behavioral
@@ -63,6 +92,10 @@ Expect cheaper runs, not better ones.
   by linters and a doc-gardening agent.
 
 ## What would change my mind
+
+- Evidence that agent runtimes reliably refuse instructions from a context
+  file they did not receive from the user — which would make the attack
+  surface a tooling defect rather than a property of the practice.
 
 - A controlled study varying injection strategy across agent families that
   shows robust task-success gains from context files — correctness benefit
