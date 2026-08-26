@@ -68,7 +68,7 @@ path and the drift check.
 Every position page carries a challenge link that opens a pre-filled issue
 naming that position. Challenges pass the same signal filter as any other
 source — does it publish methodology, report null results, is it primary —
-and the monthly watch triages them ahead of its own research. A challenge
+and the weekly watch triages them ahead of its own research. A challenge
 that fails the filter is answered on the record rather than deleted.
 
 ## Working on the site
