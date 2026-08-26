@@ -78,7 +78,9 @@ database.
 Unit through end-to-end coverage, regression protection, deterministic
 fixtures, and the question of what coverage actually demonstrates.
 
-**Support:** assessment only
+→ [what-does-coverage-prove-for-agent-tests](questions/what-does-coverage-prove-for-agent-tests.md)
+
+**Support:** compatible
 
 ## AI evaluation
 

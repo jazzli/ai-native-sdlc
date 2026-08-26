@@ -29,8 +29,8 @@ describe('ogSlug', () => {
 describe('allCardTargets against real content', () => {
   const targets = allCardTargets();
 
-  it('yields exactly 18 targets', () => {
-    expect(targets).toHaveLength(18);
+  it('yields exactly 19 targets', () => {
+    expect(targets).toHaveLength(19);
   });
 
   it('covers every note with its real status routing', () => {
