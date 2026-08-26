@@ -61,6 +61,14 @@ the throughput side — is this note's inference, not a sourced finding.
   hallucination rates and unique-name count, abstract-verified.
 - [mcp-security-2025](../../sources.md#mcp-security-2025) — the
   five-category control framework; a proposal, not measurement.
+- [backslash-agents-md-2026](../../sources.md#backslash-agents-md-2026)
+  — the trifecta assembled from a `git clone`: untrusted content in a
+  repository's `AGENTS.md`, private data in `~/.aws/credentials`, and a
+  shell to move it. Staged rather than exfiltrated, and the vendor patch
+  is stated by its finders to be incomplete.
+- [nvidia-agents-md-2026](../../sources.md#nvidia-agents-md-2026) — the
+  same channel used for integrity rather than exfiltration: a concealed
+  code change the agent kept out of its own pull request.
 
 ## What would change my mind
 
