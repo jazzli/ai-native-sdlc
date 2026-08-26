@@ -10,7 +10,8 @@
 //
 // Three kinds of statement, kept apart on purpose:
 //   observed       a fact about a file or configuration
-//   needsHostApi   determinable, but not from the filesystem
+//   needsHostApi   determinable, but not from the filesystem — assess-host.mjs
+//                  answers these against the code host
 //   notAssessable  requires judgment this tool cannot make
 //
 // Exit codes: 0 report produced, 2 could not run. There is no failing
