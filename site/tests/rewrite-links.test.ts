@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import fs from 'node:fs';
+import { CONTENT } from '../src/lib/site-config';
 import { visit } from 'unist-util-visit';
 import type { Root, Definition, Image } from 'mdast';
 import {
@@ -97,8 +98,11 @@ describe('against the real repository content', () => {
     anchors: extractAnchors('../sources.md'),
   };
 
-  it('buildStatusMap finds all 12 notes with valid statuses', () => {
-    expect(Object.keys(real.statusMap)).toHaveLength(12);
+  it('buildStatusMap finds every note, each with a valid status', () => {
+    const noteFiles = fs
+      .readdirSync(CONTENT.questionsDir)
+      .filter((f) => f.endsWith('.md'));
+    expect(Object.keys(real.statusMap)).toHaveLength(noteFiles.length);
     expect(real.statusMap['does-sdd-reduce-rework']).toBe('working-answer');
     expect(real.statusMap['agent-era-observability']).toBe('open');
   });
