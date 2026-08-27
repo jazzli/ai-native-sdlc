@@ -84,6 +84,32 @@ export const createCollector = (previouslySeen = []) => {
   return { entry, findings, reported, counts: () => ({ suppressed }) };
 };
 
+// --- source health -------------------------------------------------------
+// Origins fail transiently all the time; a single 500 is noise. A source
+// failing every run is a source nobody is watching, and today it reaches the
+// digest only as one line inside a collapsed block. Track the streak so
+// triage can tell "flaked this morning" from "gone since Tuesday".
+export const trackHealth = (previous = {}, { failed, attempted, today }) => {
+  const failing = new Set(failed);
+  const next = {};
+  // Only what this run attempted: a source dropped from the watchlist should
+  // not haunt the state, and one that recovered should not keep its streak.
+  for (const name of attempted) {
+    if (!failing.has(name)) continue;
+    const prior = previous[name];
+    next[name] = prior
+      ? { runs: prior.runs + 1, since: prior.since }
+      : { runs: 1, since: today };
+  }
+  return next;
+};
+
+export const chronic = (health = {}, threshold = 3) =>
+  Object.entries(health)
+    .filter(([, h]) => h.runs >= threshold)
+    .map(([name, h]) => ({ name, ...h }))
+    .sort((a, b) => b.runs - a.runs || a.name.localeCompare(b.name));
+
 // --- parsing -------------------------------------------------------------
 // Each takes a fetched body and returns what the sweep should collect, so the
 // extraction and filtering are testable without a network.
@@ -140,10 +166,26 @@ export const parseHn = (hits, { matches, limit = 5 }) =>
 
 // --- reporting -----------------------------------------------------------
 
-export const digestBody = ({ date, collected, errors, suppressed = 0 }) =>
+export const digestBody = ({
+  date,
+  collected,
+  errors,
+  suppressed = 0,
+  chronic: ailing = [],
+}) =>
   [
     `### ${date}`,
     "",
+    // Above the fold and outside the collapsed block: a source that has been
+    // dead for a week is a gap in the evidence base, not a fetch hiccup.
+    ailing.length
+      ? `> [!WARNING]\n${ailing
+          .map(
+            (h) =>
+              `> **${sanitize(h.name)}** has failed ${h.runs} consecutive runs since ${h.since} — fix the source or drop it from the watchlist.`,
+          )
+          .join("\n")}\n`
+      : "",
     collected.length
       ? collected.join("\n")
       : errors.length
