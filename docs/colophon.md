@@ -68,7 +68,7 @@ instruction was involved in rejecting it — `npm ci` refused the tree.
 
 **The security posture** — fetched web content is treated as data, never
 instructions ([AGENTS.md](https://github.com/jazzli/ai-native-sdlc/blob/main/AGENTS.md)); the
-[monthly falsifier watch](https://jazzli.github.io/ai-native-sdlc/changelog/) runs with read-and-search tools
+[weekly falsifier watch](https://jazzli.github.io/ai-native-sdlc/changelog/) runs with read-and-search tools
 only, no connectors, and files issues rather than editing content.
 
 **The harness** ([position](questions/what-makes-a-production-agent-harness.md))
