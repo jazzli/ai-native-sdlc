@@ -41,11 +41,13 @@ const cutoff = new Date(Date.now() - SEEN_DAYS * 86400_000)
 const seenBefore = Object.entries(state.__seen ?? {}).filter(
   ([, date]) => date >= cutoff,
 );
-const {
-  entry,
-  findings: collected,
-  reported,
-} = createCollector(seenBefore.map(([link]) => link));
+const { entry, findings, reported, counts } = createCollector(
+  seenBefore.map(([link]) => link),
+);
+// Change detection reports events, not stories: a page changing again is new
+// information every time, so these never enter the collector and are never
+// suppressed. Kept in their own list so the counts below stay honest.
+const changes = [];
 
 async function get(url) {
   const res = await fetch(url, {
@@ -84,7 +86,7 @@ async function checkTarget(t) {
       .update(body.replace(/\s+/g, " "))
       .digest("hex");
     if (state[t.name] && state[t.name] !== hash) {
-      collected.push(
+      changes.push(
         `- **CHANGED**: [${t.name}](${t.url}) — page content differs from last run`,
       );
     }
@@ -95,7 +97,7 @@ async function checkTarget(t) {
     );
     const range = meta.peerDependencies?.[t.peer] ?? "(none)";
     if (state[t.name] && state[t.name] !== range) {
-      collected.push(
+      changes.push(
         `- **CHANGED**: ${t.pkg} peer range for ${t.peer} is now \`${range}\` (was \`${state[t.name]}\`) — dependency holds may be liftable`,
       );
     }
@@ -129,14 +131,15 @@ state.__seen = Object.fromEntries([
 ]);
 fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2));
 
-const suppressed = reported.length - collected.length;
+const { suppressed } = counts();
+const collected = [...findings, ...changes];
 const body = digestBody({ date: today, collected, errors, suppressed });
 
 console.log(body);
 // Always in the run log, posted or not: a zero-finding day that suppressed
 // forty repeats is healthy, and one that saw nothing at all may not be.
 console.error(
-  `[seen ${reported.length}, new ${collected.length}, suppressed ${suppressed}, errors ${errors.length}]`,
+  `[seen ${reported.length}, new ${findings.length}, changed ${changes.length}, suppressed ${suppressed}, errors ${errors.length}]`,
 );
 const sourceCount = list.feeds.length + list.apis.length + list.targets.length;
 const outcome = sweepOutcome({
@@ -192,7 +195,7 @@ if (existing) {
       "--body-file",
       "-",
     ],
-    `Rolling digest from the daily discovery workflow. The monthly falsifier watch triages this queue through the signal filter; close after triage to start a fresh one.\n\n${body}`,
+    `Rolling digest from the daily discovery workflow. The weekly falsifier watch triages this queue through the signal filter; close after triage to start a fresh one.\n\n${body}`,
   );
   console.error("[created new digest issue]");
 }
