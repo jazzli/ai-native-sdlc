@@ -299,6 +299,40 @@ describe('createCollector across runs', () => {
     c.entry('Feed', 'A titled story', 'javascript:alert(1)');
     expect(c.findings).toEqual([]);
   });
+
+  // The count belongs to whoever knows which entries were dropped. Derived by
+  // the caller instead, it read `-1` in a published digest on 2026-08-27:
+  // change-detection lines had been pushed onto the findings list, so the
+  // subtraction was between two different populations.
+  it('counts only the entries it suppressed', () => {
+    const c = createCollector([link]);
+    c.entry('Feed', 'A story', link);
+    c.entry('Feed', 'Another story', 'https://e.example/b');
+    expect(c.counts().suppressed).toBe(1);
+    expect(c.findings).toHaveLength(1);
+  });
+
+  it('does not count a within-run duplicate as suppressed', () => {
+    const c = createCollector([]);
+    c.entry('Feed', 'A story', link);
+    c.entry('Other feed', 'Same story', link);
+    expect(c.counts().suppressed).toBe(0);
+  });
+
+  it('reports nothing suppressed on a first run', () => {
+    const c = createCollector([]);
+    c.entry('Feed', 'A story', link);
+    expect(c.counts().suppressed).toBe(0);
+  });
+
+  // Whatever the caller appends to the digest afterwards, the count cannot go
+  // negative: it is incremented, never derived from a list the caller holds.
+  it('never reports a negative count', () => {
+    const c = createCollector([]);
+    for (const n of [1, 2, 3]) c.entry('Feed', `Story ${n}`, `${link}${n}`);
+    c.findings.push('- **CHANGED**: a watched page differs from last run');
+    expect(c.counts().suppressed).toBeGreaterThanOrEqual(0);
+  });
 });
 
 describe('digestBody suppression', () => {

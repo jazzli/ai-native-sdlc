@@ -59,13 +59,17 @@ export const createCollector = (previouslySeen = []) => {
   const before = new Set(previouslySeen);
   const reported = [];
   const findings = [];
+  let suppressed = 0;
   const entry = (label, title, link) => {
     const l = safeLink(link);
     const key = l || title;
     if (seen.has(key)) return;
     seen.add(key);
     reported.push(key);
-    if (before.has(key)) return;
+    if (before.has(key)) {
+      suppressed += 1;
+      return;
+    }
     findings.push(
       l
         ? `- **${sanitize(label)}**: [${sanitize(title)}](${l})`
@@ -73,8 +77,11 @@ export const createCollector = (previouslySeen = []) => {
     );
   };
   // Everything this run saw, repeat or not — the caller persists it so the
-  // next run can tell "already reported" from "new".
-  return { entry, findings, reported };
+  // next run can tell "already reported" from "new". The suppressed count is
+  // the collector's to report: derived by the caller it once went negative,
+  // because the caller was subtracting from a list change detection had
+  // added to.
+  return { entry, findings, reported, counts: () => ({ suppressed }) };
 };
 
 // --- parsing -------------------------------------------------------------
