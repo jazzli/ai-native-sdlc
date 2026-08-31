@@ -23,28 +23,28 @@
   "dependencies": {
     "@astrojs/markdown-remark": "^7.2.4",
     "@resvg/resvg-js": "^2.6.2",
-    "astro": "^7.2.4",
+    "astro": "^7.2.9",
     "github-slugger": "^2.0.0",
     "rehype-stringify": "^10.0.1",
     "remark": "^15.0.1",
     "remark-frontmatter": "^5.0.0",
     "remark-rehype": "^11.1.2",
-    "satori": "^0.33.1",
+    "satori": "^0.33.4",
     "unist-util-visit": "^5.0.0"
   },
   "devDependencies": {
     "@types/hast": "^3.0.4",
     "@types/mdast": "^4.0.4",
-    "@types/node": "^26.2.0",
+    "@types/node": "^26.4.0",
     "@vitest/coverage-v8": "^4.1.11",
-    "eslint": "^10.8.1",
+    "eslint": "^10.9.1",
     "eslint-plugin-astro": "^3.1.0",
-    "fast-xml-parser": "^5.11.0",
+    "fast-xml-parser": "^5.11.1",
     "prettier": "^3.9.6",
     "prettier-plugin-astro": "^0.14.1",
     "remark-smartypants": "3.0.3",
     "typescript": "^5.6.0",
-    "typescript-eslint": "^8.67.0",
+    "typescript-eslint": "^8.68.0",
     "vitest": "^4.1.11"
   }
 }
