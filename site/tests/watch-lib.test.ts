@@ -14,6 +14,8 @@ import {
   parseArxiv,
   parseHn,
   digestBody,
+  trackHealth,
+  chronic,
   sweepOutcome,
 } from '../../watch/lib.mjs';
 
@@ -350,5 +352,92 @@ describe('digestBody suppression', () => {
     });
     expect(nothing).not.toContain('suppressed');
     expect(repeats).toContain('40 item(s) already reported');
+  });
+});
+
+// Lenny's Podcast and the AI Engineer channel failed every run between
+// 2026-08-24 and 2026-08-27 while returning 200 to a laptop, so the cause was
+// the runner's IP, not the URL. Nothing escalated: two dead sources out of
+// twenty are a line in a collapsed block, and the queue quietly under-reports.
+describe('trackHealth', () => {
+  const today = '2026-08-27';
+
+  it('starts a streak at one on the first failure', () => {
+    const h = trackHealth({}, { failed: ['A'], attempted: ['A', 'B'], today });
+    expect(h.A).toEqual({ runs: 1, since: today });
+  });
+
+  it('counts consecutive failures and keeps the first date', () => {
+    const h = trackHealth(
+      { A: { runs: 3, since: '2026-08-24' } },
+      { failed: ['A'], attempted: ['A'], today },
+    );
+    expect(h.A).toEqual({ runs: 4, since: '2026-08-24' });
+  });
+
+  it('forgets a source that succeeded', () => {
+    const h = trackHealth(
+      { A: { runs: 9, since: '2026-08-01' } },
+      { failed: [], attempted: ['A'], today },
+    );
+    expect(h.A).toBeUndefined();
+  });
+
+  // State that only grows is state nobody prunes.
+  it('drops a source no longer on the watchlist', () => {
+    const h = trackHealth(
+      { Gone: { runs: 9, since: '2026-08-01' } },
+      { failed: ['A'], attempted: ['A'], today },
+    );
+    expect(h).toEqual({ A: { runs: 1, since: today } });
+  });
+});
+
+describe('chronic', () => {
+  it('ignores a source that flaked once', () => {
+    expect(chronic({ A: { runs: 1, since: '2026-08-27' } })).toEqual([]);
+  });
+
+  it('reports a source at the threshold', () => {
+    expect(chronic({ A: { runs: 3, since: '2026-08-24' } })).toHaveLength(1);
+  });
+
+  it('reports the worst offender first', () => {
+    const out = chronic({
+      A: { runs: 3, since: '2026-08-24' },
+      B: { runs: 8, since: '2026-08-19' },
+    });
+    expect(out.map((h) => h.name)).toEqual(['B', 'A']);
+  });
+});
+
+describe('digestBody chronic warning', () => {
+  const ailing = [{ name: "Lenny's Podcast", runs: 4, since: '2026-08-24' }];
+
+  it('says nothing when every source is healthy', () => {
+    const body = digestBody({ date: '2026-08-27', collected: [], errors: [] });
+    expect(body).not.toContain('WARNING');
+  });
+
+  it('names the source, the streak and the date', () => {
+    const body = digestBody({
+      date: '2026-08-27',
+      collected: [],
+      errors: ["Lenny's Podcast: HTTP 403"],
+      chronic: ailing,
+    });
+    expect(body).toContain('4 consecutive runs since 2026-08-24');
+  });
+
+  // A collapsed block is where this failure already was, and where nobody saw
+  // it. The warning has to outrank the fold.
+  it('puts the warning above the collapsed error block', () => {
+    const body = digestBody({
+      date: '2026-08-27',
+      collected: [],
+      errors: ["Lenny's Podcast: HTTP 403"],
+      chronic: ailing,
+    });
+    expect(body.indexOf('[!WARNING]')).toBeLessThan(body.indexOf('<details>'));
   });
 });

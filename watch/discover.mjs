@@ -14,6 +14,8 @@ import {
   parseHn,
   digestBody,
   sweepOutcome,
+  trackHealth,
+  chronic,
 } from "./lib.mjs";
 
 const DRY = process.argv.includes("--dry");
@@ -29,6 +31,13 @@ const state = fs.existsSync(STATE_FILE)
   ? JSON.parse(fs.readFileSync(STATE_FILE, "utf8"))
   : {};
 const errors = [];
+// Which sources failed, kept apart from the rendered message so a streak can
+// be counted by name across runs.
+const failed = [];
+const fail = (name) => (e) => {
+  errors.push(`${name}: ${e.message}`);
+  failed.push(name);
+};
 
 const matches = makeMatcher(list.keywords);
 // Links reported on previous runs, with the date they were last seen, so a
@@ -106,17 +115,13 @@ async function checkTarget(t) {
 }
 
 const jobs = [
-  ...list.feeds.map((f) =>
-    scanFeed(f).catch((e) => errors.push(`${f.name}: ${e.message}`)),
-  ),
+  ...list.feeds.map((f) => scanFeed(f).catch(fail(f.name))),
   ...list.apis.map((a) =>
     (a.type === "hn-algolia" ? scanHn(a.queries) : scanArxiv(a.query)).catch(
-      (e) => errors.push(`${a.name}: ${e.message}`),
+      fail(a.name),
     ),
   ),
-  ...list.targets.map((t) =>
-    checkTarget(t).catch((e) => errors.push(`${t.name}: ${e.message}`)),
-  ),
+  ...list.targets.map((t) => checkTarget(t).catch(fail(t.name))),
 ];
 await Promise.all(jobs);
 fs.mkdirSync(new URL(".", new URL(STATE_FILE, "file://")).pathname, {
@@ -129,17 +134,28 @@ state.__seen = Object.fromEntries([
   ...seenBefore,
   ...reported.map((link) => [link, today]),
 ]);
+const attempted = [...list.feeds, ...list.apis, ...list.targets].map(
+  (s) => s.name,
+);
+state.__health = trackHealth(state.__health, { failed, attempted, today });
+const ailing = chronic(state.__health);
 fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2));
 
 const { suppressed } = counts();
 const collected = [...findings, ...changes];
-const body = digestBody({ date: today, collected, errors, suppressed });
+const body = digestBody({
+  date: today,
+  collected,
+  errors,
+  suppressed,
+  chronic: ailing,
+});
 
 console.log(body);
 // Always in the run log, posted or not: a zero-finding day that suppressed
 // forty repeats is healthy, and one that saw nothing at all may not be.
 console.error(
-  `[seen ${reported.length}, new ${findings.length}, changed ${changes.length}, suppressed ${suppressed}, errors ${errors.length}]`,
+  `[seen ${reported.length}, new ${findings.length}, changed ${changes.length}, suppressed ${suppressed}, errors ${errors.length}, chronic ${ailing.length}]`,
 );
 const sourceCount = list.feeds.length + list.apis.length + list.targets.length;
 const outcome = sweepOutcome({
