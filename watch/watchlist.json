@@ -1,5 +1,5 @@
 {
-  "comment": "Daily discovery + change-detection watchlist. Discovery is not admission: everything found here still enters the registry only through the signal filter, triaged by the monthly intelligent watch. Feeds are RSS/Atom; targets are deterministic checks.",
+  "comment": "Daily discovery + change-detection watchlist. Discovery is not admission: everything found here still enters the registry only through the signal filter, triaged by the weekly falsifier watch. Feeds are RSS/Atom; targets are deterministic checks.",
   "keywords": [
     "coding agent",
     "agentic",
@@ -66,10 +66,6 @@
       "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCLKPca3kwwd-B59HNr-_lvA"
     },
     {
-      "name": "Lenny's Podcast",
-      "url": "https://api.substack.com/feed/podcast/10845.rss"
-    },
-    {
       "name": "Big Technology Podcast",
       "url": "https://feeds.megaphone.fm/LI3617121267"
     },
@@ -121,7 +117,8 @@
     {
       "name": "MCP spec versions",
       "type": "page-hash",
-      "url": "https://modelcontextprotocol.io/specification/versioning"
+      "url": "https://modelcontextprotocol.io/specification/versioning",
+      "match": "current protocol version is\\s*\\d{4}-\\d{2}-\\d{2}"
     },
     {
       "name": "typescript-eslint TS peer range",

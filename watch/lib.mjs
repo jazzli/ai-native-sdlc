@@ -84,6 +84,29 @@ export const createCollector = (previouslySeen = []) => {
   return { entry, findings, reported, counts: () => ({ suppressed }) };
 };
 
+// --- fetch policy ------------------------------------------------------
+// A 429 or a 5xx is the origin asking for a moment, not a dead source; the
+// arXiv query drew one on half of its recent runs and was recorded as a
+// failure each time. Retry those, never a 4xx that will not change.
+export const shouldRetry = (status) => status === 429 || status >= 500;
+export const backoffMs = (attempt) => 2_000 * 2 ** attempt;
+
+// What a page-hash target actually watches. Hashing a whole page tracks its
+// dynamic chrome, not its claim: the MCP versioning page fired CHANGED on 17
+// consecutive days while the version it states stayed 2026-07-28. A target
+// may name a `match` pattern; then only the first match is hashed, and a
+// page that stops matching is reported rather than silently hashed as empty.
+export const hashInput = (body, match) => {
+  const text = body.replace(/\s+/g, " ");
+  if (!match) return text;
+  const m = text
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .match(new RegExp(match, "i"));
+  if (!m) throw new Error(`page no longer matches /${match}/`);
+  return m[0];
+};
+
 // --- source health -------------------------------------------------------
 // Origins fail transiently all the time; a single 500 is noise. A source
 // failing every run is a source nobody is watching, and today it reaches the

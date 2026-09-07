@@ -16,6 +16,9 @@ import {
   sweepOutcome,
   trackHealth,
   chronic,
+  shouldRetry,
+  backoffMs,
+  hashInput,
 } from "./lib.mjs";
 
 const DRY = process.argv.includes("--dry");
@@ -58,13 +61,20 @@ const { entry, findings, reported, counts } = createCollector(
 // suppressed. Kept in their own list so the counts below stay honest.
 const changes = [];
 
+const RETRIES = 2;
 async function get(url) {
-  const res = await fetch(url, {
-    headers: { "user-agent": "ai-native-sdlc-discovery/1.0" },
-    signal: AbortSignal.timeout(20_000),
-  });
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  return res.text();
+  for (let attempt = 0; ; attempt++) {
+    const res = await fetch(url, {
+      headers: { "user-agent": "ai-native-sdlc-discovery/1.0" },
+      signal: AbortSignal.timeout(20_000),
+    });
+    if (res.ok) return res.text();
+    if (attempt < RETRIES && shouldRetry(res.status)) {
+      await new Promise((r) => setTimeout(r, backoffMs(attempt)));
+      continue;
+    }
+    throw new Error(`HTTP ${res.status}`);
+  }
 }
 
 async function scanFeed({ name, url, always }) {
@@ -92,7 +102,7 @@ async function checkTarget(t) {
     const body = await get(t.url);
     const hash = crypto
       .createHash("sha256")
-      .update(body.replace(/\s+/g, " "))
+      .update(hashInput(body, t.match))
       .digest("hex");
     if (state[t.name] && state[t.name] !== hash) {
       changes.push(
