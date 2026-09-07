@@ -5,22 +5,50 @@ they mean. It runs in Anthropic's cloud, **not** from this repository — so
 its configuration is recorded here, because a policy artifact that exists in
 exactly one place outside version control is one accident from being lost.
 
-## Configuration (as of 2026-08-26)
+## Configuration (as of 2026-09-07)
 
-| Field | Value |
-| --- | --- |
-| Name | `falsifier-watch` |
-| Routine ID | `trig_01EJUVVKmvjX4rrQJYW92e23` |
-| Schedule | `0 1 * * 6` UTC — Saturdays, 09:00 Asia/Singapore |
-| Model | `claude-sonnet-5` |
-| Repository source | `https://github.com/jazzli/ai-native-sdlc` |
-| Allowed tools | `Bash`, `Read`, `Glob`, `Grep`, `WebSearch`, `WebFetch` |
-| MCP connectors | none — deliberately cleared |
-| Manage at | https://claude.ai/code/routines |
+| Field             | Value                                                                |
+| ----------------- | -------------------------------------------------------------------- |
+| Name              | `falsifier-watch`                                                    |
+| Routine ID        | `trig_01EJUVVKmvjX4rrQJYW92e23`                                      |
+| Schedule          | `0 1 * * 6` UTC — Saturdays, 09:00 Asia/Singapore                    |
+| Model             | `claude-sonnet-5`                                                    |
+| Repository source | `https://github.com/jazzli/ai-native-sdlc`                           |
+| Cloud environment | `research` (`env_0187No92VUq7PHubxMs8ENMj`), network access **Full** |
+| Allowed tools     | `Bash`, `Read`, `Glob`, `Grep`, `WebSearch`, `WebFetch`              |
+| MCP connectors    | none — deliberately cleared                                          |
+| GitHub access     | read-only — see below                                                |
+| Manage at         | https://claude.ai/code/routines                                      |
 
-Least privilege is intentional: it can read, search, and run `gh`, and it has
-no connectors. Its own prompt forbids committing, editing content, and
-closing issues.
+Least privilege is intentional: it can read and search, and it has no
+connectors. Its own prompt forbids committing, editing content, and closing
+issues.
+
+### What the routine can and cannot reach
+
+Two runs (2026-08-29 and 2026-09-05) completed their research and then lost
+it, because the record above was wrong about what the routine could do. Both
+are visible in the run logs at the management URL.
+
+- **Network.** The `Default` environment allows egress only to package
+  registries. Every `WebFetch` to a research host — arxiv.org, dora.dev,
+  modelcontextprotocol.io, even example.com — returned `EGRESS_BLOCKED`, so
+  "verify at the primary" was impossible and the runs fell back to search
+  snippets. The routine now runs in `research`, created 2026-09-07 with
+  network access set to Full. It holds no secrets and cannot write to the
+  repository, which is what makes unrestricted egress acceptable; the prompt
+  already treats everything it fetches as data.
+- **GitHub writes.** The session's GitHub integration is read-only: creating
+  an issue and commenting on one both returned
+  `403 Resource not accessible by integration`, and `gh` is not installed in
+  the sandbox, so the prompt's `gh issue create` cannot run. Until the Claude
+  GitHub App is granted Issues: read & write on this repository, a run can
+  only report through its own transcript and a push notification. The
+  previous version of this file claimed `issues: write`; nothing had checked.
+- **Outcomes.** Saving the routine from the web UI attached a
+  `git_repository` outcome naming the branch `claude/ecstatic-ptolemy`. The
+  push allowlist is empty, so it grants nothing today. Recorded so a later
+  reader is not surprised by it.
 
 ## What it does, in order
 
@@ -49,6 +77,7 @@ closing issues.
    [nvidia-agents-md-2026](../sources.md#nvidia-agents-md-2026) and
    [backslash-agents-md-2026](../sources.md#backslash-agents-md-2026), which
    amended a published position.
+
 4. **Watchlist self-maintenance** — proposes additions and removals for
    `watch/watchlist.json`; proposes only, never edits.
 
