@@ -7,18 +7,18 @@ exactly one place outside version control is one accident from being lost.
 
 ## Configuration (as of 2026-09-07)
 
-| Field             | Value                                                                |
-| ----------------- | -------------------------------------------------------------------- |
-| Name              | `falsifier-watch`                                                    |
-| Routine ID        | `trig_01EJUVVKmvjX4rrQJYW92e23`                                      |
-| Schedule          | `0 1 * * 6` UTC — Saturdays, 09:00 Asia/Singapore                    |
-| Model             | `claude-sonnet-5`                                                    |
-| Repository source | `https://github.com/jazzli/ai-native-sdlc`                           |
-| Cloud environment | `research` (`env_0187No92VUq7PHubxMs8ENMj`), network access **Full** |
-| Allowed tools     | `Bash`, `Read`, `Glob`, `Grep`, `WebSearch`, `WebFetch`              |
-| MCP connectors    | none — deliberately cleared                                          |
-| GitHub access     | read-only — see below                                                |
-| Manage at         | https://claude.ai/code/routines                                      |
+| Field             | Value                                                                   |
+| ----------------- | ----------------------------------------------------------------------- |
+| Name              | `falsifier-watch`                                                       |
+| Routine ID        | `trig_01EJUVVKmvjX4rrQJYW92e23`                                         |
+| Schedule          | `0 1 * * 6` UTC — Saturdays, 09:00 Asia/Singapore                       |
+| Model             | `claude-sonnet-5`                                                       |
+| Repository source | `https://github.com/jazzli/ai-native-sdlc`                              |
+| Cloud environment | `research` (`env_0187No92VUq7PHubxMs8ENMj`), network access **Full**    |
+| Allowed tools     | `Bash`, `Read`, `Glob`, `Grep`, `WebSearch`, `WebFetch`                 |
+| MCP connectors    | none — deliberately cleared                                             |
+| GitHub access     | Claude GitHub App, installed 2026-09-07, scoped to this repository only |
+| Manage at         | https://claude.ai/code/routines                                         |
 
 Least privilege is intentional: it can read and search, and it has no
 connectors. Its own prompt forbids committing, editing content, and closing
@@ -38,13 +38,18 @@ are visible in the run logs at the management URL.
   network access set to Full. It holds no secrets and cannot write to the
   repository, which is what makes unrestricted egress acceptable; the prompt
   already treats everything it fetches as data.
-- **GitHub writes.** The session's GitHub integration is read-only: creating
-  an issue and commenting on one both returned
-  `403 Resource not accessible by integration`, and `gh` is not installed in
-  the sandbox, so the prompt's `gh issue create` cannot run. Until the Claude
-  GitHub App is granted Issues: read & write on this repository, a run can
-  only report through its own transcript and a push notification. The
-  previous version of this file claimed `issues: write`; nothing had checked.
+- **GitHub writes.** Until 2026-09-07 the Claude GitHub App was _authorized_
+  on the owner's account but _installed_ on no repository, so its token could
+  do only what is public: reads succeeded and every write returned
+  `403 Resource not accessible by integration`. `gh` is not installed in the
+  sandbox either, so the prompt's `gh issue create` never ran; the routine
+  writes through the GitHub integration instead. The app is now installed on
+  this repository alone. Its permission set is the app's own and is broader
+  than the routine needs — read and write on actions, checks, code,
+  discussions, issues, pull requests, hooks and workflows — which is why the
+  installation is scoped to one repository and the routine's own prompt
+  still forbids committing. The previous version of this file claimed
+  `issues: write`; nothing had checked.
 - **Outcomes.** Saving the routine from the web UI attached a
   `git_repository` outcome naming the branch `claude/ecstatic-ptolemy`. The
   push allowlist is empty, so it grants nothing today. Recorded so a later
