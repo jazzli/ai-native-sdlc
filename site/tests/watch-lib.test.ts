@@ -16,6 +16,9 @@ import {
   digestBody,
   trackHealth,
   chronic,
+  shouldRetry,
+  backoffMs,
+  hashInput,
   sweepOutcome,
 } from '../../watch/lib.mjs';
 
@@ -439,5 +442,53 @@ describe('digestBody chronic warning', () => {
       chronic: ailing,
     });
     expect(body.indexOf('[!WARNING]')).toBeLessThan(body.indexOf('<details>'));
+  });
+});
+
+describe('fetch policy', () => {
+  it('retries a rate limit and a server error, never a client error', () => {
+    expect(shouldRetry(429)).toBe(true);
+    expect(shouldRetry(503)).toBe(true);
+    expect(shouldRetry(403)).toBe(false);
+    expect(shouldRetry(404)).toBe(false);
+  });
+
+  it('backs off geometrically', () => {
+    expect(backoffMs(0)).toBe(2000);
+    expect(backoffMs(1)).toBe(4000);
+  });
+});
+
+// The MCP versioning target fired CHANGED for 17 straight days while the
+// version on the page stayed 2026-07-28: the hash covered the page's chrome.
+describe('hashInput', () => {
+  const page =
+    '<nav>Search… ⌘K</nav><p>The <strong>current</strong> protocol version is 2026-07-28.</p>';
+
+  it('hashes the whole page when no pattern is given', () => {
+    expect(hashInput(page)).toContain('<nav>');
+  });
+
+  it('hashes only the matched claim, across tags', () => {
+    const m = 'current protocol version is\\s*\\d{4}-\\d{2}-\\d{2}';
+    expect(hashInput(page, m)).toBe('current protocol version is 2026-07-28');
+    expect(hashInput(page.replace('Search… ⌘K', 'Suche'), m)).toBe(
+      'current protocol version is 2026-07-28',
+    );
+  });
+
+  it('changes when the version changes', () => {
+    const m = 'current protocol version is\\s*\\d{4}-\\d{2}-\\d{2}';
+    expect(hashInput(page.replace('2026-07-28', '2026-11-05'), m)).not.toBe(
+      hashInput(page, m),
+    );
+  });
+
+  // Silence would look like stability. A page that stops matching is an
+  // error the digest reports, not an empty string hashed forever.
+  it('fails loudly when the page no longer matches', () => {
+    expect(() => hashInput('<p>moved</p>', 'current protocol version')).toThrow(
+      /no longer matches/,
+    );
   });
 });
