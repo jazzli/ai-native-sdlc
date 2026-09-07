@@ -1,8 +1,9 @@
 ---
 title: What surrounds agents where they actually ship production code?
 status: working-answer
-updated: 2026-08-21
+updated: 2026-09-07
 ---
+
 ## Question
 
 The claim that "the advantage is the harness, not the model" circulates
@@ -34,13 +35,22 @@ account to volunteer a cost figure) — converging on five elements:
    review before merge; OpenAI has pushed review almost entirely
    agent-to-agent, humans optional.
 
-Model choice appears in none of the three accounts as the differentiator.
+Model choice appears in none of the four accounts as the differentiator —
+and that sentence needs splitting, because independent measurement has now
+arrived on one half of it. Across 9,428 agentic pull requests in 489
+repositories, merge rates by agent run from 43% (Devin) to 84% (Claude),
+against a human rate near 85%. The four accounts converge on _harness
+architecture_; none of them varied the agent inside it. Which agent runs
+in the harness is a separate question, and it has a measured answer with
+a 41-point spread. Two cautions travel with the number: the authors state
+that acceptance is not quality parity, and a merge rate is what a
+repository's reviewers let through, not what the agent got right.
 
-Two things to hold constant: all three are self-reports without
+Two things to hold constant: all four are self-reports without
 methodology, failure rates, or external verification — existence proofs,
 not measurements — and there is a selection effect: harnesses that failed
 did not write blog posts. That the five convergent elements are
-*necessary* rather than merely present is this note's inference.
+_necessary_ rather than merely present is this note's inference.
 
 The review-placement divergence bears directly on
 [where must human review sit](where-must-human-review-sit.md): Stripe's
@@ -71,6 +81,10 @@ model is that note's position; OpenAI's is its falsifier in progress.
   largest org scale; figures via access-journalism rather than a
   first-party post, stated as such. The 6× cost growth is the evidence
   class the other three omit.
+- [mazloomzadeh-2026](../../sources.md#mazloomzadeh-2026) — the first
+  independent, large-sample measurement that varies the agent: 9,428 PRs,
+  merge probabilities 43.0% to 84.3% by tool, no quarterly trend. Verified
+  at the paper 2026-09-07.
 - [apostolou-2026](../../sources.md#apostolou-2026) — the field's blocker
   is absent output verification; these harnesses are, structurally, that
   gap being closed by the companies past it.
@@ -80,8 +94,12 @@ model is that note's position; OpenAI's is its falsifier in progress.
 ## What would change my mind
 
 - Independent measurement contradicting the self-reported scale or
-  quality claims of any of the three accounts.
-- A production deployment at comparable scale that *lacks* one of the five
+  quality claims of any of the four accounts.
+- The merge-rate spread across agents collapsing when the harness is held
+  constant — which would return agent choice to incidental. The measurement
+  now on record varies the agent across repositories; nobody has yet varied
+  it inside one harness.
+- A production deployment at comparable scale that _lacks_ one of the five
   elements — which would demote it from convergent to incidental.
 - Incident data from the agent-to-agent review model: real defect-escape
   rates would resolve the review-placement divergence in one direction or

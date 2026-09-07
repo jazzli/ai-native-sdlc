@@ -1,8 +1,9 @@
 ---
 title: What does security look like when the developer is partly an agent?
 status: working-answer
-updated: 2026-08-20
+updated: 2026-09-07
 ---
+
 ## Question
 
 Coding agents read untrusted web content, hold credentials, install
@@ -32,7 +33,16 @@ installing anything an agent suggests.
 spending its legitimate permissions for an attacker. The proposed controls
 converge on five categories — scoped authentication, provenance tracking,
 sandboxing, inline policy enforcement, centralized governance — but that is
-a controls *proposal*, not measured efficacy.
+a controls _proposal_, not measured efficacy. One of the five is now shown
+insufficient rather than merely unmeasured. _Instruction privilege
+escalation_ — a harness promoting content that entered through a file read
+to user-level authority when it delegates to a subagent — achieved all 13
+of 13 attack objectives on six production harnesses, and still all 13 under
+the inline permission review that three of them offer. No injection and no
+jailbreak: the attacker controls only files in the workspace, and every
+component behaves as configured. Provenance is the control that failed, and
+it failed at the harness, not the model. Review of each action cannot hold
+when the reviewer is shown a request that looks user-authored.
 
 That the security boundary and the review gate are the same gate — sensitive
 actions behind explicit human approval, which
@@ -69,6 +79,11 @@ the throughput side — is this note's inference, not a sourced finding.
 - [nvidia-agents-md-2026](../../sources.md#nvidia-agents-md-2026) — the
   same channel used for integrity rather than exfiltration: a concealed
   code change the agent kept out of its own pull request.
+- [he-2026-privilege](../../sources.md#he-2026-privilege) — the
+  demonstration that permission review fails by construction against a
+  confused deputy the harness itself creates: 13/13 objectives on six
+  harnesses, 13/13 under automatic permission review on the three that
+  provide it. Verified at the paper 2026-09-07.
 
 ## What would change my mind
 
@@ -78,4 +93,9 @@ the throughput side — is this note's inference, not a sourced finding.
 - Measured package-hallucination rates collapsing in newer models — the
   supply-chain leg would shrink to a historical footnote.
 - Incident evidence that sandboxing and permission scoping fail in
-  practice — which would demand stronger controls than the current five.
+  practice — **triggered 2026-09-07** by
+  [he-2026-privilege](../../sources.md#he-2026-privilege), by controlled
+  reproduction rather than incident, which is stronger. What would move it
+  again: a harness whose delegation preserves the provenance of tool-level
+  content, measured under the same 13 objectives — that would make the
+  "inline policy enforcement" category a control rather than a hope.

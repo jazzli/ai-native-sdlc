@@ -114,7 +114,7 @@ verification tax, and pipeline adaptation.
 
 The evidence on AGENTS.md-style files splits cleanly. For task success:
 the best study is a null — no improvement across agents and models, over
-20% added inference cost, and LLM-generated files mildly *hurt*. For
+20% added inference cost, and LLM-generated files mildly _hurt_. For
 efficiency: paired runs show real savings (−29% median runtime, −17%
 output tokens) with correctness explicitly unevaluated. Both studies point
 at the same practice: if you keep one, hand-write it, keep it minimal and
@@ -139,7 +139,10 @@ not to be relied on. The mitigation is structural: strip one leg. Alongside
 it, two more evidenced failure classes: verify that any package an agent
 suggests actually exists before installing (package hallucination runs
 5–22% and attackers register the names), and scope the agent's authority so
-a confused deputy has little to spend. The review gate doubles as the
+a confused deputy has little to spend — scope it, because reviewing each
+action does not hold: the per-action permission review three major harnesses
+offer passed all 13 of 13 attack objectives when the harness itself relabeled
+a file's contents as the user's request. The review gate doubles as the
 security boundary — that pairing is our inference, argued in the note.
 → [why, and what would change this](questions/securing-agentic-development.md)
 
@@ -162,7 +165,11 @@ merges, Uber's org-wide adoption with costs up sixfold — four first-party
 accounts converge on the same surround:
 pre-warmed full-environment sandboxes, verification the agent runs itself,
 curated tools, the repository as system of record, and a review loop.
-Model choice appears in none of them as the differentiator. These are
+Model choice appears in none of them as the differentiator — but the first
+independent measurement across agents, 9,428 pull requests, finds merge
+rates from 43% to 84% by agent against a human rate near 85%. Invest in the
+harness first; which agent runs inside it is a second, measured question,
+not a non-question. The accounts are
 self-reports, not measurements — and they disagree on exactly one thing
 this playbook cares about: Stripe keeps mandatory human review at merge
 while OpenAI has gone almost fully agent-to-agent. Which survives contact
@@ -196,7 +203,7 @@ through the instruction file or not at all.
 
 Reading it does not do what you would hope. Consultation does not lead to
 updating — code changes first 4.7 times as often — and it associates with
-*less* immediate testing, not more. No documentation-based validation
+_less_ immediate testing, not more. No documentation-based validation
 sequence was observed at all.
 
 Treat the instruction file as configuration that accretes, not prose written
