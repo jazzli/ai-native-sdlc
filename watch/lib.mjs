@@ -91,6 +91,7 @@ export const createCollector = (previouslySeen = []) => {
 // triage can tell "flaked this morning" from "gone since Tuesday".
 export const trackHealth = (previous = {}, { failed, attempted, today }) => {
   const failing = new Set(failed);
+  /** @type {Record<string, { runs: number; since: string }>} */
   const next = {};
   // Only what this run attempted: a source dropped from the watchlist should
   // not haunt the state, and one that recovered should not keep its streak.
@@ -171,7 +172,8 @@ export const digestBody = ({
   collected,
   errors,
   suppressed = 0,
-  chronic: ailing = [],
+  chronic:
+    ailing = /** @type {{ name: string; runs: number; since: string }[]} */ ([]),
 }) =>
   [
     `### ${date}`,
