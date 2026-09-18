@@ -40,10 +40,13 @@ eval "$(python3 "$REPO/watch/host/gate.py" "$ORDOMATA_SRC" "$ART" "$REPO" "$SLUG
 # WebFetch for primaries). The prompt forbids writes; the branch is
 # disposable; main is protected. That is the bound, stated in watch/routine.md.
 # agent-run puts ORDOMATA_SRC straight on PYTHONPATH, so it wants the package
-# directory; the project root, where the catalog lives, is the checkout.
+# directory; the project root, where the catalog lives, is the checkout. Both
+# are computed here because a `VAR=… VAR2=$VAR cmd` prefix assigns in order.
+ORDOMATA_PACKAGE_DIR="$ORDOMATA_SRC/src"
+ORDOMATA_PROJECT_ROOT="$ORDOMATA_SRC"
 ORDOMATA_ALLOW_SUBSCRIPTION_RUNS=1 \
-ORDOMATA_SRC="$ORDOMATA_SRC/src" \
-ORDOMATA_ROOT="$ORDOMATA_SRC" \
+ORDOMATA_SRC="$ORDOMATA_PACKAGE_DIR" \
+ORDOMATA_ROOT="$ORDOMATA_PROJECT_ROOT" \
 ORDOMATA_RUN_CARD="$ART/run-card.json" \
 ORDOMATA_REVIEW="$ART/review.json" \
 ORDOMATA_CAPACITY_EVIDENCE="$ART/capacity.json" \
