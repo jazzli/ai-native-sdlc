@@ -142,7 +142,9 @@ suggests actually exists before installing (package hallucination runs
 a confused deputy has little to spend — scope it, because reviewing each
 action does not hold: the per-action permission review three major harnesses
 offer passed all 13 of 13 attack objectives when the harness itself relabeled
-a file's contents as the user's request. The review gate doubles as the
+a file's contents as the user's request — and since then a start-up `git`
+command, a plugin pin and a package signature have each been made to say yes
+the same way. The review gate doubles as the
 security boundary — that pairing is our inference, argued in the note.
 → [why, and what would change this](questions/securing-agentic-development.md)
 
@@ -169,7 +171,9 @@ Model choice appears in none of them as the differentiator — but the first
 independent measurement across agents, 9,428 pull requests, finds merge
 rates from 43% to 84% by agent against a human rate near 85%. Invest in the
 harness first; which agent runs inside it is a second, measured question,
-not a non-question. The accounts are
+not a non-question. And "harness" means the surround, not the CLI: across
+three scaffolds and seven models, success barely moves while cost varies
+5×, so buy the scaffold on price. The accounts are
 self-reports, not measurements — and they disagree on exactly one thing
 this playbook cares about: Stripe keeps mandatory human review at merge
 while OpenAI has gone almost fully agent-to-agent. Which survives contact

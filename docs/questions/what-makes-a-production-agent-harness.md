@@ -1,7 +1,7 @@
 ---
 title: What surrounds agents where they actually ship production code?
 status: working-answer
-updated: 2026-09-07
+updated: 2026-09-18
 ---
 
 ## Question
@@ -46,6 +46,19 @@ a 41-point spread. Two cautions travel with the number: the authors state
 that acceptance is not quality parity, and a merge rate is what a
 repository's reviewers let through, not what the agent got right.
 
+The word "harness" now carries two different evidence bases, and the note
+has to say which it means. The five elements above are the *surround*: the
+sandboxes, verification loops, tools, record and review that companies build
+around an agent. The other sense is the *scaffold*: the CLI that issues a
+model's tool calls. On the scaffold, a controlled study has arrived with a
+null result — across seven models and three scaffolds on two benchmarks,
+success rates stay within a few points while cost varies up to 5×, and a
+minimal open-source scaffold is competitive with the vendors' own. That
+does not touch the position, because the study varies none of the five
+elements; it does bound the slogan. "The advantage is the harness" is true
+of the surround on the evidence here, and false of the scaffold on the
+evidence there. Spend on the surround; buy the scaffold on cost.
+
 Two things to hold constant: all four are self-reports without
 methodology, failure rates, or external verification — existence proofs,
 not measurements — and there is a selection effect: harnesses that failed
@@ -85,6 +98,10 @@ model is that note's position; OpenAI's is its falsifier in progress.
   independent, large-sample measurement that varies the agent: 9,428 PRs,
   merge probabilities 43.0% to 84.3% by tool, no quarterly trend. Verified
   at the paper 2026-09-07.
+- [harnesstax-2026](../../sources.md#harnesstax-2026) — the scaffold sense
+  measured: 21 model–scaffold pairs, success within ±2–5% across scaffolds,
+  cost up to 5×. Cite it for the scaffold only; it varies none of the five
+  elements. Verified at the post source 2026-09-18.
 - [apostolou-2026](../../sources.md#apostolou-2026) — the field's blocker
   is absent output verification; these harnesses are, structurally, that
   gap being closed by the companies past it.
@@ -99,6 +116,10 @@ model is that note's position; OpenAI's is its falsifier in progress.
   constant — which would return agent choice to incidental. The measurement
   now on record varies the agent across repositories; nobody has yet varied
   it inside one harness.
+- A controlled study that varies one of the five elements — a sandbox, a
+  self-run verification loop — and finds no effect on outcomes. The
+  scaffold-level null result now on record is the shape of such a study;
+  it has not yet been run on the surround.
 - A production deployment at comparable scale that _lacks_ one of the five
   elements — which would demote it from convergent to incidental.
 - Incident data from the agent-to-agent review model: real defect-escape
