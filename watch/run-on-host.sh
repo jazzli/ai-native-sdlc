@@ -39,8 +39,10 @@ eval "$(python3 "$REPO/watch/host/gate.py" "$ORDOMATA_SRC" "$ART" "$REPO" "$SLUG
 # cannot answer permission prompts, and the watch needs Bash for gh and
 # WebFetch for primaries). The prompt forbids writes; the branch is
 # disposable; main is protected. That is the bound, stated in watch/routine.md.
+# agent-run puts ORDOMATA_SRC straight on PYTHONPATH, so it wants the package
+# directory; the project root, where the catalog lives, is the checkout.
 ORDOMATA_ALLOW_SUBSCRIPTION_RUNS=1 \
-ORDOMATA_SRC="$ORDOMATA_SRC" \
+ORDOMATA_SRC="$ORDOMATA_SRC/src" \
 ORDOMATA_ROOT="$ORDOMATA_SRC" \
 ORDOMATA_RUN_CARD="$ART/run-card.json" \
 ORDOMATA_REVIEW="$ART/review.json" \

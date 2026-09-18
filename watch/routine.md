@@ -11,19 +11,20 @@ The watch runs on the Ordomata agent host, `ordomata-agent-01`, as a
 `systemd --user` timer. What it does is versioned here; when it runs and as
 whom is recorded in the host's own repository, `ordomata-agent-host`.
 
-| Field           | Value                                                                                          |
-| --------------- | ---------------------------------------------------------------------------------------------- |
-| Runs on         | `ordomata-agent-01` (DigitalOcean, Ubuntu 24.04), Linux user `agent`, no sudo                  |
-| Trigger         | `falsifier-watch.timer` — `Sat *-*-* 01:00:00 UTC` (09:00 Asia/Singapore), persistent          |
-| Entry point     | [`run-on-host.sh`](run-on-host.sh) → `agent-run claude falsifier-watch-<date> --fg`            |
-| Prompt          | [`falsifier-watch.prompt.md`](falsifier-watch.prompt.md), verbatim, read at run time           |
-| Model           | Claude Code CLI on the host, subscription login; `claude -p`                                   |
-| Autonomy        | `agent-run --autonomy full` (`--dangerously-skip-permissions`; no OS sandbox for Claude)       |
-| GitHub identity | `ordomata-agent` — the host's active `gh` profile; write on this repository since 2026-09-18   |
-| Network         | unrestricted egress (host firewall allows all outbound)                                        |
-| Worktree        | `~/work/falsifier-watch-<date>` on branch `task/falsifier-watch-<date>`, removed after the run |
-| Inspect         | `systemctl --user status falsifier-watch`, `journalctl --user -u falsifier-watch`              |
-| Unit files      | `scripts/systemd/` in `ordomata-agent-host`                                                    |
+| Field           | Value                                                                                                                                            |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Runs on         | `ordomata-agent-01` (DigitalOcean, Ubuntu 24.04), Linux user `agent`, no sudo                                                                    |
+| Trigger         | `falsifier-watch.timer` — `Sat *-*-* 01:00:00 UTC` (09:00 Asia/Singapore), persistent                                                            |
+| Entry point     | [`run-on-host.sh`](run-on-host.sh) → [`host/gate.py`](host/gate.py) → `agent-run claude falsifier-watch-<date> --fg`                             |
+| Prompt          | [`falsifier-watch.prompt.md`](falsifier-watch.prompt.md), verbatim, read at run time                                                             |
+| Model           | chosen per run by Ordomata's Run Card (first run: `sonnet`, effort `medium`); Claude Code CLI on the host, subscription login                    |
+| Autonomy        | `full`, from the Run Card (`--dangerously-skip-permissions`; Claude has no OS sandbox on the host)                                               |
+| GitHub identity | `ordomata-agent` — the host's active `gh` profile; write on this repository since 2026-09-18                                                     |
+| Network         | unrestricted egress (host firewall allows all outbound)                                                                                          |
+| Worktree        | `~/work/falsifier-watch-<date>` on branch `task/falsifier-watch-<date>`, removed after the run                                                   |
+| Inspect         | `systemctl --user status falsifier-watch`, `journalctl --user -u falsifier-watch`                                                                |
+| Gate artifacts  | `~/.local/state/ai-native-sdlc-watch/<date>/` — capacity, classification, Run Card, review; outside the checkout, which agent-run requires clean |
+| Unit files      | `scripts/systemd/` in `ordomata-agent-host`                                                                                                      |
 
 Least privilege is what the host provides, not what the prompt asks for.
 `agent` is unprivileged; the job runs in its own worktree on a disposable
@@ -32,6 +33,24 @@ and closing issues, and the worktree is deleted after each run so nothing it
 did to files survives. What it _can_ do is everything `agent` can, including
 read every credential on the host — the host's own record says to treat every
 secret there as visible to every delegated job, and this watch is one.
+
+### The host's gate
+
+The host does not start a Claude worker on request. `agent-run` demands a
+one-invocation `ORDOMATA_ALLOW_SUBSCRIPTION_RUNS=1`, a passing
+`claude-subscription-preflight` (included subscription only, no paid
+continuation, headroom under 80%), and an accepted Ordomata Run Card that
+reproduces the exact launch — repository, base commit, prompt and context
+digests, model, effort, autonomy — before it creates a branch, worktree or
+unit. [`host/gate.py`](host/gate.py) builds those artifacts each run with
+Ordomata's own library and CLI: it adapts the preflight into capacity
+evidence, writes the watch's classification, asks `coding-worker recommend`
+for the model and effort, records a `deterministic_manager_policy` review,
+and hands the selection to `agent-run`, which re-validates everything
+itself. The classification is the one place a human decision sits: it rates
+the watch standard-risk (security sensitivity 1, irreversibility 1) so
+policy may accept it unattended. Raise either ordinal to 2 and every launch
+needs a named manager, which a weekly timer cannot honestly supply.
 
 ### Why it moved off claude.ai
 
