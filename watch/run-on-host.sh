@@ -16,7 +16,7 @@ set -euo pipefail
 
 REPO="${WATCH_REPO:-$HOME/src/ai-native-sdlc}"
 ORDOMATA_SRC="${ORDOMATA_SRC:-$HOME/src/ordomata}"
-ART="${WATCH_ARTIFACTS:-$HOME/data/ai-native-sdlc-watch}/$(date -u +%F)"
+ART="${WATCH_ARTIFACTS:-$HOME/.local/state/ai-native-sdlc-watch}/$(date -u +%F)"
 SLUG="falsifier-watch-$(date -u +%F)"
 PROMPT="$REPO/watch/falsifier-watch.prompt.md"
 CONTEXT="$REPO/watch/routine.md"

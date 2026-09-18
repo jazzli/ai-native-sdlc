@@ -102,7 +102,15 @@ classification = {
     "context_depth": 2,
     "verification_burden": 2,
     "irreversibility": 1,
-    "required_capabilities": ["web_research", "github_issues"],
+    # The catalog's vocabulary, not the task's: what the watch needs from a
+    # worker is the repository in context, an isolated worktree and reasoning
+    # over evidence. Web and gh access are the host's to grant, not a
+    # candidate's capability.
+    "required_capabilities": [
+        "isolated_worktree",
+        "repository_context",
+        "structured_reasoning",
+    ],
     "permission_ceiling": 1,
     "max_autonomy": "full",
     "required_billing_lane": "subscription_included",
