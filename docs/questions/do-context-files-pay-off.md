@@ -1,7 +1,7 @@
 ---
 title: Do AGENTS.md-style context files actually pay off?
 status: working-answer
-updated: 2026-08-21
+updated: 2026-09-18
 ---
 ## Question
 
@@ -46,6 +46,13 @@ assessed as not elevating risk and left unchanged; the second was patched
 for the specific payload, with the researchers stating the patch does not
 cover obfuscation, indirection through MCP tools, or multi-step chains.
 
+`AGENTS.md` is the named instance, not the class. The class is every file an
+agent reads and acts on without asking, and it has now been seen used in the
+field: malware that hides its persistence in `.claude/`, `.vscode/` and
+`.cursor/` — "project folders that AI tools manage and parse" — precisely
+because they blend into developer noise and sit outside what endpoint
+monitoring watches.
+
 This does not reverse the position above. It adds a reason the same advice
 holds: a hand-written, minimal file is one you can read in full and notice
 changes to. It does mean the file belongs in review, and that a context
@@ -77,6 +84,10 @@ is pointed at it.
 - [backslash-agents-md-2026](../../sources.md#backslash-agents-md-2026) —
   the clone-only path, the credentials staged, and the researchers' own
   account of what the vendor patch does not cover.
+- [gtig-2026-q2](../../sources.md#gtig-2026-q2) — the generalisation
+  observed in the field: hidden per-tool config directories used for
+  persistence and to instruct the assistant to run commands. Verified at the
+  post 2026-09-18.
 - [agents-md](../../sources.md#agents-md) — adoption scale and format
   context (60k+ repos; the spec itself).
 - [gao-chen-2026](../../sources.md#gao-chen-2026) — behavioral

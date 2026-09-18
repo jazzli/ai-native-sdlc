@@ -1,7 +1,7 @@
 ---
 title: What does security look like when the developer is partly an agent?
 status: working-answer
-updated: 2026-09-07
+updated: 2026-09-18
 ---
 
 ## Question
@@ -42,7 +42,19 @@ the inline permission review that three of them offer. No injection and no
 jailbreak: the attacker controls only files in the workspace, and every
 component behaves as configured. Provenance is the control that failed, and
 it failed at the harness, not the model. Review of each action cannot hold
-when the reviewer is shown a request that looks user-authored.
+when the reviewer is shown a request that looks user-authored. Three
+further failures, each by a different mechanism and none needing the model
+to be fooled, arrived within a fortnight: a repository's own `.git/config`
+running a command during the agent's start-up `git status`, outside the
+sandbox and before any prompt, on seven harnesses; a plugin pin that a
+branch named after the commit hash silently defeats, on four; and, observed
+in the field rather than demonstrated, malware that publishes packages with
+valid SLSA attestations from stolen CI tokens so that "AI coding agent
+automated trust checks" pass, and hides its persistence in the `.claude/`,
+`.vscode/` and `.cursor/` directories an agent reads without asking. The
+pattern across all four is the same: the control checked a proxy — a review
+prompt, a sandbox boundary, a commit hash, a signature — and the proxy was
+made to say yes.
 
 That the security boundary and the review gate are the same gate — sensitive
 actions behind explicit human approval, which
@@ -84,6 +96,19 @@ the throughput side — is this note's inference, not a sourced finding.
   confused deputy the harness itself creates: 13/13 objectives on six
   harnesses, 13/13 under automatic permission review on the three that
   provide it. Verified at the paper 2026-09-07.
+- [gitspawn-2026](../../sources.md#gitspawn-2026) — code execution as the
+  developer from `.git/config` during start-up, outside the sandbox and
+  before any prompt, on seven harnesses; no model involved. Delivery needs a
+  populated `.git` directory, not a clone. Verified at the post 2026-09-18.
+- [plugin4shell-2026](../../sources.md#plugin4shell-2026) — a plugin pin
+  defeated by a branch named after the commit, with plugins inheriting the
+  agent's permissions; four harnesses, two fixed at publication. Verified at
+  the post 2026-09-18.
+- [gtig-2026-q2](../../sources.md#gtig-2026-q2) — observed, not
+  demonstrated: DUSTMAKER's OIDC-token theft and SLSA-attested republishing,
+  and its persistence through hidden per-tool config directories. The
+  report's own ceiling — no fully autonomous pipelines seen in the wild —
+  is cited with it. Verified at the post 2026-09-18.
 
 ## What would change my mind
 
@@ -99,3 +124,6 @@ the throughput side — is this note's inference, not a sourced finding.
   again: a harness whose delegation preserves the provenance of tool-level
   content, measured under the same 13 objectives — that would make the
   "inline policy enforcement" category a control rather than a hope.
+  Corroborated since by incident-class evidence on three further mechanisms
+  (`gitspawn-2026`, `plugin4shell-2026`, `gtig-2026-q2`); the bar for
+  moving it back is unchanged.
