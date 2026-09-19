@@ -19,6 +19,7 @@ import {
   shouldRetry,
   backoffMs,
   hashInput,
+  windowSince,
   sweepOutcome,
 } from '../../watch/lib.mjs';
 
@@ -490,5 +491,20 @@ describe('hashInput', () => {
     expect(() => hashInput('<p>moved</p>', 'current protocol version')).toThrow(
       /no longer matches/,
     );
+  });
+});
+
+// arXiv dates entries at submission and surfaces them a day or more later;
+// four consecutive digests carried no arXiv item and no error while the
+// query returned matching papers, because each was already older than the
+// window the first time the sweep could see it.
+describe('windowSince', () => {
+  const now = Date.UTC(2026, 8, 19);
+  it('uses the sweep default when a source names no window', () => {
+    expect(windowSince(now, 26, {})).toBe(now - 26 * 3600_000);
+    expect(windowSince(now, 26)).toBe(now - 26 * 3600_000);
+  });
+  it('lets a source widen its own window', () => {
+    expect(windowSince(now, 26, { windowHours: 96 })).toBe(now - 96 * 3600_000);
   });
 });

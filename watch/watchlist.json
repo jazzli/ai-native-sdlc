@@ -105,7 +105,8 @@
     {
       "name": "arXiv cs.SE",
       "type": "arxiv",
-      "query": "cat:cs.SE AND (all:\"coding agent\" OR all:agentic OR all:\"AI-assisted software\")"
+      "query": "cat:cs.SE AND (all:\"coding agent\" OR all:agentic OR all:\"AI-assisted software\")",
+      "windowHours": 96
     }
   ],
   "targets": [

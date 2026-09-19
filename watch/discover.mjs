@@ -14,6 +14,7 @@ import {
   parseHn,
   digestBody,
   sweepOutcome,
+  windowSince,
   trackHealth,
   chronic,
   shouldRetry,
@@ -28,7 +29,8 @@ const list = JSON.parse(
 );
 const STATE_FILE = process.env.STATE_FILE ?? `${ROOT}watch/state.json`;
 const WINDOW_H = 26; // daily cron + 2h overlap; better a rare duplicate than a gap
-const since = Date.now() - WINDOW_H * 3600_000;
+const NOW = Date.now();
+const since = windowSince(NOW, WINDOW_H);
 
 const state = fs.existsSync(STATE_FILE)
   ? JSON.parse(fs.readFileSync(STATE_FILE, "utf8"))
@@ -91,9 +93,10 @@ async function scanHn(queries) {
   }
 }
 
-async function scanArxiv(query) {
-  const url = `https://export.arxiv.org/api/query?search_query=${encodeURIComponent(query)}&sortBy=submittedDate&sortOrder=descending&max_results=15`;
-  for (const it of parseArxiv(await get(url), { since, matches }))
+async function scanArxiv(source) {
+  const url = `https://export.arxiv.org/api/query?search_query=${encodeURIComponent(source.query)}&sortBy=submittedDate&sortOrder=descending&max_results=15`;
+  const window = windowSince(NOW, WINDOW_H, source);
+  for (const it of parseArxiv(await get(url), { since: window, matches }))
     entry("arXiv", it.title, it.link);
 }
 
@@ -127,7 +130,7 @@ async function checkTarget(t) {
 const jobs = [
   ...list.feeds.map((f) => scanFeed(f).catch(fail(f.name))),
   ...list.apis.map((a) =>
-    (a.type === "hn-algolia" ? scanHn(a.queries) : scanArxiv(a.query)).catch(
+    (a.type === "hn-algolia" ? scanHn(a.queries) : scanArxiv(a)).catch(
       fail(a.name),
     ),
   ),

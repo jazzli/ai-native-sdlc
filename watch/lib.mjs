@@ -84,6 +84,17 @@ export const createCollector = (previouslySeen = []) => {
   return { entry, findings, reported, counts: () => ({ suppressed }) };
 };
 
+// --- windows ----------------------------------------------------------
+// The sweep keeps what a source dated inside the window. arXiv dates an entry
+// at submission but surfaces it through the API only after its announcement
+// cycle, a day or more later, so with a one-day window the entry is already
+// too old the first time the sweep can see it: the digests of 2026-09-16 to
+// 09-19 carried no arXiv item and no error while the query returned matching
+// papers. A source may name its own window; repeats across runs are already
+// suppressed, so a wide one costs nothing but a longer first digest.
+export const windowSince = (now, defaultHours, source = {}) =>
+  now - (source.windowHours ?? defaultHours) * 3600_000;
+
 // --- fetch policy ------------------------------------------------------
 // A 429 or a 5xx is the origin asking for a moment, not a dead source; the
 // arXiv query drew one on half of its recent runs and was recorded as a
