@@ -44,22 +44,18 @@ const isPositions =
       title="AI-Native SDLC changelog"
       href={`${base}/changelog.xml`}
     />
-    {
-      /* Make every page self-describing to an agent that lands on it: the
+    {/* Make every page self-describing to an agent that lands on it: the
          clean markdown mirror of this page, the site index, and the
          positions manifest an adopter needs. Without these an agent has to
-         already know the conventions to find them. */
-    }
-    {
-      mdHref && (
-        <link
-          rel="alternate"
-          type="text/markdown"
-          title="This page as markdown"
-          href={mdHref}
-        />
-      )
-    }
+         already know the conventions to find them. */}
+    {mdHref && (
+      <link
+        rel="alternate"
+        type="text/markdown"
+        title="This page as markdown"
+        href={mdHref}
+      />
+    )}
     <link
       rel="alternate"
       type="text/plain"
@@ -77,62 +73,73 @@ const isPositions =
     <meta property="og:type" content={ogType} />
     <meta property="og:title" content={pageTitle} />
     {description && <meta property="og:description" content={description} />}
-    {
-      ogCard && (
-        <>
-          <meta
-            property="og:image"
-            content={`${SITE_ORIGIN}${base}/og/${ogCard}.png`}
-          />
-          <meta property="og:image:width" content="1200" />
-          <meta property="og:image:height" content="630" />
-          <meta name="twitter:card" content="summary_large_image" />
-        </>
-      )
-    }
+    {ogCard && (
+      <>
+        <meta
+          property="og:image"
+          content={`${SITE_ORIGIN}${base}/og/${ogCard}.png`}
+        />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta name="twitter:card" content="summary_large_image" />
+      </>
+    )}
   </head>
   <body>
-    <a class="skip" href="#main">Skip to content</a>
+    <a class="skip" href="#main">
+      Skip to content
+    </a>
     <header class="masthead">
-      <a class="wordmark" href={`${base}/`}>AI-Native SDLC</a>
+      <a class="wordmark" href={`${base}/`}>
+        AI-Native SDLC
+      </a>
       <nav aria-label="Sections">
-        <a href={`${base}/`} aria-current={isPositions ? 'page' : undefined}
-          >Positions</a
-        >
+        <a href={`${base}/`} aria-current={isPositions ? 'page' : undefined}>
+          Positions
+        </a>
         <a
           href={`${base}/sources/`}
-          aria-current={on('sources') ? 'page' : undefined}>Sources</a
+          aria-current={on('sources') ? 'page' : undefined}
         >
+          Sources
+        </a>
         <a
           href={`${base}/protocol/`}
-          aria-current={on('protocol') ? 'page' : undefined}>Protocol</a
+          aria-current={on('protocol') ? 'page' : undefined}
         >
+          Protocol
+        </a>
         <a
           href={`${base}/adopt/`}
-          aria-current={on('adopt') ? 'page' : undefined}>Adopt</a
+          aria-current={on('adopt') ? 'page' : undefined}
         >
+          Adopt
+        </a>
         <a
           href={`${base}/changelog/`}
-          aria-current={on('changelog') ? 'page' : undefined}>Changelog</a
+          aria-current={on('changelog') ? 'page' : undefined}
         >
+          Changelog
+        </a>
       </nav>
       <p class="strapline">Every position states what would overturn it.</p>
     </header>
-    <main id="main" class={variant}><slot /></main>
+    <main id="main" class={variant}>
+      <slot />
+    </main>
     <footer>
       <a
         href={`${base}/colophon/`}
         class="md-link"
         aria-current={on('colophon') ? 'page' : undefined}
-        >How this site is built</a
       >
-      {
-        mdHref && (
-          <a href={mdHref} class="md-link">
-            View this page as markdown
-          </a>
-        )
-      }
+        How this site is built
+      </a>
+      {mdHref && (
+        <a href={mdHref} class="md-link">
+          View this page as markdown
+        </a>
+      )}
     </footer>
   </body>
 </html>

@@ -14,12 +14,10 @@ const { Content } = canonical ? await render(note) : { Content: null };
 const to = `${import.meta.env.BASE_URL}/${kindFor(note.data.status)}/${note.id}/`;
 ---
 
-{
-  canonical && Content ? (
-    <NoteLayout note={note}>
-      <Content />
-    </NoteLayout>
-  ) : (
-    <Redirect to={to} title={note.data.title} />
-  )
-}
+{canonical && Content ? (
+  <NoteLayout note={note}>
+    <Content />
+  </NoteLayout>
+) : (
+  <Redirect to={to} title={note.data.title} />
+)}
