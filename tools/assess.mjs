@@ -27,10 +27,42 @@ const CAPABILITIES =
 // only when that happens and the result is reviewed — not when a mechanism
 // looks like it ought to generalise. Everything else is assessment-only,
 // which is the whole point of recording it.
+// Each shape names the repository it was validated against and when. A
+// shape is added only after the assessor has been run on such a repository
+// and its findings read against the repository itself.
 const VALIDATED_SHAPES = [
+  // this repository, 2026-08-23
   {
     runtime: "node",
     packageManager: "npm",
+    ci: "github-actions",
+    host: "github",
+  },
+  // unjs/ofetch, 2026-09-19
+  {
+    runtime: "node",
+    packageManager: "pnpm",
+    ci: "github-actions",
+    host: "github",
+  },
+  // pallets/flask, 2026-09-19
+  {
+    runtime: "python",
+    packageManager: "uv",
+    ci: "github-actions",
+    host: "github",
+  },
+  // jazzli/ordomata (no lockfile, by design), 2026-09-19
+  {
+    runtime: "python",
+    packageManager: "pip",
+    ci: "github-actions",
+    host: "github",
+  },
+  // BurntSushi/ripgrep, 2026-09-19
+  {
+    runtime: "rust",
+    packageManager: "cargo",
     ci: "github-actions",
     host: "github",
   },
@@ -75,6 +107,28 @@ const locate = (root, names) => {
 };
 
 /** What kind of repository this is, from what it contains. */
+// A manifest without a lockfile still names its manager: package.json is
+// npm's unless its `packageManager` field says otherwise, Cargo.toml is
+// cargo's, go.mod is go's. Reporting "unknown" here described express and a
+// dependency-free Python project as unknowable when they were merely
+// unlocked, which the boundaries probe records separately.
+const managerFromManifest = (root, manifest) => {
+  if (!manifest) return "unknown";
+  if (manifest.name === "package.json") {
+    const declared = readIf(root, path.join(manifest.dir, manifest.name));
+    const m = declared && /"packageManager"\s*:\s*"([a-z]+)@/.exec(declared);
+    return m ? m[1] : "npm";
+  }
+  return (
+    {
+      "pyproject.toml": "pip",
+      "requirements.txt": "pip",
+      "Cargo.toml": "cargo",
+      "go.mod": "go",
+    }[manifest.name] ?? "unknown"
+  );
+};
+
 export function detectProfile(root) {
   const manifest = locate(root, [
     "package.json",
@@ -117,7 +171,7 @@ export function detectProfile(root) {
       "poetry.lock": "poetry",
       "Cargo.lock": "cargo",
       "go.sum": "go",
-    }[lock?.name] ?? "unknown";
+    }[lock?.name] ?? managerFromManifest(root, manifest);
 
   const ci = exists(root, ".github/workflows")
     ? "github-actions"
@@ -155,7 +209,28 @@ export function resolveSupport(profile) {
   return matched ? "first-class" : "assessment-only";
 }
 
-const anyOf = (root, paths) => paths.filter((p) => exists(root, p));
+// Probes look where the profile found the manifest as well as at the root:
+// this project's own tests, lint and type configuration live under site/,
+// and were reported absent until the assessor was run on itself with that
+// in mind. A path found below the root is reported with its directory.
+let probeDirs = ["."];
+const anyOf = (root, paths) =>
+  probeDirs.flatMap((d) =>
+    paths
+      .filter((p) => exists(root, d, p))
+      .map((p) => (d === "." ? p : path.join(d, p))),
+  );
+// Configuration that lives inside pyproject.toml rather than in its own
+// file: ruff, mypy and pytest are all commonly configured there.
+const pyprojectTools = (root, tools) =>
+  probeDirs.flatMap((d) => {
+    const t = readIf(root, path.join(d, "pyproject.toml"));
+    return t
+      ? tools
+          .filter((n) => new RegExp(`^\\[tool\\.${n}(\\.|\\])`, "m").test(t))
+          .map((n) => `${d === "." ? "" : d + "/"}pyproject.toml [tool.${n}]`)
+      : [];
+  });
 
 // One probe per domain in the capability map. A probe reports what it can
 // see and states what it cannot; it never converts that into a score.
@@ -175,6 +250,20 @@ const PROBES = {
         "Cargo.lock",
         "go.sum",
       ]).map((p) => `dependency lockfile: ${p}`),
+    ],
+    absent: [
+      ...(anyOf(r, ["package.json", "pyproject.toml", "requirements.txt"])
+        .length &&
+      !anyOf(r, [
+        "package-lock.json",
+        "pnpm-lock.yaml",
+        "yarn.lock",
+        "bun.lockb",
+        "poetry.lock",
+        "uv.lock",
+      ]).length
+        ? ["no dependency lockfile is committed"]
+        : []),
     ],
     notAssessable: [
       "which files are generated and owned by a tool rather than edited",
@@ -214,7 +303,12 @@ const PROBES = {
           "prettier.config.js",
           "tsconfig.json",
           "mypy.ini",
+          "rustfmt.toml",
+          ".rustfmt.toml",
         ]).map((p) => `lint, format or type configuration: ${p}`),
+        ...pyprojectTools(r, ["ruff", "mypy", "black", "pyright"]).map(
+          (p) => `lint, format or type configuration: ${p}`,
+        ),
       ],
       needsHostApi: ["whether any of these checks are required before a merge"],
       notAssessable: [
@@ -262,6 +356,9 @@ const PROBES = {
         "tox.ini",
         "codecov.yml",
       ]).map((p) => `test or coverage configuration: ${p}`),
+      ...pyprojectTools(r, ["pytest", "coverage"]).map(
+        (p) => `test or coverage configuration: ${p}`,
+      ),
     ],
     notAssessable: [
       "whether the tests assert behaviour or restate the implementation",
@@ -371,9 +468,7 @@ const PROBES = {
 
   "adoption-readiness": (r) => {
     const ci = exists(r, ".github/workflows") || exists(r, ".gitlab-ci.yml");
-    const tests = ["tests", "test", "__tests__", "spec"].some((p) =>
-      exists(r, p),
-    );
+    const tests = anyOf(r, ["tests", "test", "__tests__", "spec"]).length > 0;
     const vcs = exists(r, ".git");
     return {
       observed: [
@@ -391,6 +486,10 @@ const PROBES = {
 /** Runs every probe the capability map names, in the map's order. */
 export function assess(root, capabilities) {
   const profile = detectProfile(root);
+  const manifestDir = profile.manifestAt
+    ? path.dirname(profile.manifestAt)
+    : ".";
+  probeDirs = manifestDir === "." ? ["."] : [".", manifestDir];
   return {
     schemaVersion: 1,
     profile,
@@ -404,6 +503,7 @@ export function assess(root, capabilities) {
         upstreamEvidence: c.evidence,
         upstreamSupport: c.support,
         observed: r?.observed ?? [],
+        absent: r?.absent ?? [],
         needsHostApi: r?.needsHostApi ?? [],
         notAssessable: r
           ? (r.notAssessable ?? [])
@@ -452,6 +552,7 @@ if (
   for (const d of report.domains) {
     console.log(`## ${d.title}  (upstream: ${d.upstreamEvidence})`);
     for (const o of d.observed) console.log(`  observed       ${o}`);
+    for (const o of d.absent) console.log(`  not configured ${o}`);
     for (const o of d.needsHostApi) console.log(`  needs host API ${o}`);
     for (const o of d.notAssessable) console.log(`  not assessable ${o}`);
     if (!d.observed.length)
