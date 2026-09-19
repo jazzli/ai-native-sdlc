@@ -239,9 +239,8 @@ each validated by running the assessor on a repository this project did not
 write and reading its findings against that repository. Everything else
 reports `assessment-only` — the observations are still facts, but the
 mapping from them to practice is not validated. The first such run, on
-2026-09-19, found four defects in the assessor itself; the
-[design record](https://github.com/jazzli/ai-native-sdlc/blob/main/docs/design/2026-09-19-assessors-on-foreign-repositories.md)
-lists them.
+2026-09-19, found four defects in the assessor itself; the repository's
+`docs/design/2026-09-19-assessors-on-foreign-repositories.md` lists them.
 
 ## What you are adopting
 
