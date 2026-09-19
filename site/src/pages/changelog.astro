@@ -22,22 +22,20 @@ const dates = [...new Set(entries.map((e) => e.date))];
   <h1>Changelog</h1>
   <p>
     Generated from the registry's
-    <a href={`${base}/sources/#review-log`}>review log</a> — the same record the research
-    protocol maintains. Subscribe:
+    <a href={`${base}/sources/#review-log`}>review log</a> — the same record the
+    research protocol maintains. Subscribe:
     <a href={`${base}/changelog.xml`}>Atom feed</a>.
   </p>
-  {
-    dates.map((date) => (
-      <>
-        <h2>{date}</h2>
-        <ul>
-          {entries
-            .filter((e) => e.date === date)
-            .map((e) => (
-              <li id={e.anchor} set:html={e.html} />
-            ))}
-        </ul>
-      </>
-    ))
-  }
+  {dates.map((date) => (
+    <>
+      <h2>{date}</h2>
+      <ul>
+        {entries
+          .filter((e) => e.date === date)
+          .map((e) => (
+            <li id={e.anchor} set:html={e.html} />
+          ))}
+      </ul>
+    </>
+  ))}
 </Base>
