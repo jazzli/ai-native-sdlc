@@ -16,6 +16,7 @@ import {
   digestBody,
   trackHealth,
   chronic,
+  triageLapse,
   shouldRetry,
   backoffMs,
   hashInput,
@@ -443,6 +444,111 @@ describe('digestBody chronic warning', () => {
       chronic: ailing,
     });
     expect(body.indexOf('[!WARNING]')).toBeLessThan(body.indexOf('<details>'));
+  });
+});
+
+describe('triageLapse', () => {
+  const digest = (createdAt: string) => ({
+    createdAt,
+    body: '### 2026-10-01\n\n- [Item](https://example.com)',
+  });
+  const marker = (createdAt: string) => ({
+    createdAt,
+    body: `Items through ${createdAt.slice(0, 10)} triaged (weekly falsifier watch).`,
+  });
+  const openedAt = '2026-08-21T14:00:27Z';
+  const at = (iso: string) => Date.parse(iso);
+
+  it('is silent while the last triage is within ten days', () => {
+    const comments = [marker('2026-09-26T01:09:28Z')];
+    expect(
+      triageLapse({ comments, openedAt, now: at('2026-10-06T22:30:00Z') }),
+    ).toBeNull();
+  });
+
+  // The watch failed every Saturday from 2026-10-03 and nothing said so.
+  it('reports the date of the last triage once ten days have passed', () => {
+    const comments = [marker('2026-09-26T01:09:28Z')];
+    expect(
+      triageLapse({ comments, openedAt, now: at('2026-10-07T22:30:00Z') }),
+    ).toEqual({ since: '2026-09-26', days: 11 });
+  });
+
+  it('reads the latest marker and ignores digests posted after it', () => {
+    const comments = [
+      marker('2026-09-19T01:06:11Z'),
+      marker('2026-09-26T01:09:28Z'),
+      digest('2026-10-05T22:31:00Z'),
+    ];
+    expect(
+      triageLapse({ comments, openedAt, now: at('2026-10-12T22:30:00Z') }),
+    ).toEqual({ since: '2026-09-26', days: 16 });
+  });
+
+  it('counts only a comment that opens with the marker', () => {
+    const quoted = {
+      createdAt: '2026-10-10T00:00:00Z',
+      body: 'Was this item covered? The last comment said Items through 2026-10-03 triaged.',
+    };
+    expect(
+      triageLapse({
+        comments: [marker('2026-09-26T01:09:28Z'), quoted],
+        openedAt,
+        now: at('2026-10-12T22:30:00Z'),
+      }),
+    ).toEqual({ since: '2026-09-26', days: 16 });
+  });
+
+  // A queue reopened after triage has no marker yet; it is as fresh as the
+  // issue itself.
+  it('measures a queue with no marker from when the issue was opened', () => {
+    expect(
+      triageLapse({
+        comments: [digest('2026-10-02T22:31:00Z')],
+        openedAt: '2026-10-01T22:31:00Z',
+        now: at('2026-10-05T22:30:00Z'),
+      }),
+    ).toBeNull();
+    expect(
+      triageLapse({
+        comments: [],
+        openedAt: '2026-10-01T22:31:00Z',
+        now: at('2026-10-20T22:30:00Z'),
+      }),
+    ).toEqual({ since: '2026-10-01', days: 18 });
+  });
+});
+
+describe('digestBody triage lapse', () => {
+  const lapse = { since: '2026-09-26', days: 43 };
+
+  it('says nothing when the queue is being triaged', () => {
+    const body = digestBody({ date: '2026-10-01', collected: [], errors: [] });
+    expect(body).not.toContain('WARNING');
+  });
+
+  it('names the last triage date and the gap, above the fold', () => {
+    const body = digestBody({
+      date: '2026-11-08',
+      collected: ['- [Item](https://example.com)'],
+      errors: ['Some feed: HTTP 500'],
+      lapse,
+    });
+    expect(body).toContain('not been triaged since 2026-09-26 (43 days)');
+    expect(body.indexOf('[!WARNING]')).toBeLessThan(body.indexOf('- [Item]'));
+  });
+
+  it('shares one warning block with a chronic source', () => {
+    const body = digestBody({
+      date: '2026-11-08',
+      collected: [],
+      errors: ['A: HTTP 403'],
+      chronic: [{ name: 'A', runs: 4, since: '2026-11-05' }],
+      lapse,
+    });
+    expect(body.match(/\[!WARNING\]/g)).toHaveLength(1);
+    expect(body).toContain('since 2026-09-26 (43 days)');
+    expect(body).toContain('4 consecutive runs since 2026-11-05');
   });
 });
 
