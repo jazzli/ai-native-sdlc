@@ -83,9 +83,10 @@ describe('detectProfile', () => {
 });
 
 // The mechanism that stops "it should work anywhere" being recorded as
-// support. Only shapes actually assessed count, and there is one.
+// support. Only shapes actually assessed count; each names the repository
+// it was run against.
 describe('resolveSupport', () => {
-  it('recognises the one shape this project has assessed', () => {
+  it('recognises the shapes this project has assessed', () => {
     expect(
       resolveSupport({
         runtime: 'node',
@@ -106,7 +107,7 @@ describe('resolveSupport', () => {
       },
       {
         runtime: 'node',
-        packageManager: 'pnpm',
+        packageManager: 'yarn',
         ci: 'github-actions',
         host: 'github',
       },
@@ -150,6 +151,7 @@ describe('assess', () => {
     ])
       expect([...fields], banned).not.toContain(banned);
     expect([...fields].sort()).toEqual([
+      'absent',
       'id',
       'needsHostApi',
       'notAssessable',
@@ -185,5 +187,95 @@ describe('assess', () => {
     expect(sec.observed.join(' ')).toContain('SECURITY.md');
     expect(sec.needsHostApi.length).toBeGreaterThan(0);
     expect(sec.notAssessable.length).toBeGreaterThan(0);
+  });
+});
+
+// Found by running the assessor on repositories this project did not write
+// (2026-09-19): express and a dependency-free Python project reported an
+// unknown package manager for lacking a lockfile, this repository reported
+// no tests because they live under site/, and ruff configured inside
+// pyproject.toml was invisible.
+describe('assessing a foreign repository', () => {
+  it('names the manager a manifest implies when no lockfile is committed', () => {
+    expect(
+      detectProfile(make('unlocked', ['package.json'])).packageManager,
+    ).toBe('npm');
+    expect(
+      detectProfile(make('pyunlocked', ['pyproject.toml'])).packageManager,
+    ).toBe('pip');
+    expect(detectProfile(make('cargo', ['Cargo.toml'])).packageManager).toBe(
+      'cargo',
+    );
+  });
+
+  it('honours a declared packageManager over the npm default', () => {
+    const r = make('declared', ['package.json']);
+    fs.writeFileSync(
+      path.join(r, 'package.json'),
+      '{"packageManager":"pnpm@9.1.0"}',
+    );
+    expect(detectProfile(r).packageManager).toBe('pnpm');
+  });
+
+  it('records an unlocked manifest as a boundary finding, not a guess', () => {
+    const a = assess(make('unlocked2', ['package.json']), caps);
+    const b = assess(
+      make('locked', ['package.json', 'package-lock.json']),
+      caps,
+    );
+    const dom = (r: ReturnType<typeof assess>) =>
+      r.domains.find(
+        (d: { id: string }) => d.id === 'repository-and-change-boundaries',
+      )!;
+    expect(dom(a).absent).toContain('no dependency lockfile is committed');
+    expect(dom(b).absent).toEqual([]);
+  });
+
+  it('looks for tests and lint where the manifest lives', () => {
+    const r = make('nested2', [
+      'site/package.json',
+      'site/package-lock.json',
+      'site/tests/a.test.ts',
+      'site/vitest.config.ts',
+      'site/eslint.config.js',
+    ]);
+    const a = assess(r, caps);
+    const testing = a.domains.find((d: { id: string }) => d.id === 'testing')!;
+    const enforce = a.domains.find(
+      (d: { id: string }) => d.id === 'mechanical-enforcement',
+    )!;
+    expect(testing.observed).toContain('test directory: site/tests');
+    expect(testing.observed).toContain(
+      'test or coverage configuration: site/vitest.config.ts',
+    );
+    expect(enforce.observed).toContain(
+      'lint, format or type configuration: site/eslint.config.js',
+    );
+  });
+
+  it('sees ruff, mypy and pytest configured inside pyproject.toml', () => {
+    const r = make('py2', ['pyproject.toml', 'tests/x.py']);
+    fs.writeFileSync(
+      path.join(r, 'pyproject.toml'),
+      '[project]\nname="x"\n[tool.ruff]\nline-length=100\n[tool.ruff.lint]\n[tool.mypy]\n[tool.pytest.ini_options]\n',
+    );
+    const a = assess(r, caps);
+    const enforce = a.domains.find(
+      (d: { id: string }) => d.id === 'mechanical-enforcement',
+    )!;
+    const testing = a.domains.find((d: { id: string }) => d.id === 'testing')!;
+    expect(enforce.observed).toContain(
+      'lint, format or type configuration: pyproject.toml [tool.ruff]',
+    );
+    expect(enforce.observed).toContain(
+      'lint, format or type configuration: pyproject.toml [tool.mypy]',
+    );
+    expect(testing.observed).toContain(
+      'test or coverage configuration: pyproject.toml [tool.pytest]',
+    );
+    // [tool.ruff.lint] is a sub-table of a tool already listed, not a second tool
+    expect(
+      enforce.observed.filter((o: string) => o.includes('[tool.ruff]')),
+    ).toHaveLength(1);
   });
 });

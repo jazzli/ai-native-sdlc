@@ -22,10 +22,13 @@ export function query(path, run = ghApi) {
     return { ok: true, data: JSON.parse(run(path)) };
   } catch (e) {
     const msg = String(e.stderr ?? e.message ?? e);
-    if (/404|Not Found/.test(msg)) return { ok: false, reason: "not-found" };
+    // The message travels with the reason: the same 404 means "not
+    // protected" to an administrator and "not yours to see" to anyone else.
+    if (/404|Not Found/.test(msg))
+      return { ok: false, reason: "not-found", msg };
     if (/403|404.*permission|Resource not accessible/i.test(msg))
-      return { ok: false, reason: "not-permitted" };
-    return { ok: false, reason: "unavailable" };
+      return { ok: false, reason: "not-permitted", msg };
+    return { ok: false, reason: "unavailable", msg };
   }
 }
 
@@ -55,7 +58,18 @@ export function assessHost(repo, run = ghApi) {
   // --- mechanical enforcement and review ---------------------------------
   const meta = query(`repos/${repo}`, run);
   const branch = meta.ok ? (meta.data.default_branch ?? "main") : "main";
+  // Two APIs answer this, and a repository may use either. Rulesets are the
+  // newer mechanism; branch protection is the older one, and a repository
+  // protected only that way reported as unprotected until 2026-09-19, when
+  // the assessor was first run against one. Read both and merge. The legacy
+  // endpoint answers 404 "Branch not protected" to an administrator of an
+  // unprotected branch and a bare 404 to everyone else; only the first is
+  // an absence.
   const rules = q(`rules/branches/${branch}`);
+  const legacy = q(`branches/${branch}/protection`);
+  const legacyUnprotected =
+    !legacy.ok && /Branch not protected/i.test(legacy.msg ?? "");
+  const legacyUnreadable = !legacy.ok && !legacyUnprotected;
   const enforce = domain("mechanical-enforcement");
   const review = domain("review-and-falsification");
 
@@ -64,31 +78,56 @@ export function assessHost(repo, run = ghApi) {
     cannot(review, `branch rules for ${branch} (${rules.reason})`);
   } else {
     const types = rules.data.map((r) => r.type);
-    const checks =
-      rules.data.find((r) => r.type === "required_status_checks")?.parameters
-        ?.required_status_checks ?? [];
-    checks.length
-      ? say(
-          enforce,
-          `checks required before merge on ${branch}: ${checks.map((c) => c.context).join(", ")}`,
-        )
-      : enforce.absent.push(
-          `no status check is required before merge on ${branch}`,
-        );
-
+    const lp = legacy.ok ? legacy.data : {};
+    const checks = [
+      ...(
+        rules.data.find((r) => r.type === "required_status_checks")?.parameters
+          ?.required_status_checks ?? []
+      ).map((c) => c.context),
+      ...(lp.required_status_checks?.contexts ?? []),
+    ];
     const pr = rules.data.find((r) => r.type === "pull_request");
-    pr
-      ? say(
-          review,
-          `changes to ${branch} must go through a pull request (${pr.parameters?.required_approving_review_count ?? 0} approvals required)`,
-        )
-      : review.absent.push(`${branch} accepts direct pushes`);
-    types.includes("non_fast_forward")
-      ? say(review, `${branch} cannot be force-pushed`)
-      : review.absent.push(`${branch} can be force-pushed`);
-    types.includes("deletion")
-      ? say(review, `${branch} cannot be deleted`)
-      : review.absent.push(`${branch} can be deleted`);
+    const legacyReviews = lp.required_pull_request_reviews;
+    const noForce =
+      types.includes("non_fast_forward") ||
+      lp.allow_force_pushes?.enabled === false;
+    const noDelete =
+      types.includes("deletion") || lp.allow_deletions?.enabled === false;
+    // With the rulesets empty and the legacy endpoint refused, "not
+    // configured" would be a guess. Say what could not be read instead.
+    const undecidable = (found) => !found && legacyUnreadable;
+
+    if (checks.length)
+      say(
+        enforce,
+        `checks required before merge on ${branch}: ${[...new Set(checks)].join(", ")}`,
+      );
+    else if (undecidable(false))
+      cannot(enforce, `branch protection for ${branch} (${legacy.reason})`);
+    else
+      enforce.absent.push(
+        `no status check is required before merge on ${branch}`,
+      );
+
+    if (pr || legacyReviews)
+      say(
+        review,
+        `changes to ${branch} must go through a pull request (${
+          pr?.parameters?.required_approving_review_count ??
+          legacyReviews?.required_approving_review_count ??
+          0
+        } approvals required)`,
+      );
+    else if (undecidable(false))
+      cannot(review, `branch protection for ${branch} (${legacy.reason})`);
+    else review.absent.push(`${branch} accepts direct pushes`);
+
+    if (noForce) say(review, `${branch} cannot be force-pushed`);
+    else if (!undecidable(false))
+      review.absent.push(`${branch} can be force-pushed`);
+    if (noDelete) say(review, `${branch} cannot be deleted`);
+    else if (!undecidable(false))
+      review.absent.push(`${branch} can be deleted`);
   }
 
   // --- security ----------------------------------------------------------
