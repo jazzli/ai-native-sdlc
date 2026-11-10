@@ -74,6 +74,52 @@ describe('detectProfile', () => {
     expect(p.manifestAt).toBe(path.join('site', 'package.json'));
   });
 
+  // square/okhttp: the root build.gradle.kts was not a known manifest, a test
+  // fixture's pom.xml became the project, and a Kotlin/JS yarn.lock in a third
+  // directory became its package manager.
+  it('reads the Gradle Kotlin DSL and names the build tool', () => {
+    expect(
+      detectProfile(
+        make('gradle-kts', ['build.gradle.kts', 'fixtures/pom.xml']),
+      ),
+    ).toMatchObject({
+      runtime: 'jvm',
+      packageManager: 'gradle',
+      manifestAt: 'build.gradle.kts',
+    });
+    expect(detectProfile(make('maven', ['pom.xml'])).packageManager).toBe(
+      'maven',
+    );
+  });
+
+  it('takes a lockfile only from beside the manifest', () => {
+    const r = make('stray-lock', ['package.json', 'js-store/yarn.lock']);
+    expect(detectProfile(r).packageManager).toBe('npm');
+  });
+
+  it('ignores a lockfile that belongs to another ecosystem', () => {
+    const r = make('mixed-lock', ['pom.xml', 'yarn.lock']);
+    expect(detectProfile(r)).toMatchObject({
+      runtime: 'jvm',
+      packageManager: 'maven',
+    });
+  });
+
+  it('lists manifests of another runtime alongside the one it read', () => {
+    const r = make('polyglot', [
+      'package.json',
+      'pnpm-lock.yaml',
+      'core/Cargo.toml',
+      'core/Cargo.lock',
+      'site/package.json',
+    ]);
+    expect(detectProfile(r)).toMatchObject({
+      runtime: 'node',
+      manifestAt: 'package.json',
+      otherRuntimes: [path.join('core', 'Cargo.toml')],
+    });
+  });
+
   it('reports unknown rather than guessing', () => {
     const p = detectProfile(make('bare', ['README.md']));
     expect(p.runtime).toBe('unknown');
@@ -119,6 +165,33 @@ describe('resolveSupport', () => {
       },
     ])
       expect(resolveSupport(p), JSON.stringify(p)).toBe('assessment-only');
+  });
+
+  // openai/codex: a tooling package.json at the root of a Rust and Bazel
+  // repository matched a validated Node/pnpm shape and was reported
+  // first-class. A matching tuple is not a matching repository.
+  it('withholds first-class when the repository holds another runtime', () => {
+    const shape = {
+      runtime: 'node',
+      packageManager: 'pnpm',
+      ci: 'github-actions',
+      host: 'github',
+    };
+    expect(
+      resolveSupport({ ...shape, otherRuntimes: ['codex-rs/Cargo.toml'] }),
+    ).toBe('assessment-only');
+    expect(resolveSupport({ ...shape, otherRuntimes: [] })).toBe('first-class');
+  });
+
+  it('carries the polyglot case end to end', () => {
+    const r = make('codex-like', [
+      'package.json',
+      'pnpm-lock.yaml',
+      'codex-rs/Cargo.toml',
+      'codex-rs/Cargo.lock',
+      '.github/workflows/ci.yml',
+    ]);
+    expect(resolveSupport(detectProfile(r))).toBe('assessment-only');
   });
 });
 

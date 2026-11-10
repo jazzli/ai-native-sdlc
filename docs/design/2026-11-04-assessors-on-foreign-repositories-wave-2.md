@@ -1,7 +1,8 @@
 # The assessors on foreign repositories: a second wave
 
 **Date:** 2026-11-04. **Status:** findings recorded; no assessor changed.
-Seven defects, none fixed here.
+Seven defects, none fixed here. Finding 1 was fixed separately on
+2026-11-11; the other six stand.
 
 ## Context
 
@@ -165,6 +166,19 @@ touch "$d/pnpm-lock.yaml" "$d/core/Cargo.toml" "$d/core/Cargo.lock"
 node --input-type=module -e "import {detectProfile,resolveSupport} from './tools/assess.mjs'; const p=detectProfile('$d'); console.log(p.runtime, p.packageManager, resolveSupport(p))"
 # node pnpm first-class
 ```
+
+**Fixed 2026-11-11.** A lockfile is now read only from the manifest's own
+directory and only for the manifest's runtime; `build.gradle.kts` is a
+manifest, and Maven and Gradle are named as managers; a repository that also
+holds another runtime's manifest is `assessment-only`, and the report names
+those manifests. The profile still reads the first manifest it finds, so
+codex is described from its root `package.json` — but it is no longer
+certified on that basis. Re-run on fresh shallow clones of the same
+repositories, okhttp reads as `jvm, gradle` from `build.gradle.kts`, gson
+as `jvm, maven`, and codex as `assessment-only`; the five validated
+repositories keep their profiles and `first-class`. The first reproduction
+above now reports `runtime: 'jvm', packageManager: 'gradle', manifestAt:
+'build.gradle.kts'`, and the second prints `node pnpm assessment-only`.
 
 ### 2. Tests are found by root directory name only, and adoption readiness disagrees with testing
 
