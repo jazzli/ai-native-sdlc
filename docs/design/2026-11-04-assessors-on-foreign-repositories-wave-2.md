@@ -1,8 +1,8 @@
 # The assessors on foreign repositories: a second wave
 
 **Date:** 2026-11-04. **Status:** findings recorded; no assessor changed.
-Seven defects, none fixed here. Findings 1 and 6 were fixed separately on
-2026-11-11; the other five stand.
+Seven defects, none fixed here. Findings 1, 3 and 6 were fixed separately
+on 2026-11-11; the other four stand.
 
 ## Context
 
@@ -211,6 +211,13 @@ the first wave fixed for branch protection, recurring in the header.
 node --input-type=module -e "import {assessHost} from './tools/assess-host.mjs'; console.log(assessHost('o/r', () => { throw { stderr: 'HTTP 403' }; }).defaultBranch)"
 # main
 ```
+
+**Fixed 2026-11-11.** With the metadata refused, the default branch is
+reported as unknown (`null` in the result, "unknown" in the header), and no
+branch rules are queried: rules read for an assumed branch would be facts
+about the wrong one. Both branch domains say instead that the default branch
+is unknown and why. The reproduction now prints `null`. Run with read access,
+the assessor reports jq on `master`.
 
 ### 4. Configuration file names are matched exactly, at fixed paths
 

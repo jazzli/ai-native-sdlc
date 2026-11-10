@@ -57,7 +57,12 @@ export function assessHost(repo, run = ghApi) {
 
   // --- mechanical enforcement and review ---------------------------------
   const meta = query(`repos/${repo}`, run);
-  const branch = meta.ok ? (meta.data.default_branch ?? "main") : "main";
+  // The default branch is the one the host names. With the metadata refused
+  // it is unknown, not "main": jqlang/jq's is master, and rules read for an
+  // assumed branch would be facts about the wrong one.
+  const branch = meta.ok ? (meta.data.default_branch ?? null) : null;
+  const enforce = domain("mechanical-enforcement");
+  const review = domain("review-and-falsification");
   // Two APIs answer this, and a repository may use either. Rulesets are the
   // newer mechanism; branch protection is the older one, and a repository
   // protected only that way reported as unprotected until 2026-09-19, when
@@ -65,15 +70,18 @@ export function assessHost(repo, run = ghApi) {
   // endpoint answers 404 "Branch not protected" to an administrator of an
   // unprotected branch and a bare 404 to everyone else; only the first is
   // an absence.
-  const rules = q(`rules/branches/${branch}`);
-  const legacy = q(`branches/${branch}/protection`);
+  const rules = branch ? q(`rules/branches/${branch}`) : null;
+  const legacy = branch ? q(`branches/${branch}/protection`) : null;
   const legacyUnprotected =
-    !legacy.ok && /Branch not protected/i.test(legacy.msg ?? "");
-  const legacyUnreadable = !legacy.ok && !legacyUnprotected;
-  const enforce = domain("mechanical-enforcement");
-  const review = domain("review-and-falsification");
+    !legacy?.ok && /Branch not protected/i.test(legacy?.msg ?? "");
+  const legacyUnreadable = !legacy?.ok && !legacyUnprotected;
 
-  if (!rules.ok) {
+  // Both are null exactly when the default branch is unknown.
+  if (!rules || !legacy) {
+    const why = `branch rules and protection (default branch unknown: repository metadata ${meta.ok ? "names none" : meta.reason})`;
+    cannot(enforce, why);
+    cannot(review, why);
+  } else if (!rules.ok) {
     cannot(enforce, `branch rules for ${branch} (${rules.reason})`);
     cannot(review, `branch rules for ${branch} (${rules.reason})`);
   } else {
@@ -220,7 +228,7 @@ if (
 
   const r = assessHost(repo);
   console.log(
-    `# Host assessment of ${r.repo}  (default branch: ${r.defaultBranch})\n`,
+    `# Host assessment of ${r.repo}  (default branch: ${r.defaultBranch ?? "unknown"})\n`,
   );
   for (const d of r.domains) {
     console.log(`## ${d.id}`);

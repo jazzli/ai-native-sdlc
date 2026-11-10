@@ -137,6 +137,29 @@ describe('assessHost', () => {
     );
   });
 
+  // jqlang/jq's default branch is master. With repository metadata refused,
+  // the report stated "default branch: main" and named main in every "cannot
+  // see" line (wave 2, finding 3). Rules read for an assumed branch would be
+  // facts about the wrong branch, so none are read.
+  it('reports the default branch as unknown when metadata is refused', () => {
+    const asked: string[] = [];
+    const r = assessHost('o/r', (p: string) => {
+      asked.push(p);
+      if (p === `${R}/rules/branches/main`) return '[]';
+      const e: Error & { stderr?: string } = new Error('gh: 403');
+      e.stderr = 'HTTP 403: Resource not accessible by integration';
+      throw e;
+    });
+    expect(r.defaultBranch).toBeNull();
+    expect(asked.some((p) => p.includes('/branches/'))).toBe(false);
+    for (const id of ['mechanical-enforcement', 'review-and-falsification']) {
+      const d = find(r, id);
+      expect(d.absent, id).toEqual([]);
+      expect(d.needsPermission.join(' '), id).toMatch(/default branch unknown/);
+      expect(d.needsPermission.join(' '), id).not.toMatch(/\bmain\b/);
+    }
+  });
+
   it('classifies why a query failed', () => {
     const notFound = query('x', () => {
       const e: Error & { stderr?: string } = new Error('boom');
