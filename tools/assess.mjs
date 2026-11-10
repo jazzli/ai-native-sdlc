@@ -95,6 +95,9 @@ const searchRoots = (root) => {
             d.name !== "node_modules",
         )
         .map((d) => d.name)
+        // Sorted here rather than trusted from readdirSync, whose order is
+        // the filesystem's: the first manifest found becomes the profile.
+        .sort()
     : [];
   return [".", ...subs];
 };
@@ -104,6 +107,32 @@ const locate = (root, names) => {
   for (const dir of searchRoots(root))
     for (const n of names) if (exists(root, dir, n)) return { dir, name: n };
   return null;
+};
+
+const MANIFESTS = {
+  "package.json": "node",
+  "pyproject.toml": "python",
+  "requirements.txt": "python",
+  "go.mod": "go",
+  "Cargo.toml": "rust",
+  "pom.xml": "jvm",
+  "build.gradle": "jvm",
+  "build.gradle.kts": "jvm",
+};
+
+// Each lockfile with the runtime it can belong to. A lockfile is read only
+// from the manifest's own directory and only for the manifest's runtime:
+// searched for independently, okhttp's Kotlin/JS yarn.lock in a third
+// directory became the package manager of a Gradle build.
+const LOCKS = {
+  "pnpm-lock.yaml": ["node", "pnpm"],
+  "yarn.lock": ["node", "yarn"],
+  "package-lock.json": ["node", "npm"],
+  "bun.lockb": ["node", "bun"],
+  "uv.lock": ["python", "uv"],
+  "poetry.lock": ["python", "poetry"],
+  "Cargo.lock": ["rust", "cargo"],
+  "go.sum": ["go", "go"],
 };
 
 /** What kind of repository this is, from what it contains. */
@@ -125,53 +154,33 @@ const managerFromManifest = (root, manifest) => {
       "requirements.txt": "pip",
       "Cargo.toml": "cargo",
       "go.mod": "go",
+      "pom.xml": "maven",
+      "build.gradle": "gradle",
+      "build.gradle.kts": "gradle",
     }[manifest.name] ?? "unknown"
   );
 };
 
 export function detectProfile(root) {
-  const manifest = locate(root, [
-    "package.json",
-    "pyproject.toml",
-    "requirements.txt",
-    "go.mod",
-    "Cargo.toml",
-    "pom.xml",
-    "build.gradle",
-  ]);
-  const lock = locate(root, [
-    "pnpm-lock.yaml",
-    "yarn.lock",
-    "package-lock.json",
-    "bun.lockb",
-    "uv.lock",
-    "poetry.lock",
-    "Cargo.lock",
-    "go.sum",
-  ]);
-  const pkg = manifest?.name === "package.json" ? "{}" : null;
-  const runtime =
-    {
-      "package.json": "node",
-      "pyproject.toml": "python",
-      "requirements.txt": "python",
-      "go.mod": "go",
-      "Cargo.toml": "rust",
-      "pom.xml": "jvm",
-      "build.gradle": "jvm",
-    }[manifest?.name] ?? "unknown";
+  const manifest = locate(root, Object.keys(MANIFESTS));
+  const runtime = manifest ? MANIFESTS[manifest.name] : "unknown";
+  const lock = manifest
+    ? Object.keys(LOCKS).find(
+        (l) => LOCKS[l][0] === runtime && exists(root, manifest.dir, l),
+      )
+    : undefined;
+  const packageManager = lock
+    ? LOCKS[lock][1]
+    : managerFromManifest(root, manifest);
 
-  const packageManager =
-    {
-      "pnpm-lock.yaml": "pnpm",
-      "yarn.lock": "yarn",
-      "package-lock.json": "npm",
-      "bun.lockb": "bun",
-      "uv.lock": "uv",
-      "poetry.lock": "poetry",
-      "Cargo.lock": "cargo",
-      "go.sum": "go",
-    }[lock?.name] ?? managerFromManifest(root, manifest);
+  // Manifests of a different runtime anywhere the search looks. The profile
+  // describes one project; when the repository holds another, the profile
+  // may describe the wrong one, and the report has to say so.
+  const otherRuntimes = searchRoots(root).flatMap((dir) =>
+    Object.keys(MANIFESTS)
+      .filter((m) => MANIFESTS[m] !== runtime && exists(root, dir, m))
+      .map((m) => path.join(dir, m)),
+  );
 
   const ci = exists(root, ".github/workflows")
     ? "github-actions"
@@ -198,11 +207,17 @@ export function detectProfile(root) {
     // Where the manifest was found, so a reader can see whether the profile
     // describes the repository or one project inside it.
     manifestAt: manifest ? path.join(manifest.dir, manifest.name) : null,
+    otherRuntimes,
   };
 }
 
 /** Whether this project has ever assessed a repository of this shape. */
+// A repository that also holds another runtime's manifest is not the shape
+// that was validated, even when the manifest the profile read matches one:
+// openai/codex, a Rust and Bazel repository with a tooling package.json at
+// its root, matched Node/pnpm and was reported first-class.
 export function resolveSupport(profile) {
+  if (profile.otherRuntimes?.length) return "assessment-only";
   const matched = VALIDATED_SHAPES.some((s) =>
     Object.entries(s).every(([k, v]) => profile[k] === v),
   );
@@ -542,7 +557,12 @@ if (
   const p = report.profile;
   console.log(`# Assessment of ${root}\n`);
   console.log(
-    `Profile: ${p.runtime}, ${p.packageManager}, ${p.ci}, ${p.host}\n` +
+    `Profile: ${p.runtime}, ${p.packageManager}, ${p.ci}, ${p.host}` +
+      (p.manifestAt ? ` (read from ${p.manifestAt})` : "") +
+      "\n" +
+      (p.otherRuntimes.length
+        ? `Also holds: ${p.otherRuntimes.join(", ")} — the profile describes one project in a repository with more than one.\n`
+        : "") +
       `Support: ${report.support}` +
       (report.support === "assessment-only"
         ? " — this project has never assessed a repository of this shape.\n" +
