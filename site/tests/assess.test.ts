@@ -2,6 +2,8 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import { detectProfile, resolveSupport, assess } from '../../tools/assess.mjs';
 import { buildCapabilities } from '../src/lib/capabilities';
 import { CONTENT } from '../src/lib/site-config';
@@ -350,5 +352,29 @@ describe('assessing a foreign repository', () => {
     expect(
       enforce.observed.filter((o: string) => o.includes('[tool.ruff]')),
     ).toHaveLength(1);
+  });
+});
+
+// The documented contract is exit 0 for a report and exit 2 for "could not
+// run". Given a file, the command line checked only that the path existed,
+// then crashed in readdirSync with exit 1 and a stack trace (wave 2, finding
+// 6). Both refusals happen before the capability map is fetched.
+describe('command line', () => {
+  const cli = fileURLToPath(new URL('../../tools/assess.mjs', import.meta.url));
+  const run = (target: string) =>
+    spawnSync(process.execPath, [cli, target], { encoding: 'utf8' });
+
+  it('refuses a path that is not a directory, with exit 2', () => {
+    const file = path.join(make('cli-file', ['README.md']), 'README.md');
+    const r = run(file);
+    expect(r.status).toBe(2);
+    expect(r.stderr).toMatch(/not a directory/);
+    expect(r.stderr).not.toMatch(/at .*assess\.mjs/);
+  });
+
+  it('refuses a path that does not exist, with exit 2', () => {
+    const r = run(path.join(tmp, 'no-such-repository'));
+    expect(r.status).toBe(2);
+    expect(r.stderr).toMatch(/no such directory/);
   });
 });
