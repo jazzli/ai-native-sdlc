@@ -1,8 +1,8 @@
 # The assessors on foreign repositories: a second wave
 
 **Date:** 2026-11-04. **Status:** findings recorded; no assessor changed.
-Seven defects, none fixed here. Finding 1 was fixed separately on
-2026-11-11; the other six stand.
+Seven defects, none fixed here. Findings 1 and 6 were fixed separately on
+2026-11-11; the other five stand.
 
 ## Context
 
@@ -257,6 +257,10 @@ documented contract is exit 0 for a report and exit 2 for "could not run".
 node tools/assess.mjs README.md; echo "exit $?"
 # Error: ENOTDIR ... exit 1
 ```
+
+**Fixed 2026-11-11.** The command line now refuses a path that is not a
+directory with exit 2 and a one-line message, before fetching the
+capability map. The reproduction prints `not a directory: …` and `exit 2`.
 
 ### 7. One observation describes the clone, not the repository
 

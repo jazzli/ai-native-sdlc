@@ -541,6 +541,8 @@ if (
     process.exit(2);
   };
   if (!fs.existsSync(root)) die(`no such directory: ${root}`);
+  if (!fs.statSync(root).isDirectory())
+    die(`not a directory: ${root} — give the path of a repository checkout.`);
 
   const source = capsArg ?? CAPABILITIES;
   let caps;
