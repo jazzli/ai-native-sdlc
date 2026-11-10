@@ -1,7 +1,7 @@
 # The weekly falsifier watch
 
 The daily sweep in this directory finds things. This routine decides what
-they mean. It runs in Anthropic's cloud, **not** from this repository — so
+they mean. It runs on a host outside this repository, **not** in its CI — so
 its configuration is recorded here, because a policy artifact that exists in
 exactly one place outside version control is one accident from being lost.
 
@@ -66,6 +66,23 @@ is the same `ordomata-agent` that pushes development branches. The cost is the
 one above: it now runs with the host's credentials rather than a scoped
 integration's.
 
+### The heartbeat, and the outage that needed one
+
+From 2026-10-03 to 2026-11-07 the watch failed six consecutive Saturdays.
+Each run stopped at `claude-subscription-preflight`, which reported that
+Claude Code's authentication check on the host failed, so no Run Card was
+built and `agent-run` never started. The host's journal recorded every
+failure. Nothing outside the host did: the discovery queue kept filling, and
+on GitHub six failed runs read exactly as six quiet weeks would have.
+
+The watch now comments on the discovery issue on every run, findings or not,
+opening with `Items through YYYY-MM-DD triaged`. The daily sweep reads the
+latest such comment and, once it is more than ten days old — one missed
+Saturday and three days' grace — puts a warning at the top of each digest it
+posts. The check sees only that public trace. It cannot tell a host that is
+down from a run that finished without commenting; it says only that the
+watch has stopped completing, which is the fact that went unreported.
+
 ## What it does, in order
 
 1. **Reader challenges first** — open issues labeled `challenge`, because a
@@ -96,8 +113,11 @@ integration's.
 
 4. **Watchlist self-maintenance** — proposes additions and removals for
    `watch/watchlist.json`; proposes only, never edits.
+5. **Heartbeat** — comments `Items through YYYY-MM-DD triaged` on the
+   discovery issue, every run, so the sweep can tell a quiet week from a
+   missing one.
 
-Output is one `Falsifier watch YYYY-MM` issue when something moved, or a
+Output is one `Falsifier watch YYYY-MM-DD` issue when something moved, or a
 no-change report when nothing did.
 
 ## Why the sweep does not guess at primary sources
