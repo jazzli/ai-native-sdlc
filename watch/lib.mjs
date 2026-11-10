@@ -145,6 +145,31 @@ export const chronic = (health = {}, threshold = 3) =>
     .map(([name, h]) => ({ name, ...h }))
     .sort((a, b) => b.runs - a.runs || a.name.localeCompare(b.name));
 
+// --- watch liveness ------------------------------------------------------
+// The weekly falsifier watch runs on a host this workflow cannot see, and a
+// run that stops before it starts leaves nothing on GitHub. From 2026-10-03 it
+// failed six consecutive Saturdays at its capacity preflight, and the queue
+// read the same as six quiet weeks. Its one public trace is the comment it
+// leaves on this issue on every run, so the sweep looks for that. Weekly runs
+// put a healthy gap at seven days; ten means one run has been missed.
+const TRIAGE_MARKER = /^Items through \d{4}-\d{2}-\d{2} triaged/;
+
+/**
+ * @param {{ comments: { createdAt: string; body: string }[]; openedAt: string; now: number; days?: number }} input
+ */
+export const triageLapse = ({ comments, openedAt, now, days = 10 }) => {
+  // A queue reopened after triage has no marker yet and is as fresh as the
+  // issue itself.
+  const last =
+    comments
+      .filter((c) => TRIAGE_MARKER.test(c.body))
+      .map((c) => c.createdAt)
+      .sort()
+      .at(-1) ?? openedAt;
+  const elapsed = Math.floor((now - Date.parse(last)) / 86_400_000);
+  return elapsed > days ? { since: last.slice(0, 10), days: elapsed } : null;
+};
+
 // --- parsing -------------------------------------------------------------
 // Each takes a fetched body and returns what the sweep should collect, so the
 // extraction and filtering are testable without a network.
@@ -208,20 +233,26 @@ export const digestBody = ({
   suppressed = 0,
   chronic:
     ailing = /** @type {{ name: string; runs: number; since: string }[]} */ ([]),
-}) =>
-  [
+  lapse = /** @type {{ since: string; days: number } | null} */ (null),
+}) => {
+  // Above the fold and outside the collapsed block: a source that has been
+  // dead for a week is a gap in the evidence base, not a fetch hiccup, and a
+  // queue nobody triages is a watch that is not running.
+  const warnings = [
+    ...(lapse
+      ? [
+          `> **This queue has not been triaged since ${lapse.since} (${lapse.days} days).** The weekly falsifier watch triages it and leaves an "Items through … triaged" comment on every run; a gap this long means it is not running or not finishing. See \`watch/routine.md\`.`,
+        ]
+      : []),
+    ...ailing.map(
+      (h) =>
+        `> **${sanitize(h.name)}** has failed ${h.runs} consecutive runs since ${h.since} — fix the source or drop it from the watchlist.`,
+    ),
+  ];
+  return [
     `### ${date}`,
     "",
-    // Above the fold and outside the collapsed block: a source that has been
-    // dead for a week is a gap in the evidence base, not a fetch hiccup.
-    ailing.length
-      ? `> [!WARNING]\n${ailing
-          .map(
-            (h) =>
-              `> **${sanitize(h.name)}** has failed ${h.runs} consecutive runs since ${h.since} — fix the source or drop it from the watchlist.`,
-          )
-          .join("\n")}\n`
-      : "",
+    warnings.length ? `> [!WARNING]\n${warnings.join("\n")}\n` : "",
     collected.length
       ? collected.join("\n")
       : errors.length
@@ -238,6 +269,7 @@ export const digestBody = ({
     "",
     "_Discovery is not admission: triage through the signal filter._",
   ].join("\n");
+};
 
 // What the run should do, separated from doing it. A zero-finding day with
 // dead sources must still post: the errors would otherwise reach only a

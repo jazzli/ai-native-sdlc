@@ -174,9 +174,12 @@ export function cardElement(
     'div',
     {
       // The root must fill the canvas satori renders into, or the
-      // difference shows as unpainted white.
+      // difference shows as unpainted white. border-box keeps the padding
+      // inside it: satori 0.63 sizes content-box by default, which grows
+      // the root by the padding and pushes the footer off the canvas.
       width: size.width,
       height: size.height,
+      boxSizing: 'border-box',
       display: 'flex',
       flexDirection: 'column',
       backgroundColor: C.ground,
@@ -227,6 +230,17 @@ export function cardElement(
   return root;
 }
 
+export function cardSvg(
+  spec: CardSpec,
+  size: { width: number; height: number } = { width: 1200, height: 630 },
+): Promise<string> {
+  return satori(cardElement(spec, size) as never, {
+    width: size.width,
+    height: size.height,
+    fonts: FONTS,
+  });
+}
+
 export async function renderCard(
   spec: CardSpec,
   // Page cards are 1200x630, the Open Graph default. GitHub's repository
@@ -234,11 +248,5 @@ export async function renderCard(
   // second renderer.
   size: { width: number; height: number } = { width: 1200, height: 630 },
 ): Promise<Buffer> {
-  const root = cardElement(spec, size);
-  const svg = await satori(root as never, {
-    width: size.width,
-    height: size.height,
-    fonts: FONTS,
-  });
-  return Buffer.from(new Resvg(svg).render().asPng());
+  return Buffer.from(new Resvg(await cardSvg(spec, size)).render().asPng());
 }

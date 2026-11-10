@@ -1,6 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
+import { Resvg } from '@resvg/resvg-js';
 import {
   renderCard,
+  cardSvg,
   cardElement,
   normalizeCardText,
   type CardSpec,
@@ -40,6 +42,31 @@ describe('renderCard', () => {
     });
     expect(png.subarray(0, 8).equals(PNG_MAGIC)).toBe(true);
     expect(pngWidth(png)).toBe(1200);
+  });
+
+  // The PNG dimensions are fixed by the canvas, so they stay right even when
+  // the layout inside overflows it. satori 0.63 sized the root as content-box
+  // and pushed the footer below the canvas, and every assertion above still
+  // passed. What has to hold is that the footer is painted where it belongs.
+  it.each([
+    { width: 1200, height: 630 },
+    { width: 1280, height: 640 },
+  ])('paints the footer inside a $width x $height canvas', async (size) => {
+    const { pixels, width } = new Resvg(await cardSvg(note, size)).render();
+    const ground = [0x15, 0x20, 0x1e];
+    let ink = 0;
+    // The footer's band: above the 64px bottom padding, left half.
+    for (let y = size.height - 64 - 60; y < size.height - 64; y++) {
+      for (let x = 64; x < size.width / 2; x++) {
+        const i = (y * width + x) * 4;
+        const delta = ground.reduce(
+          (sum, c, k) => sum + Math.abs(pixels[i + k] - c),
+          0,
+        );
+        if (delta > 60) ink++;
+      }
+    }
+    expect(ink).toBeGreaterThan(200);
   });
 
   it('survives a very long title without throwing', async () => {

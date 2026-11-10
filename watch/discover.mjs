@@ -17,6 +17,7 @@ import {
   windowSince,
   trackHealth,
   chronic,
+  triageLapse,
   shouldRetry,
   backoffMs,
   hashInput,
@@ -154,6 +155,46 @@ state.__health = trackHealth(state.__health, { failed, attempted, today });
 const ailing = chronic(state.__health);
 fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2));
 
+const gh = (args, input) =>
+  execFileSync("gh", args, { input, encoding: "utf8" });
+
+// The open digest issue and its comments, read before the body is written
+// because the body reports how long the queue has gone untriaged. A dry run
+// touches no GitHub.
+/** @type {{ number: number; createdAt: string } | null} */
+const issue = DRY
+  ? null
+  : JSON.parse(
+      gh([
+        "issue",
+        "list",
+        "--label",
+        "discovery",
+        "--state",
+        "open",
+        "--json",
+        "number,createdAt",
+        "--jq",
+        ".[0] // null",
+      ]),
+    );
+const lapse = issue
+  ? triageLapse({
+      comments: gh([
+        "api",
+        "--paginate",
+        `repos/{owner}/{repo}/issues/${issue.number}/comments`,
+        "--jq",
+        ".[] | {createdAt: .created_at, body: .body[0:80]} | @json",
+      ])
+        .split("\n")
+        .filter(Boolean)
+        .map((line) => JSON.parse(line)),
+      openedAt: issue.createdAt,
+      now: NOW,
+    })
+  : null;
+
 const { suppressed } = counts();
 const collected = [...findings, ...changes];
 const body = digestBody({
@@ -162,13 +203,14 @@ const body = digestBody({
   errors,
   suppressed,
   chronic: ailing,
+  lapse,
 });
 
 console.log(body);
 // Always in the run log, posted or not: a zero-finding day that suppressed
 // forty repeats is healthy, and one that saw nothing at all may not be.
 console.error(
-  `[seen ${reported.length}, new ${findings.length}, changed ${changes.length}, suppressed ${suppressed}, errors ${errors.length}, chronic ${ailing.length}]`,
+  `[seen ${reported.length}, new ${findings.length}, changed ${changes.length}, suppressed ${suppressed}, errors ${errors.length}, chronic ${ailing.length}${lapse ? `, untriaged ${lapse.days}d` : ""}]`,
 );
 const sourceCount = list.feeds.length + list.apis.length + list.targets.length;
 const outcome = sweepOutcome({
@@ -185,8 +227,6 @@ if (outcome.action === "skip") {
   console.error(`[${outcome.reason}]`);
   process.exit(0);
 }
-const gh = (args, input) =>
-  execFileSync("gh", args, { input, encoding: "utf8" });
 gh([
   "label",
   "create",
@@ -197,21 +237,9 @@ gh([
   "--description",
   "Daily discovery digest — triage through the signal filter",
 ]);
-const existing = gh([
-  "issue",
-  "list",
-  "--label",
-  "discovery",
-  "--state",
-  "open",
-  "--json",
-  "number",
-  "--jq",
-  ".[0].number // empty",
-]).trim();
-if (existing) {
-  gh(["issue", "comment", existing, "--body-file", "-"], body);
-  console.error(`[appended to issue #${existing}]`);
+if (issue) {
+  gh(["issue", "comment", String(issue.number), "--body-file", "-"], body);
+  console.error(`[appended to issue #${issue.number}]`);
 } else {
   gh(
     [

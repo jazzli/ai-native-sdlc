@@ -238,9 +238,13 @@ Actions: Node with npm or pnpm, Python with uv or pip, Rust with cargo —
 each validated by running the assessor on a repository this project did not
 write and reading its findings against that repository. Everything else
 reports `assessment-only` — the observations are still facts, but the
-mapping from them to practice is not validated. The first such run, on
-2026-09-19, found four defects in the assessor itself; the repository's
-`docs/design/2026-09-19-assessors-on-foreign-repositories.md` lists them.
+mapping from them to practice is not validated. So does a repository that
+also holds another runtime's manifest, even when the one the profile read
+matches a validated shape: the profile describes one project, and the
+report names the others. The first such run, on 2026-09-19, found four
+defects in the assessor itself; a second, on 2026-11-04, recorded seven
+more across ten repositories. The repository's `docs/design/` directory
+records both.
 
 ## What you are adopting
 
